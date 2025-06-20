@@ -1,0 +1,44 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+export default function BusinessCard() {
+  return (
+    <Card className="w-full md:w-fit hover:outline-1 -outline-offset-4 hover:outline-olive transition-all duration-300 ease-in-out">
+      <CardHeader>
+        <CardTitle className="text-lg">Business Account</CardTitle>
+        <CardDescription className="sr-only">This card details what features you benefit from a Business Account</CardDescription>
+      </CardHeader>
+      <CardContent>
+         <ul className="flex flex-col gap-4 list-disc list-inside text-base">
+          <li className="">
+            List Services
+          </li>
+          <li className="">
+            List & Manage Venues
+          </li>
+          <li className="">
+            Create & Manage Events
+          </li>
+          <li className="">
+            Book wellness experiences
+          </li>
+          <li className="">
+            Manage your personal bookings
+          </li>
+         </ul>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full bg-olive hover:bg-olive text-white">
+          Select
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}

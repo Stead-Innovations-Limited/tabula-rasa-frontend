@@ -22,7 +22,9 @@ export const loginSchema = z.object({
 });
 
 export const signupSchema = z.object({
-  fullname: z.string().min(2, {message: "Fullname cannot be less than 2 characters"})
+  firstname: z.string().min(2, {message: "Fullname cannot be less than 2 characters"})
+    .max(80, { message: "Fullname cannot be 80 characters long."}),
+  lastname: z.string().min(2, {message: "Fullname cannot be less than 2 characters"})
     .max(80, { message: "Fullname cannot be 80 characters long."}),
   email: z.email({ message: "Please enter a valid email." }).trim(),
   password: z

@@ -32,6 +32,13 @@ export default async function loginAction(
 
     // Here you would typically handle the login logic, such as calling an API
     console.log("Logging in with:", email, password);
+    if(email === "admin@gmail.com" && password == "Admin1123#") {
+      return {
+        success: true,
+        data: { email, password }, // Simulating a user object
+        message: "Login successful",
+      };
+    }
 
     redirect("/");
   } catch (error) {

@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, startTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -27,18 +28,34 @@ import {
   FaApple,
 } from "@/components/icons";
 
-import loginAction from "@/server-actions/loginAction";
+// import loginAction from "@/server-actions/loginAction";
+import signupAction from "@/server-actions/signupAction";
 
 export default function SignupForm() {
-  const [state, action, isPending] = useActionState(loginAction, undefined);
+  const router = useRouter();
+  const [state, action, isPending] = useActionState(signupAction, undefined);
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      firstname: "",
+      lastname: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
+
+  useEffect(() => {
+    const data = localStorage.getItem("user");
+    if (data) {
+      const user = JSON.parse(data);
+      if (user) {
+        router.push("/");
+      }
+    }
+  }, [router]);
+  
 
   useEffect(() => {
     if (state?.error) {
@@ -49,8 +66,26 @@ export default function SignupForm() {
           description: "!text-red-500",
         },
       });
+
+      console.log(state.error)
     }
-  }, [state]);
+
+    if(state?.success) {
+      toast.success(state.message, {
+        classNames: {
+          toast: "!text-green-700",
+          title: "!text-green-700",
+          description: "!text-green-700",
+        },
+      });
+
+      localStorage.setItem("user", JSON.stringify(state.data));
+      setTimeout(() => {
+        router.push("/");
+      }, 2000); 
+    }
+
+  }, [state, router]);
 
   function onSubmit(formData: z.infer<typeof signupSchema>) {
     form.reset();
@@ -74,13 +109,31 @@ export default function SignupForm() {
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
             <FormField
               control={form.control}
-              name='fullname'
+              name='firstname'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-olive'>Full Name</FormLabel>
+                  <FormLabel className='text-olive'>First Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='Bisi Adebayo'
+                      placeholder='Bisi'
+                      type="text"
+                      {...field}
+                      className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='lastname'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-olive'>Last Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='Adebayo'
                       type="text"
                       {...field}
                       className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
@@ -152,7 +205,7 @@ export default function SignupForm() {
                     <AiOutlineLoading3Quarters className='animate-spin size-4' />
                   </>
                 ) : (
-                  <>Log In</>
+                  <>Sign up</>
                 )}
               </Button>
             </div>

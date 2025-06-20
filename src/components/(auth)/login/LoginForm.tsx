@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, startTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,6 +31,7 @@ import {
 import loginAction from "@/server-actions/loginAction";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [state, action, isPending] = useActionState(loginAction, undefined);
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -41,6 +43,31 @@ export default function LoginForm() {
   });
 
   useEffect(() => {
+    const data = localStorage.getItem("user");
+    if (data) {
+      const user = JSON.parse(data);
+      if (user) {
+        router.push("/");
+      }
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state.message, {
+        classNames: {
+          toast: "!text-green-700",
+          title: "!text-green-700",
+          description: "!text-green-700",
+        },
+      });
+      // localStorage.setItem("user", JSON.stringify(state.data));
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    }
+
     if (state?.error) {
       toast.error(state.message, {
         classNames: {
@@ -50,7 +77,7 @@ export default function LoginForm() {
         },
       });
     }
-  }, [state]);
+  }, [state, router]);
 
   function onSubmit(formData: z.infer<typeof loginSchema>) {
     form.reset();

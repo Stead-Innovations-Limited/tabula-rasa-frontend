@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import { HiOutlineLockClosed, BsEye, BsEyeSlash } from "@/components/icons";
+import { BsEye, BsEyeSlash } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 const PasswordInput = React.forwardRef<
