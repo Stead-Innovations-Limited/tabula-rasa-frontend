@@ -4,6 +4,14 @@ import React, { useState } from "react";
 import { BsEye, BsEyeSlash } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 const PasswordInput = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement>
@@ -64,4 +72,18 @@ const ConfirmPasswordInput = React.forwardRef<
 });
 ConfirmPasswordInput.displayName = "ConfirmPasswordInput";
 
-export { PasswordInput, ConfirmPasswordInput };
+function DashboardFilter({className}: { className?: string}) {
+  return (
+    <Select>
+      <SelectTrigger className={cn('', className)}>
+        <SelectValue placeholder='Filter' />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value='latest'>Latest</SelectItem>
+        <SelectItem value='pricing'>Pricing</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+
+export { PasswordInput, ConfirmPasswordInput, DashboardFilter };
