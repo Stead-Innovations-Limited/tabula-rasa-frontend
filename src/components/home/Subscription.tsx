@@ -10,6 +10,7 @@ function Subscription() {
             src='/insights.jpg'
             alt='Depiction of wellness insight'
             fill={true}
+            className="object-cover object-center scale-x-[-1]"
           />
         </div>
         <div className='flex flex-col justify-center p-5 lg:pl-16 w-full lg:w-3/5 font-nunito gap-5 lg:gap-10'>

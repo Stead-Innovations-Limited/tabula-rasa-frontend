@@ -26,7 +26,7 @@ export default function VenueCards({
   venueAddress,
 }: VenueProps) {
   return (
-    <Card className='py-0 overflow-clip !gap-0'>
+    <Card className='w-full py-0 overflow-clip !gap-0'>
       <CardHeader className='w-full aspect-square relative'>
         <span className='relative z-5 my-5 ml-auto bg-olive size-10 rounded-xl flex items-center justify-center'>
           <GoArrowUpRight className='size-5 text-white' />

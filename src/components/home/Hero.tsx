@@ -42,7 +42,7 @@ function Hero() {
             src='/wellness-lady.png'
             alt='The image of a lady enjoying a good wellness experience'
             fill={true}
-            className='drop-shadow-[0px_20px_15px_rgba(0,0,0,0.5)] z-20'
+            className='z-20'
           />
         </div>
         {/* The Mobile heading section */}

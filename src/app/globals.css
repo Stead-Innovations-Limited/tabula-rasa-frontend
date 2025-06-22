@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import 'tailwind-scrollbar-hide/v4';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -10,6 +11,7 @@
   --color-cream: #FCF6ED;
   --color-lightolive: #CBCDB5;
   --color-olivewhite: #FAF4EE;
+  --color-lightgreen: #B1D5AC;
   --font-alex: var(--alex);
   --font-nunito: var(--nunito);
   --font-roboto: var(--roboto);

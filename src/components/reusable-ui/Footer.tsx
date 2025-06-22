@@ -5,7 +5,7 @@ import { FaFacebook, BsTwitterX, SlSocialInstagram } from "@/components/icons";
 function Footer() {
   return (
     <section className='w-full bg-lightolive font-roboto'>
-      <footer className='w-full p-5 xl:p-0 xl:max-w-[1140px] mx-auto font-roboto font-medium flex flex-col'>
+      <footer className='w-full p-5 xl:max-w-[1140px] mx-auto font-roboto font-medium flex flex-col'>
         <div className='flex flex-col gap-8 md:flex-row md:justify-between pt-10 md:py-10'>
           {/* Main set of links */}
           <div className='w-full flex flex-col md:gap-6'>
