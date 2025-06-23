@@ -9,6 +9,7 @@ import { FiLogOut, FiCamera, FiUsers } from "react-icons/fi";
 import { HiPlus } from "react-icons/hi2";
 import { LuShoppingCart, LuBell, LuCalendarDays } from "react-icons/lu";
 import { CiSearch } from "react-icons/ci";
-import { GoArrowUpRight, GoStarFill } from "react-icons/go";
+import { GoArrowUpRight, GoStarFill, GoPerson } from "react-icons/go";
+import { PiCurrencyDollarSimple, PiHouse } from "react-icons/pi";
 
-export { RxHamburgerMenu, AiOutlineLoading3Quarters, FaFacebook, BsTwitterX, SlSocialInstagram, HiOutlineLockClosed,  BsEye, BsEyeSlash, FcGoogle, FaApple, FiLogOut, HiPlus, SlHeart,LuShoppingCart, LuBell, CiSearch, FiCamera, BsChevronRight, LuCalendarDays, SlLocationPin, GoArrowUpRight, FiUsers, GoStarFill }
+export { RxHamburgerMenu, AiOutlineLoading3Quarters, FaFacebook, BsTwitterX, SlSocialInstagram, HiOutlineLockClosed,  BsEye, BsEyeSlash, FcGoogle, FaApple, FiLogOut, HiPlus, SlHeart,LuShoppingCart, LuBell, CiSearch, FiCamera, BsChevronRight, LuCalendarDays, SlLocationPin, GoArrowUpRight, FiUsers, GoStarFill, GoPerson, PiCurrencyDollarSimple, PiHouse }
