@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${alex.variable} ${nunito.variable} ${roboto.variable} antialiased bg-cream`}
+        className={`${alex.variable} ${nunito.variable} ${roboto.variable} antialiased`}
       >
         <>{children}</>
         <Toaster />

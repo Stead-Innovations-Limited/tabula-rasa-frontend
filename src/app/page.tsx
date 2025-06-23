@@ -9,7 +9,7 @@ import Footer from "@/components/reusable-ui/Footer";
 
 export default function Home() {
   return (
-    <>
+    <main className='w-full bg-cream'>
       <NavBar />
       <Hero />
       <AfterHero/>
@@ -18,6 +18,6 @@ export default function Home() {
       <GallerySlides />
       <Subscription/>
       <Footer />
-    </>
+    </main>
   );
 }
