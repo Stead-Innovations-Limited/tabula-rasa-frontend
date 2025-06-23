@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 
 import { CiSearch, SlHeart, LuShoppingCart, LuBell, FaHeart } from "@/components/icons";
@@ -8,8 +9,10 @@ import { Input } from "../ui/input";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export default function FullUserNavBarSearch() {
+export default function FullUserNavBarSearch({ renderMenu }: { renderMenu: (blur: () => void) => React.ReactNode }) {
   const pathname = usePathname();
+  const [menuOpened, setMenu] = useState(false);
+
   return (
     <div className='w-full bg-olive'>
       <header className='w-full xl:max-w-[1140px] mx-auto flex flex-row justify-between items-center p-5 lg:px-5 text-white'>
@@ -39,9 +42,11 @@ export default function FullUserNavBarSearch() {
               imgUrl='https://github.com/shadcn.png'
               firstname='Tolu'
               lastname='Ojo'
+              setMenu={setMenu}
             />
           </Link>
         </nav>
+        {menuOpened && renderMenu(() => setMenu(false))}
       </header>
     </div>
   );

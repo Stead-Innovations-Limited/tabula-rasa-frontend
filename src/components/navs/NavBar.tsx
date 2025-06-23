@@ -10,7 +10,7 @@ interface UserData {
   password: string;
 }
 
-import HomeMenu from "@/components/navs/HomeMenu";
+import HomeMenu from "@/components/Menus/HomeMenu";
 
 function NavBar() {
   const [userData, setUserData] = useState<UserData | null>(null);
