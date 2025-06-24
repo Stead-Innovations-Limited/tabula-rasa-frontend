@@ -38,13 +38,16 @@ function NavBar() {
           {userData ? (
             <Avatar>
               <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
-              <AvatarFallback className="!size-10 flex items-center justify-center bg-olive text-white">
+              <AvatarFallback className='!size-10 flex items-center justify-center bg-olive text-white'>
                 {userData ? userData?.email.slice(0, 2).toUpperCase() : "AY"}
               </AvatarFallback>
             </Avatar>
           ) : (
-            <Button className='bg-olive hover:bg-olive text-xl text-white py-4 px-10 rounded-xl'>
-              Log In
+            <Button
+              asChild
+              className='bg-olive hover:bg-olive text-xl text-white py-4 px-10 rounded-xl'
+            >
+              <Link href='/login'>Log In</Link>
             </Button>
           )}
         </div>

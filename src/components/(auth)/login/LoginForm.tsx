@@ -61,7 +61,7 @@ export default function LoginForm() {
           description: "!text-green-700",
         },
       });
-      // localStorage.setItem("user", JSON.stringify(state.data));
+      localStorage.setItem("user", JSON.stringify(state.data));
 
       setTimeout(() => {
         router.push("/");
