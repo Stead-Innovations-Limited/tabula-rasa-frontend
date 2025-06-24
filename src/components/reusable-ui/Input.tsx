@@ -86,4 +86,19 @@ function DashboardFilter({className}: { className?: string}) {
   );
 }
 
-export { PasswordInput, ConfirmPasswordInput, DashboardFilter };
+function BookingsFilter({className}: { className?: string}) {
+  return (
+    <Select>
+      <SelectTrigger className={cn('', className)}>
+        <SelectValue placeholder='Filter' />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value='upcoming'>Up Coming</SelectItem>
+        <SelectItem value='done'>Done</SelectItem>
+        <SelectItem value='all'>All</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+
+export { PasswordInput, ConfirmPasswordInput, DashboardFilter, BookingsFilter };
