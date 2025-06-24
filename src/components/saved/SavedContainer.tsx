@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 export default function SavedContainer() {
   return (
     <section className='w-full'>
-      <div className='w-full  xl:max-w-[1140px] mx-auto font-nunito px-5'>
+      <div className='w-full xl:max-w-[1140px] mx-auto font-nunito px-5'>
         <div className='p-5 lg:px-10 rounded-2xl md:rounded-4xl border-none shadow-xl flex flex-col divide-y divide-solid divide-olive mt-5 mb-8 md:mt-10 md:mb-16'>
           {Array.from({ length: 1 }).map((_, index) => (
             <EventCards key={index} index={index} />
