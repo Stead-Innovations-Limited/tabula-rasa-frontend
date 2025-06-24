@@ -1,4 +1,4 @@
-import NavBar from "@/components/navs/NavBar";
+import NavBarClient from "@/components/navs/NavBarClient";
 import Hero from "@/components/home/Hero";
 import AfterHero from "@/components/home/AfterHero";
 import RetreatSection from "@/components/home/RetreatSection";
@@ -10,7 +10,7 @@ import Footer from "@/components/reusable-ui/Footer";
 export default function Home() {
   return (
     <main className='w-full bg-cream'>
-      <NavBar />
+      <NavBarClient />
       <Hero />
       <AfterHero/>
       <RetreatSection/>

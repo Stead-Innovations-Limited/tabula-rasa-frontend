@@ -1,18 +1,31 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import {
-  RxPerson,
-  GrBookmark,
-} from "@/components/icons";
+import { RxPerson, GrBookmark } from "@/components/icons";
 import useMenuBlur from "@/hooks/useMenuBlur";
+interface UserData {
+  email: string;
+  password: string;
+}
+
 
 export default function UserDashboardMenu({ blur }: { blur: () => void }) {
+  const router = useRouter();
   const menuRef = useRef<HTMLDivElement | null>(null);
   useMenuBlur(menuRef, blur);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  useEffect(() => {
+    const data = localStorage.getItem("user");
+    if (data) {
+      const user = JSON.parse(data) as UserData;
+      setUserData(user);
+    }
+  }, []);
+  console.log("User Data:", userData)
   return (
     <div
       ref={menuRef}
@@ -34,16 +47,30 @@ export default function UserDashboardMenu({ blur }: { blur: () => void }) {
         </p>
       </div>
       <div className='flex flex-col gap-2 text-olive'>
-        <Link href='/' className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'>
+        <Link
+          href='/'
+          className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+        >
           <RxPerson className='size-5' />
           My Profile
         </Link>
-        <Link href='/' className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'>
+        <Link
+          href='/'
+          className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+        >
           <GrBookmark className='size-5' />
           Reservations
         </Link>
       </div>
-      <Button className='w-full bg-olive hover:bg-olive/90 text-white rounded-md'>
+      <Button
+        className='w-full bg-olive hover:bg-olive/90 text-white rounded-md'
+        onClick={() => {
+          // Clear user data from localStorage and state
+          localStorage.removeItem("user");
+          setUserData(null);
+          router.refresh()
+        }}
+      >
         Log Out
       </Button>
     </div>

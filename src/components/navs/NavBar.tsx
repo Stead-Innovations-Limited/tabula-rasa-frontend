@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface UserData {
   email: string;
@@ -11,9 +10,15 @@ interface UserData {
 }
 
 import HomeMenu from "@/components/Menus/HomeMenu";
+import AvatarComponent from "../reusable-ui/AvatarComponent";
 
-function NavBar() {
+function NavBar({
+  renderMenu,
+}: {
+  renderMenu: (blur: () => void) => React.ReactNode;
+}) {
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [menuOpened, setMenu] = useState(false);
   useEffect(() => {
     const data = localStorage.getItem("user");
     if (data) {
@@ -36,12 +41,12 @@ function NavBar() {
         </nav>
         <div className='hidden lg:block'>
           {userData ? (
-            <Avatar>
-              <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
-              <AvatarFallback className='!size-10 flex items-center justify-center bg-olive text-white'>
-                {userData ? userData?.email.slice(0, 2).toUpperCase() : "AY"}
-              </AvatarFallback>
-            </Avatar>
+            <AvatarComponent
+              imgUrl='https://github.com/shadcn.png'
+              firstname='Tolu'
+              lastname='Ojo'
+              setMenu={setMenu}
+            />
           ) : (
             <Button
               asChild
@@ -56,6 +61,7 @@ function NavBar() {
           <HomeMenu />
         </div>
       </header>
+      {menuOpened && renderMenu(() => setMenu(false))}
     </div>
   );
 }
