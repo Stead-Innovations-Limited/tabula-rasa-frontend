@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-
 import Image from "next/image";
 
 import {
@@ -8,22 +6,21 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter
+  CardFooter,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress"
 import { Button } from "../ui/button";
 
 import {
   SlLocationPin,
   GoPerson,
   PiCurrencyDollarSimple,
-  LuCalendarDays,
-  RxDotsVertical
+  PiHouse,
+  RxDotsVertical,
 } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
-export default function EventsTab() {
+export default function VenuesTab() {
   return (
     <section className='w-full'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex px-5 py-6 md:py-14'>
@@ -41,13 +38,17 @@ export default function EventsTab() {
           </TabsList>
           <TabsContent value='open' className='w-full flex flex-col gap-5 p-5 md:p-10 rounded-3xl shadow-lg'>
             {Array.from({ length: 3 }, (_, index) => (
-              <EventCards index={index} key={index} />
+              <VenueCards index={index} key={index} />
             ))}
-            <Button className='w-full md:w-3/4 md:!h-fit py-3 bg-olive hover:bg-olive/90 text-white mx-auto mt-10 text-lg'>Create New Event</Button>
+
+            <Button className='w-full md:w-3/4 md:!h-fit py-3 bg-olive hover:bg-olive/90 text-white mx-auto mt-10 text-lg'>List New Venue</Button>
           </TabsContent>
-          <TabsContent value='closed' className='w-full flex flex-col gap-5 grayscale p-5 md:p-10 rounded-3xl shadow-lg'>
+          <TabsContent
+            value='closed'
+            className='w-full flex flex-col gap-5 grayscale p-5 md:p-10 rounded-3xl shadow-lg'
+          >
             {Array.from({ length: 2 }, (_, index) => (
-              <EventCards index={index} key={index} />
+              <VenueCards index={index} key={index} />
             ))}
           </TabsContent>
         </Tabs>
@@ -56,7 +57,7 @@ export default function EventsTab() {
   );
 }
 
-function EventCards({ index }: { index: number }) {
+function VenueCards({ index }: { index: number }) {
   return (
     <Card
       className={cn(
@@ -64,41 +65,37 @@ function EventCards({ index }: { index: number }) {
         index !== 0 && ""
       )}
     >
-      <CardHeader className='w-full md:w-64 aspect-[200/240] relative rounded-xl overflow-clip'>
+      <CardHeader className='w-full md:w-64 aspect-square md:aspect-[3/2] relative rounded-xl overflow-clip'>
         <Image
-          src='/praying-model.jpg'
-          alt='Event Image'
+          src='/room1.webp'
+          alt='Venue Image'
           fill={true}
           className='absolute object-cover object-center'
         />
-        <CardTitle className='sr-only'>Event Card</CardTitle>
-        <CardDescription className='sr-only'>Event card.</CardDescription>
+        <CardTitle className='sr-only'>Venue Card</CardTitle>
+        <CardDescription className='sr-only'>Venue card.</CardDescription>
       </CardHeader>
-      <CardContent className='grow relative flex flex-col items-start justify-center gap-2 md:gap-6 z-2 py-4 px-0 md:px-5 text-olive font-roboto'>
+      <CardContent className='grow relative flex flex-col items-start justify-center gap-2 md:gap-6 z-2 py-4 md:py-0 px-0 md:px-5 text-olive font-roboto'>
         <h5 className='flex gap-2 text-2xl font-medium'>
-          Serene Saturday:{" "}
-          <span className='inline-block font-normal'>
-            Yoga & Sound Bath Retreat
-          </span>
+          Serene Waters Retreat Center
         </h5>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 w-full'>
           <p className='flex items-start gap-1 text-xl'>
-            <LuCalendarDays className='size-6 text-olive' />{" "}
-            {format(new Date("7-19-2025"), "PPPP")}
+            <PiHouse className='size-6 text-olive' />
+            Retreat Center
           </p>
           <p className='flex items-start gap-1 text-xl'>
             <PiCurrencyDollarSimple className='size-6 text-olive' />
-            80.00
+            80.00/hr
           </p>
           <p className='flex items-start gap-1 text-xl'>
             <SlLocationPin className='size-6 text-olive' /> The Wellness Hub,
             VI, Lagos
           </p>
           <p className='flex items-start gap-1 text-xl'>
-            <GoPerson className='size-6 text-olive' /> All Levels Welcome
+            <GoPerson className='size-6 text-olive' /> 50
           </p>
         </div>
-        <Progress value={50} className="" />
       </CardContent>
       <CardFooter className='hidden md:flex'>
         <RxDotsVertical className='!bg-transparent ' />
