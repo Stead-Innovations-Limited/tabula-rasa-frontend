@@ -14,12 +14,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress"
 import { Button } from "../ui/button";
 
+import EventCardPopOverMenu from "../Menus/EventCardPopOverMenu";
+
 import {
   SlLocationPin,
   GoPerson,
   PiCurrencyDollarSimple,
   LuCalendarDays,
-  RxDotsVertical
 } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
@@ -101,7 +102,7 @@ function EventCards({ index }: { index: number }) {
         <Progress value={50} className="" />
       </CardContent>
       <CardFooter className='hidden md:flex'>
-        <RxDotsVertical className='!bg-transparent ' />
+        <EventCardPopOverMenu />
       </CardFooter>
     </Card>
   );

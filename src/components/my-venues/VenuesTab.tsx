@@ -16,9 +16,9 @@ import {
   GoPerson,
   PiCurrencyDollarSimple,
   PiHouse,
-  RxDotsVertical,
 } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import VenueCardPopOverMenu from "../Menus/VenueCardPopOverMenu";
 
 export default function VenuesTab() {
   return (
@@ -98,7 +98,7 @@ function VenueCards({ index }: { index: number }) {
         </div>
       </CardContent>
       <CardFooter className='hidden md:flex'>
-        <RxDotsVertical className='!bg-transparent ' />
+        <VenueCardPopOverMenu />
       </CardFooter>
     </Card>
   );
