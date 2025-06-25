@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import { BsEye, BsEyeSlash } from "@/components/icons";
+import { BsEye, BsEyeSlash, CiSearch } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 import {
@@ -72,10 +72,10 @@ const ConfirmPasswordInput = React.forwardRef<
 });
 ConfirmPasswordInput.displayName = "ConfirmPasswordInput";
 
-function DashboardFilter({className}: { className?: string}) {
+function DashboardFilter({ className }: { className?: string }) {
   return (
     <Select>
-      <SelectTrigger className={cn('', className)}>
+      <SelectTrigger className={cn("", className)}>
         <SelectValue placeholder='Filter' />
       </SelectTrigger>
       <SelectContent>
@@ -86,10 +86,10 @@ function DashboardFilter({className}: { className?: string}) {
   );
 }
 
-function BookingsFilter({className}: { className?: string}) {
+function BookingsFilter({ className }: { className?: string }) {
   return (
     <Select>
-      <SelectTrigger className={cn('', className)}>
+      <SelectTrigger className={cn("", className)}>
         <SelectValue placeholder='Filter' />
       </SelectTrigger>
       <SelectContent>
@@ -101,4 +101,27 @@ function BookingsFilter({className}: { className?: string}) {
   );
 }
 
-export { PasswordInput, ConfirmPasswordInput, DashboardFilter, BookingsFilter };
+function SearchInput({
+  type="text",
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div className='relative'>
+      <input
+        type={type}
+        placeholder='Search...'
+        className={cn(
+          "font-normal w-full py-2 rounded-md shadow-xs placeholder:text-deep_olive/50 block border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none pl-10",
+          className
+        )}
+        {...props}
+      />
+      <div className="absolute left-5 top-1/2 -translate-y-1/2">
+        <CiSearch className="" />
+      </div>
+    </div> 
+  );
+}
+
+export { PasswordInput, ConfirmPasswordInput, DashboardFilter, BookingsFilter, SearchInput };
