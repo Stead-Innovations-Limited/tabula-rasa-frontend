@@ -4,6 +4,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { RxDotsVertical } from "@/components/icons";
+import Link from "next/link";
 
 export default function VenueCardPopOverMenu() {
   return (
@@ -14,12 +15,15 @@ export default function VenueCardPopOverMenu() {
         </PopoverTrigger>
         <PopoverContent className="p-0 rounded-2xl">
           <div className="flex flex-col divide-y divide-olive divide-solid font-roboto text-olive">
-            <div className="w-full py-3 text-center">
+            <Link href="/my-venues/" className="w-full py-3 text-center">
               Edit Venue
-            </div>
-            <div className="w-full py-3 text-center">
+            </Link>
+            <Link href="/my-venues/view-bookings/1" className="w-full py-3 text-center">
               View Bookings
-            </div>
+            </Link>
+            <Link href="/my-venues/view-availability/1" className="w-full py-3 text-center">
+              View Available Venues
+            </Link>
             <div className="w-full py-3 text-destructive text-center">
               Close Venue
             </div>
