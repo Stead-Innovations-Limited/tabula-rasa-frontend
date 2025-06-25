@@ -18,10 +18,10 @@ export default function VenueCardPopOverMenu() {
             <Link href="/my-venues/" className="w-full py-3 text-center">
               Edit Venue
             </Link>
-            <Link href="/my-venues/view-bookings/1" className="w-full py-3 text-center">
+            <Link href="/my-venues/1/view-bookings" className="w-full py-3 text-center">
               View Bookings
             </Link>
-            <Link href="/my-venues/view-availability/1" className="w-full py-3 text-center">
+            <Link href="/my-venues/1/view-availability" className="w-full py-3 text-center">
               View Available Venues
             </Link>
             <div className="w-full py-3 text-destructive text-center">

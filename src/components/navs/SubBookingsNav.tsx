@@ -6,12 +6,14 @@ import { cn } from "@/lib/utils";
 
 export default function SubBookingsNav() {
   const path = usePathname();
-  const pathname = path.split("/")[2] || "";
+  const pathname = path.split("/")[3] || "";
+
+  console.log(path.split("/"));
   return (
     <ul className='flex gap-4 text-lg md:text-xl font-roboto text-olive'>
       <li className=''>
         <Link
-          href='/my-venues/view-bookings/1'
+          href='/my-venues/1/view-bookings'
           className={cn("inline-block px-2 py-4", {
             "border-b-2 border-olive": pathname === "view-bookings",
           })}
@@ -21,7 +23,7 @@ export default function SubBookingsNav() {
       </li>
       <li className=''>
         <Link
-          href='/my-venues/view-availability/1'
+          href='/my-venues/1/view-availability'
           className={cn("inline-block px-2 py-4", {
             "border-b-2 border-olive": pathname === "view-availability",
           })}
