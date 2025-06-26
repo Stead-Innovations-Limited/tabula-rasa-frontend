@@ -393,3 +393,75 @@ export const listVenueSchema = z.object({
       message: "Price per hour cannot be more than 80 characters long.",
     }),
 });
+
+export const createEventSchema = z.object({
+  eventFiles: z.array(z.instanceof(File)).min(1, {
+    message: "Please upload at least one file.",
+  }),
+  eventTitle: z
+    .string()
+    .min(2, { message: "Event title cannot be less than 2 characters" })
+    .max(80, { message: "Event title cannot be 80 characters long." }),
+  eventTheme: z.enum(["Retreat", "Wellness", "Mindfulness"], {
+    message: "Please select a valid event theme.",
+  }),
+  eventDescription: z
+    .string()
+    .min(10, {
+      message: "Event description must be at least 10 characters long",
+    })
+    .max(500, {
+      message: "Event description cannot be more than 500 characters long.",
+    }),
+  keyActivities: z.enum(
+    ["Yoga", "Meditation", "Nutrition", "Wellness Coaching"],
+    {
+      message: "Please select at least one key activity.",
+    }
+  ),
+  targetAudience: z.enum(
+    ["All", "Adults", "Children", "Seniors", "Families"],
+    {
+      message: "Please select a valid target audience.",
+    }
+  ),
+  location: z
+    .string()
+    .min(5, {
+      message: "Location cannot be less than 5 characters",
+    })
+    .max(100, {
+      message: "Location cannot be more than 100 characters long.",
+    }),
+  startDate: z.date({
+    error: "Start date is required",
+  }),
+  endDate: z.date({
+    error: "End date is required",
+  }),
+  maxParticipantsNo: z.enum(
+    [
+      "10-50",
+      "50-100",
+      "100-200",
+      "200-500",
+      "500-1000",
+      "1000-2000",
+      "2000+",
+    ],
+    {
+      message: "Please select a valid number of participants",
+    }
+  ),
+  pricePerParticipant: z
+    .string()
+    .min(1, {
+      message: "Price per participant cannot be less than 5 characters",
+    })
+    .max(80, {
+      message: "Price per participant cannot be more than 80 characters long.",
+    }),
+}).refine(data => data.endDate > data.startDate, {
+  message: "endDate must be after startDate",
+  path: ["endDate"],
+});
