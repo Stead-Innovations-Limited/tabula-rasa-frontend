@@ -24,11 +24,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { AiOutlineLoading3Quarters } from "@/components/icons";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import useToast from "@/hooks/useToast";
 
 import { venueSchema } from "@/lib/definitions";
 import editVenueAction from "@/server-actions/editVenueAction";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import useToast from "@/hooks/useToast";
+
 
 export default function EditVenueForm() {
   const [state, action, isPending] = useActionState(editVenueAction, undefined);
@@ -64,7 +65,7 @@ export default function EditVenueForm() {
   }
   return (
     <section className='w-full'>
-      <div className='w-full xl:max-w-[1140px] mx-auto p-8 md:pt-14 md:pb-20'>
+      <div className='w-full xl:max-w-[1140px] mx-auto px-5 py-8 md:pt-14 md:pb-20'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-10'>
             <div className='grid grid-cols-1 md:grid-cols-6 gap-5'>
