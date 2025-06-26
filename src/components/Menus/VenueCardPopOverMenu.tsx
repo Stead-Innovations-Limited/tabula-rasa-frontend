@@ -15,7 +15,7 @@ export default function VenueCardPopOverMenu() {
         </PopoverTrigger>
         <PopoverContent className="p-0 rounded-2xl">
           <div className="flex flex-col divide-y divide-olive divide-solid font-roboto text-olive">
-            <Link href="/my-venues/" className="w-full py-3 text-center">
+            <Link href="/my-venues/edit-venue" className="w-full py-3 text-center">
               Edit Venue
             </Link>
             <Link href="/my-venues/1/view-bookings" className="w-full py-3 text-center">
