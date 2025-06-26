@@ -1,6 +1,6 @@
 "use client"
 import FullUserNavBarSearch from "@/components/navs/FullUserNavBarSearch";
-import UserDashboardMenu from "@/components/Menus/UserDashboardMenu";
+import MyPagesDropMenu from "@/components/Menus/MyPagesDropMenu";
 
 import Footer from "@/components/reusable-ui/Footer";
 export default function Layout({
@@ -10,7 +10,7 @@ export default function Layout({
 }) {
   return (
     <>
-      <FullUserNavBarSearch renderMenu={(blur) => <UserDashboardMenu blur={blur}/>}/>
+      <FullUserNavBarSearch renderMenu={(blur) => <MyPagesDropMenu blur={blur}/>}/>
       {children}
       <Footer />
     </>
