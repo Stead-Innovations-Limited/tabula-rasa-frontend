@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
-import { toast } from "sonner";
 
 import { loginSchema } from "@/lib/definitions";
 
@@ -29,6 +28,9 @@ import {
 } from "@/components/icons";
 
 import loginAction from "@/server-actions/loginAction";
+import { toast } from "sonner";
+import { signIn } from "next-auth/react";
+
 
 export default function LoginForm() {
   const router = useRouter();
@@ -42,32 +44,8 @@ export default function LoginForm() {
     },
   });
 
+   
   useEffect(() => {
-    const data = localStorage.getItem("user");
-    if (data) {
-      const user = JSON.parse(data);
-      if (user) {
-        router.push("/");
-      }
-    }
-  }, [router]);
-
-  useEffect(() => {
-    if (state?.success) {
-      toast.success(state.message, {
-        classNames: {
-          toast: "!text-green-700",
-          title: "!text-green-700",
-          description: "!text-green-700",
-        },
-      });
-      localStorage.setItem("user", JSON.stringify(state.data));
-
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
-    }
-
     if (state?.error) {
       toast.error(state.message, {
         classNames: {
@@ -76,6 +54,39 @@ export default function LoginForm() {
           description: "!text-red-500",
         },
       });
+    }
+
+    if (state?.success) {
+      (async () => {
+        const result = await signIn("credentials", {
+          email: state.data?.email,
+          password: state.data?.password,
+          redirect: false,
+        });
+        if (result?.error) {
+          toast.error(
+            "Login failed. Please check your credentials.",
+            {
+              classNames: {
+                toast: "!text-red-500",
+                title: "!text-red-500",
+                description: "!text-red-500",
+              },
+            }
+          );
+        } else {
+          toast.success("Login successful! Redirecting to dashboard...", {
+            classNames: {
+              toast: "!text-green-700",
+              title: "!text-green-700",
+              description: "!text-green-700",
+            },
+          });
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 1000);
+        }
+      })();
     }
   }, [state, router]);
 

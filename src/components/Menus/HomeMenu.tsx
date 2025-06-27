@@ -1,6 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
+
+import { signOut } from "next-auth/react";
 
 import { buttonVariants, Button } from "../ui/button";
 
@@ -15,21 +17,10 @@ import {
 } from "@/components/ui/sheet";
 
 import { cn } from "@/lib/utils";
-interface UserData {
-  email: string;
-  password: string;
-}
 
-function HomeMenu() {
+function HomeMenu({userData}: {userData: boolean}) {
   const [open, setOpen] = useState<boolean>(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  useEffect(() => {
-    const data = localStorage.getItem("user");
-    if (data) {
-      const user = JSON.parse(data) as UserData;
-      setUserData(user);
-    }
-  }, []);
+  
   return (
     <>
       <Sheet open={open} onOpenChange={setOpen}>
@@ -89,10 +80,9 @@ function HomeMenu() {
             <div className='p-6'>
               {userData ? (
                 <Button className='w-full bg-red-500/20 hover:bg-red-500/30'
-                onClick={() => {
-                  // Clear user data from localStorage and state
-                  localStorage.removeItem("user");
-                  setUserData(null);
+                onClick={async () => {
+                  // Handle logout logic here
+                  await signOut({ callbackUrl: "/" }); 
                 }}
                 >
                   <FiLogOut className='text-red-500' />

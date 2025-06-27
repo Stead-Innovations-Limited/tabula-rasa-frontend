@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface ToastState {
   error?: boolean;
@@ -9,7 +10,8 @@ interface ToastState {
   errors?: { [key: string]: string[] };
   errorData?: unknown;
 }
-export default function useToast(state: ToastState | undefined) {
+export default function useToast(state: ToastState | undefined, redirectString?: string) {
+  const router = useRouter();
    useEffect(() => {
     if (state?.error) {
       toast.error(state.message, {
@@ -31,6 +33,13 @@ export default function useToast(state: ToastState | undefined) {
           description: "!text-green-700",
         },
       });
+
+      setTimeout(() => {
+        if (redirectString) {
+        router.push(redirectString);
+        }
+      }, 1000);
     }
-  }, [state]);
+
+  }, [state, redirectString, router]);
 }

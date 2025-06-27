@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
-import { toast } from "sonner";
 
 import { signupSchema } from "@/lib/definitions";
 
@@ -21,15 +20,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ConfirmPasswordInput, PasswordInput } from "@/components/reusable-ui/Input";
+import {
+  ConfirmPasswordInput,
+  PasswordInput,
+} from "@/components/reusable-ui/Input";
 import {
   AiOutlineLoading3Quarters,
   FcGoogle,
   FaApple,
 } from "@/components/icons";
 
-// import loginAction from "@/server-actions/loginAction";
 import signupAction from "@/server-actions/signupAction";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -47,17 +50,6 @@ export default function SignupForm() {
   });
 
   useEffect(() => {
-    const data = localStorage.getItem("user");
-    if (data) {
-      const user = JSON.parse(data);
-      if (user) {
-        router.push("/");
-      }
-    }
-  }, [router]);
-  
-
-  useEffect(() => {
     if (state?.error) {
       toast.error(state.message, {
         classNames: {
@@ -67,24 +59,39 @@ export default function SignupForm() {
         },
       });
 
-      console.log(state.error)
+      console.log(state.error);
     }
 
-    if(state?.success) {
-      toast.success(state.message, {
-        classNames: {
-          toast: "!text-green-700",
-          title: "!text-green-700",
-          description: "!text-green-700",
-        },
-      });
-
-      localStorage.setItem("user", JSON.stringify(state.data));
-      setTimeout(() => {
-        router.push("/");
-      }, 2000); 
+    if (state?.success) {
+      (async() => {
+        const result = await signIn("credentials", {
+          email: state.data?.email,
+          password: state.data?.password,
+          redirect: false,
+        });
+        if (result?.error) {
+          toast.error("Signup successful, but auto-login failed. Please log in manually.", {
+            classNames: {
+              toast: "!text-red-500",
+              title: "!text-red-500",
+              description: "!text-red-500",
+            },
+          });
+        } else {
+          toast.success("Signup successful! Redirecting to dashboard...", {
+            classNames: {
+              toast: "!text-green-700",
+              title: "!text-green-700",
+              description: "!text-green-700",
+            },
+          });
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 1000);
+        }
+      })()
+      
     }
-
   }, [state, router]);
 
   function onSubmit(formData: z.infer<typeof signupSchema>) {
@@ -99,7 +106,9 @@ export default function SignupForm() {
     <div className='md:px-5 md:shadow-xs md:shadow-olive/20 md:rounded-md '>
       <div className='md:max-w-sm w-full p-5 py-14 font-roboto flex flex-col gap-5'>
         <div className='flex flex-col items-center gap-2 text-center text-olive'>
-          <h1 className='text-2xl font-bold font-nunito'>Create Your Tabula Rasa Account</h1>
+          <h1 className='text-2xl font-bold font-nunito'>
+            Create Your Tabula Rasa Account
+          </h1>
           {/* <p className='text-muted-foreground text-sm text-balance'>
             Enter your email below to login to your account
           </p> */}
@@ -116,7 +125,7 @@ export default function SignupForm() {
                   <FormControl>
                     <Input
                       placeholder='Bisi'
-                      type="text"
+                      type='text'
                       {...field}
                       className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                     />
@@ -134,7 +143,7 @@ export default function SignupForm() {
                   <FormControl>
                     <Input
                       placeholder='Adebayo'
-                      type="text"
+                      type='text'
                       {...field}
                       className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                     />

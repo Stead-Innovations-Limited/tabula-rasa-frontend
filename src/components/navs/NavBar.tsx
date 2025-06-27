@@ -1,33 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-interface UserData {
-  email: string;
-  password: string;
-}
+import { UserData } from "@/app/page";
 
 import HomeMenu from "@/components/Menus/HomeMenu";
 import AvatarComponent from "../reusable-ui/AvatarComponent";
 
 function NavBar({
   renderMenu,
+  userData,
 }: {
   renderMenu: (blur: () => void) => React.ReactNode;
+  userData?: UserData | null;
 }) {
-  const [userData, setUserData] = useState<UserData | null>(null);
   const [menuOpened, setMenu] = useState(false);
-  useEffect(() => {
-    const data = localStorage.getItem("user");
-    if (data) {
-      const user = JSON.parse(data) as UserData;
-      setUserData(user);
-    }
-  }, []);
 
-  console.log("User Data:", userData, userData?.email);
   return (
     <div className='w-full'>
       <header className='w-full xl:max-w-[1140px] mx-auto flex items-center justify-between font-roboto p-5 lg:pt-10 lg:px-5'>
@@ -43,8 +33,8 @@ function NavBar({
           {userData ? (
             <AvatarComponent
               imgUrl='https://github.com/shadcn.png'
-              firstname='Tolu'
-              lastname='Ojo'
+              firstname={userData.firstName}
+              lastname={userData.lastName}
               setMenu={setMenu}
             />
           ) : (
@@ -58,7 +48,7 @@ function NavBar({
         </div>
 
         <div className='lg:hidden'>
-          <HomeMenu />
+          <HomeMenu userData={userData? true: false}/>
         </div>
       </header>
       {menuOpened && renderMenu(() => setMenu(false))}

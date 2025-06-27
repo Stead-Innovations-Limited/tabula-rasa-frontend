@@ -1,31 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { RxPerson, GrBookmark } from "@/components/icons";
 import useMenuBlur from "@/hooks/useMenuBlur";
-interface UserData {
-  email: string;
-  password: string;
-}
+
+import { UserData } from "@/app/page";
+import { signOut } from "next-auth/react";
 
 
-export default function UserDashboardMenu({ blur }: { blur: () => void }) {
-  const router = useRouter();
+export default function UserDashboardMenu({ blur, userData }: { blur: () => void, userData?: UserData }) {
   const menuRef = useRef<HTMLDivElement | null>(null);
   useMenuBlur(menuRef, blur);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  useEffect(() => {
-    const data = localStorage.getItem("user");
-    if (data) {
-      const user = JSON.parse(data) as UserData;
-      setUserData(user);
-    }
-  }, []);
-  console.log("User Data:", userData)
+   
   return (
     <div
       ref={menuRef}
@@ -41,7 +30,7 @@ export default function UserDashboardMenu({ blur }: { blur: () => void }) {
             className='object-cover object-center'
           />
         </div>
-        <h5 className='text-xl font-medium text-black'>Micheal Stewart</h5>
+        <h5 className='text-xl font-medium text-black'>{userData?.firstName} {userData?.lastName}</h5>
         <p className='text-base px-6 py-0.5 bg-lightgreen text-olive rounded-lg'>
           Vinyasa Yoga
         </p>
@@ -64,11 +53,9 @@ export default function UserDashboardMenu({ blur }: { blur: () => void }) {
       </div>
       <Button
         className='w-full bg-olive hover:bg-olive/90 text-white rounded-md'
-        onClick={() => {
-          // Clear user data from localStorage and state
-          localStorage.removeItem("user");
-          setUserData(null);
-          router.refresh()
+        onClick={async() => {
+          // Handle Logout functionality
+          await signOut({ callbackUrl: "/" })
         }}
       >
         Log Out

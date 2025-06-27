@@ -7,10 +7,29 @@ import GallerySlides from "@/components/home/GallerySlides";
 import Subscription from "@/components/home/Subscription";
 import Footer from "@/components/reusable-ui/Footer";
 
-export default function Home() {
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+
+export interface UserData {
+  email: string,
+  firstName: string,
+  lastName: string,
+  roles: string,
+}
+
+export default async function Home() {
+  const session = await getServerSession(authOptions)
+  const userData = session?.user ?{
+    email: session?.user?.email,
+    firstName: session?.user?.firstName,
+    lastName: session?.user?.lastName,
+    roles: session?.user?.roles,
+  }: undefined;
+
+  console.log(userData, "Where are you userData");
   return (
     <main className='w-full bg-cream'>
-      <NavBarClient />
+      <NavBarClient userData={userData}/>
       <Hero />
       <AfterHero/>
       <RetreatSection/>

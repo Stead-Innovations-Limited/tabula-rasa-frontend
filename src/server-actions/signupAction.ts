@@ -1,12 +1,14 @@
 "use server";
 
-// import { redirect } from "next/navigation";
+import axios from "axios";
+import { tryCatch } from "@/utils/tryCatch";
 
 import z from "zod/v4";
 import { signupSchema } from "@/lib/definitions";
 
 export interface SignupState {
   success?: boolean;
+  data?: { email: string; password: string };
   message?: string;
   error?: boolean;
   errors?: { email?: string[] };
@@ -18,55 +20,37 @@ export default async function signupAction(
   state: SignupState | undefined,
   formData: SignupFormData
 ) {
-  try {
-    const validatedFields = signupSchema.safeParse(formData);
+  const validatedFields = signupSchema.safeParse(formData);
 
-    console.log(validatedFields);
-
-    if (!validatedFields.success) {
-      return {
-        errors: z.flattenError(validatedFields.error).fieldErrors,
-      };
-    }
-
-    const { email, password } = formData;
-    if(email !== "admin@gmail.com" && password !== "Admin1123#") {
-      return {
-      error: true,
-      errorData: null,
-      message: "Wrong Email or Password",
+  if (!validatedFields.success) {
+    return {
+      errors: z.flattenError(validatedFields.error).fieldErrors,
     };
-    }
-    console.log(formData)
+  }
 
-    // Here you would typically handle the login logic, such as calling an API
-    // console.log("Logging in with:", email, password);
+  const { firstname, lastname, email, password } = formData;
 
-    // const res = await fetch("/api/login", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ ...formData }),
-    // });
-
-    // const data = await res.json();
-    // console.log("Response from signup:", data);
-
-    // if (!res.ok) {
-    //   return { success: false, message: data.message || "Login failed" };
-    // }
-
-    // redirect("/");
-    return {
-    success: true,
-    data: { email, password }, // Simulating a user object
-    message: `Account sucessfully created`,
-  };
-  } catch (error) {
-    console.log(error, "My fams")
+  const response = await tryCatch(
+    async () =>
+      await axios.post("https://tabula-rasa-backend.up.railway.app/register/", {
+        firstname,
+        lastname,
+        email,
+        password,
+      })
+  );
+  console.log(response, "Take me home");
+  if (response.isError) {
     return {
       error: true,
-      errorData: error,
-      message: "Failed to subscribe to our newsletter.",
+      errorData: response.errors,
+      message: "Signup failed.",
+    };
+  } else {
+    return {
+      success: true,
+      data: { email, password }, // Simulating a user object
+      message: "Signup successful. You will be logged in automatically.",
     };
   }
 }

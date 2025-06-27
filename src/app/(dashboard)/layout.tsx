@@ -1,17 +1,27 @@
-"use client"
 import DashboardNav from "@/components/navs/DashboardNav";
-import FullUserNavBarSearch from "@/components/navs/FullUserNavBarSearch";
-import UserDashboardMenu from "@/components/Menus/UserDashboardMenu";
 
 import Footer from "@/components/reusable-ui/Footer";
-export default function Layout({
-   children
+import { DashboardMainNavClient } from "@/components/navs/DashboardMainNavClient";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+
+export default async function Layout({
+  children,
 }: {
-   children: React.ReactNode;
+  children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+  const userData = session?.user
+    ? {
+        email: session?.user?.email,
+        firstName: session?.user?.firstName,
+        lastName: session?.user?.lastName,
+        roles: session?.user?.roles,
+      }
+    : undefined;
   return (
     <>
-      <FullUserNavBarSearch renderMenu={(blur) => <UserDashboardMenu blur={blur}/>}/>
+      <DashboardMainNavClient userData={userData} />
       <DashboardNav />
       {children}
       <Footer />
