@@ -296,9 +296,7 @@ export const editEventSchema = z.object({
 
 
 export const listVenueSchema = z.object({
-  venueFiles: z.array(z.instanceof(File)).min(1, {
-    message: "Please upload at least one file.",
-  }),
+  venueFiles: z.any(),
   venueName: z
     .string()
     .min(2, { message: "Venue name cannot be less than 2 characters" })
@@ -395,9 +393,7 @@ export const listVenueSchema = z.object({
 });
 
 export const createEventSchema = z.object({
-  eventFiles: z.array(z.instanceof(File)).min(1, {
-    message: "Please upload at least one file.",
-  }),
+  eventFiles: z.any(),
   eventTitle: z
     .string()
     .min(2, { message: "Event title cannot be less than 2 characters" })

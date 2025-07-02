@@ -37,7 +37,7 @@ import {
 import MyDropzone from "@/components/reusable-ui/MyDropzone";
 import { AiOutlineLoading3Quarters } from "@/components/icons";
 
-import { createEventSchema } from "@/lib/definitions";
+import { createEventSchema } from "@/lib/clientDefinitions";
 import createEventAction from "@/server-actions/createEventAction";
 
 import useToast from "@/hooks/useToast";

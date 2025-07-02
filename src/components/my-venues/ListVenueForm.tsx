@@ -28,7 +28,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import MyDropzone from "@/components/reusable-ui/MyDropzone";
 import { AiOutlineLoading3Quarters } from "@/components/icons";
 
-import { listVenueSchema } from "@/lib/definitions";
+import { listVenueSchema } from "@/lib/clientDefinitions";
 import listVenueAction from "@/server-actions/listVenueAction";
 
 import useToast from "@/hooks/useToast";
