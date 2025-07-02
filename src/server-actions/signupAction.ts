@@ -39,7 +39,6 @@ export default async function signupAction(
         password,
       })
   );
-  console.log(response, "Take me home");
   if (response.isError) {
     return {
       error: true,

@@ -1,3 +1,5 @@
+"use client"
+
 import { z } from "zod/v4";
 
 export const listVenueSchema = z.object({
