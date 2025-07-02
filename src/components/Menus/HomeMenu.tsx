@@ -54,7 +54,7 @@ function HomeMenu({userData}: {userData: boolean}) {
               About
             </Link>
             <Link
-              href={"/offerings"}
+              href={"/"}
               className={cn(
                 "px-6 py-3"
                 //   {
@@ -65,7 +65,7 @@ function HomeMenu({userData}: {userData: boolean}) {
               Offerings
             </Link>
             <Link
-              href={"/contact"}
+              href={"/"}
               className={cn(
                 "px-6 py-3"
                 //   {

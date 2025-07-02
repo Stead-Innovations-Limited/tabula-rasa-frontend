@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { alex, nunito, roboto } from "@/components/fonts";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import SessionProviders from "@/app/SessionProviders";
 
 export const metadata: Metadata = {
   title: "Tabula Rasa",
@@ -18,7 +19,7 @@ export default function RootLayout({
       <body
         className={`${alex.variable} ${nunito.variable} ${roboto.variable} antialiased`}
       >
-        <>{children}</>
+        <SessionProviders>{children}</SessionProviders>
         <Toaster />
       </body>
     </html>

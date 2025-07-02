@@ -24,7 +24,7 @@ interface LoginResponse {
     roles: string;
     created_at: { Time: string; Valid: boolean };
   };
-  token: string;
+  access_token: string;
 }
 
 interface User {
@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
           firstName: data.user.firstname.String,
           lastName: data.user.lastname.String,
           roles: data.profile.roles,
-          token: data.token,
+          token: data.access_token,
         };
         return user;
       },
@@ -81,10 +81,17 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       if (user) {
         token.accessToken = (user as User).token;
         token.user = user;
+      }
+      if (trigger === "update" && session?.user) {
+        token.user = {
+          ...user,
+          ...session.user
+        }
+
       }
       return token;
     },

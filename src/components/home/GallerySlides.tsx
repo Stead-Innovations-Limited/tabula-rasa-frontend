@@ -9,7 +9,7 @@ import {
 
 function GallerySlides() {
   return (
-    <section className='w-full'>
+    <section id="about" className='w-full'>
       <div className='relative z-2 w-full py-5 px-5 xl:px-0 lg:py-14 xl:max-w-[1140px] mx-auto'>
         {/* The top nav for  */}
         <Carousel>

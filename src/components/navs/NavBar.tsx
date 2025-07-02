@@ -25,7 +25,7 @@ function NavBar({
           Tabula Rasa
         </h1>
         <nav className='hidden lg:flex gap-10 items-center font-roboto font-normal text-2xl text-olive'>
-          <Link href=''>About</Link>
+          <Link href='/#about'>About</Link>
           <Link href=''>Offerings</Link>
           <Link href=''>Contact</Link>
         </nav>

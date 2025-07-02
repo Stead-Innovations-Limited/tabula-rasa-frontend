@@ -16,8 +16,11 @@ export async function tryCatch(
     isError: false,
     statusCode: 200,
   };
+
+  console.log(result, "What is happening!")
   try {
     const response = await cb();
+    console.log(response)
     if (response !== undefined) {
       result.data = response.data;
     } else {

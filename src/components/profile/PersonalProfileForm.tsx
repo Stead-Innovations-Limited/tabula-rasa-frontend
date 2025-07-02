@@ -21,12 +21,24 @@ import PersonalImagePicker from "../reusable-ui/PersonalImagePicker";
 import { AiOutlineLoading3Quarters, BsChevronRight } from "@/components/icons";
 import personalProfileAction from "@/server-actions/personalProfileAction";
 import { personalProfileSchema } from "@/lib/definitions";
+import { UserData } from "@/app/page";
+import { useSession } from "next-auth/react";
 
-export default function PersonalProfileForm() {
-  const [state, action, isPending] = useActionState(
-    personalProfileAction,
-    undefined
-  );
+export default function PersonalProfileForm({
+  userData,
+}: {
+  userData: UserData;
+}) {
+  const { data, update } = useSession();
+  const [state, action, isPending] = useActionState(personalProfileAction, {
+    token: data?.sessionToken ?? "",
+    userId: data?.user.id ?? "",
+    errors: {},
+    success: undefined,
+    message: undefined,
+    error: undefined,
+    errorData: undefined,
+  });
 
   useEffect(() => {
     if (state?.error) {
@@ -42,6 +54,14 @@ export default function PersonalProfileForm() {
     }
 
     if (state?.success) {
+      update({
+        user: {
+          ...data?.user,
+          firstName: state.data.firstname,
+          lastName: state.data.lastname,
+        },
+      });
+
       toast.success(state.message, {
         classNames: {
           toast: "!text-green-700",
@@ -50,13 +70,13 @@ export default function PersonalProfileForm() {
         },
       });
     }
-  }, [state]);
+  }, [state, data, update]);
 
   const form = useForm<z.infer<typeof personalProfileSchema>>({
     resolver: zodResolver(personalProfileSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
+      firstname: userData.firstName,
+      lastname: userData.lastName,
     },
   });
 
@@ -73,10 +93,10 @@ export default function PersonalProfileForm() {
       <div className='w-full xl:max-w-[1140px] mx-auto p-5 md:pt-10 md:pb-20 flex flex-col gap-10 md:gap-18'>
         {/* The Button */}
         <div className='w-full flex items-center justify-end font-roboto text-xl md:text-2xl'>
-          <Button className="bg-transparent hover:bg-transparent shadow-none md:bg-olive md:hover:bg-olive/90 text-base text-olive md:text-white py-6 !px-0 md:!px-10">
-          Switch to Business Profile 
-          <BsChevronRight className="size-6 md:hidden"/>
-           </Button>
+          <Button className='bg-transparent hover:bg-transparent shadow-none md:bg-olive md:hover:bg-olive/90 text-base text-olive md:text-white py-6 !px-0 md:!px-10'>
+            Switch to Business Profile
+            <BsChevronRight className='size-6 md:hidden' />
+          </Button>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-10'>
@@ -131,7 +151,7 @@ export default function PersonalProfileForm() {
                       <AiOutlineLoading3Quarters className='animate-spin size-4' />
                     </>
                   ) : (
-                    <>Continue</>
+                    <>Save</>
                   )}
                 </Button>
               </div>

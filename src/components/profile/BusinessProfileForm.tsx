@@ -30,8 +30,12 @@ import { businessProfileSchema } from "@/lib/definitions";
 import businessProfileAction from "@/server-actions/businessProfileAction";
 import BusinessImagePicker from "../reusable-ui/BusinessImagePicker";
 import { countriesData } from "@/lib/countries";
+import { UserData } from "@/app/page";
 
-export default function BusinessProfileForm() {
+export default function BusinessProfileForm({userData}: {
+  userData: UserData
+}) {
+  console.log(userData)
   const [state, action, isPending] = useActionState(
     businessProfileAction,
     undefined

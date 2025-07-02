@@ -37,14 +37,14 @@ export default function UserDashboardMenu({ blur, userData }: { blur: () => void
       </div>
       <div className='flex flex-col gap-2 text-olive'>
         <Link
-          href='/'
+          href='/profile'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
         >
           <RxPerson className='size-5' />
           My Profile
         </Link>
         <Link
-          href='/'
+          href='/saved'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
         >
           <GrBookmark className='size-5' />
