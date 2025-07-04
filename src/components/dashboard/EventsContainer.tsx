@@ -1,9 +1,12 @@
 import { BsChevronRight } from "@/components/icons";
 import EventCards from "../reusable-ui/EventCards";
-import { eventData } from "@/lib/eventData";
+// import { eventData } from "@/lib/eventData";
 import Link from "next/link";
+import getEvents from "@/server-actions/getEvents";
+import { Event } from "@/lib/types";
 
-export default function EventsContainer() {
+export default async function EventsContainer() {
+  const events = await getEvents() as Event[];
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -16,15 +19,16 @@ export default function EventsContainer() {
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8'>{/* The Event Cards */}
           {
-            eventData.map((event, index) => (
+            events.map((event: Event, index: number) => (
               <EventCards
                 key={index}
-                imgUrl={event.imgUrl}
-                imgAlt={event.imgAlt}
-                eventName={event.eventName}
-                eventPrice={event.eventPrice}
-                eventDate={event.eventDate}
-                eventAddress={event.eventAddress}
+                eventId={event.id}
+                venueId={event.venue_id}
+                imgUrl={"/event-pic.webp"}
+                imgAlt={event.name}
+                eventName={event.name}
+                eventPrice={"$80.00"}
+                eventDate={event.start_date.Time}
               />
             ))
           }

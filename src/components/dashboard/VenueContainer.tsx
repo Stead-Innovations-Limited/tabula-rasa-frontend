@@ -1,9 +1,12 @@
 import { BsChevronRight } from "@/components/icons";
-import { venueData } from "@/lib/venueData";
 import VenueCards from "../reusable-ui/VenueCards";
 import Link from "next/link";
+import getVenues from "@/server-actions/getVenues";
+import { Venue } from "@/lib/types";
 
-export default function VenueContainer() {
+export default async function VenueContainer() {
+  const venues = await getVenues() as Venue[];
+
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -16,15 +19,16 @@ export default function VenueContainer() {
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8'>{/* The Event Cards */}
           {
-            venueData.map((venue, index) => (
+            venues.map((venue, index) => (
               <VenueCards
                 key={index}
-                imgUrl={venue.imgUrl}
-                imgAlt={venue.imgAlt}
-                venueName={venue.venueName}
-                venuePrice={venue.venuePrice}
-                attendance={venue.attendance}
-                venueAddress={venue.venueAddress}
+                venueId={venue.id}
+                imgUrl={"/room3.webp"}
+                imgAlt={venue.name}
+                venueName={venue.name}
+                venuePrice={`$${venue.booking_price.Int64}`}
+                attendance={venue.capacity.Int32}
+                venueAddress={venue.location.String}
               />
             ))
           }

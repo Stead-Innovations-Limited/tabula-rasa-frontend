@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+import Link from "next/link";
 import { FiUsers, SlLocationPin, GoArrowUpRight } from "@/components/icons";
 
 interface VenueProps {
@@ -15,9 +16,11 @@ interface VenueProps {
   venuePrice: string;
   attendance: number;
   venueAddress: string;
+  venueId: string
 }
 
 export default function VenueCards({
+  venueId,
   imgUrl,
   imgAlt,
   venueName,
@@ -28,9 +31,9 @@ export default function VenueCards({
   return (
     <Card className='w-full py-0 overflow-clip !gap-0'>
       <CardHeader className='w-full aspect-square relative'>
-        <span className='relative z-5 my-5 ml-auto bg-olive size-10 rounded-xl flex items-center justify-center'>
+        <Link href={`/venues/${venueId}`} className='relative z-5 my-5 ml-auto bg-olive size-10 rounded-xl flex items-center justify-center'>
           <GoArrowUpRight className='size-5 text-white' />
-        </span>
+        </Link>
         <Image
           src={imgUrl}
           alt={imgAlt}

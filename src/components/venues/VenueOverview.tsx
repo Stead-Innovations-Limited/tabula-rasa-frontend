@@ -10,6 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { SlHeart } from "@/components/icons";
 import VenueOverviewImageSlides from "./VenueOverviewImageSlides";
+import getVenue from "@/server-actions/getVenue";
+import { Venue } from "@/lib/types";
 
 const roomData = [
   {
@@ -30,16 +32,18 @@ const roomData = [
 ];
 
 
-export default function VenueOverview() {
+export default async function VenueOverview({venueId}: {venueId: string}) {
+  const venueData = await getVenue(venueId) as Venue;
+
   return (
     <section className="w-full">
       <div className="w-full p-5 lg:px-10 xl:max-w-[1140px] mx-auto font-nunito">
         <Card className='py-0 overflow-clip !gap-0'>
               <CardHeader className='flex flex-col w-full aspect-video md:aspect-[16/7] relative !px-0'>  
                 <VenueOverviewImageSlides roomData={roomData}/>
-                <CardTitle className='sr-only'>Autumn Equinox Guided Meditation</CardTitle>
+                <CardTitle className='sr-only'>{venueData.name}</CardTitle>
                 <CardDescription className='sr-only'>
-                  Event card about a Meditation event.
+                  {venueData.description.String}
                 </CardDescription>
               </CardHeader>
               <CardContent className='relative flex flex-col items-center justify-center gap-5 rounded-xl -mt-5 z-2 bg-white py-10 px-5 md:px-10 text-olive'>
@@ -47,10 +51,10 @@ export default function VenueOverview() {
                   {/* The Event name and type div */}
                   <div className="flex flex-col gap-4">
                     <h2 className="text-olive font-nunito text-2xl lg:text-3xl font-semibold">
-                      The Tranquil Shala: Yoga Studio & Workshop Space
+                      {venueData.name}
                     </h2>
                     <p className="bg-lightgreen text-olive w-fit rounded-md px-14 py-0.5 text-base md:text-lg">
-                      Retreat Center
+                      {venueData.type.String}
                     </p>
                   </div>
                   {/* The Save button to adding the event to Saved List */}
@@ -61,10 +65,10 @@ export default function VenueOverview() {
                   </div>
                 </div>
                 {/* The Card Details */}
-                <div className="flex flex-col gap-5">
+                <div className="w-full flex flex-col gap-5">
                   {/* Card Description */}
                   <p className="text-xl lg:text-2xl">
-                    Welcome to The Tranquil Shala, a true urban oasis nestled in the heart of Ikeja, Lagos. Step away from the city &rsquo; s rhythm and enter a space bathed in abundant natural light, designed with a serene and minimalist aesthetic to foster peace and focus. Our purpose-built studio is ideal for a wide range of wellness activities, from dynamic yoga classes and quiet meditation sessions to insightful workshops, healing ceremonies, and intimate community gatherings. We &rsquo; ve cultivated an atmosphere of calm and connection, providing a haven where both practitioners and participants can fully immerse themselves in their practice and find a deeper sense of well-being. This peaceful environment supports deep work and meaningful connection.
+                    {venueData.description.String}
                   </p>
                   <div className="">
                     <ul className="flex flex-col gap-4 text-xl lg:text-2xl">
@@ -73,7 +77,7 @@ export default function VenueOverview() {
                           Location:
                         </span>
                         <span className="inline-block">
-                          7 Serenity Lane, Ikeja, Lagos, Nigeria.
+                          {venueData.location.String}
                         </span>
                       </li>
                       <li className="flex gap-2 items-center">
@@ -81,7 +85,7 @@ export default function VenueOverview() {
                           Maximum Capacity:
                         </span>
                         <span className="inline-block">
-                          40 People
+                          {venueData.capacity.Int32} People
                         </span>
                       </li>
                       <li className="flex gap-2 items-center">
@@ -89,7 +93,7 @@ export default function VenueOverview() {
                           Facilities:
                         </span>
                         <span className="inline-block">
-                          Wi-Fi, Projector, Screen, Microphones, Speakers, Whiteboards, Flip Charts.
+                          {venueData.facilities.join(", ")}
                         </span>
                       </li>
                       <li className="flex gap-2 items-center">
@@ -97,7 +101,7 @@ export default function VenueOverview() {
                           Rate/Price:
                         </span>
                         <span className="inline-block">
-                          $50/hour
+                          ${venueData.booking_price.Int64}/hour
                         </span>
                       </li>
                     </ul>

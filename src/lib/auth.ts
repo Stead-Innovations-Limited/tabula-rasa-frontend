@@ -42,11 +42,6 @@ interface User {
 }
 
 declare module "next-auth" {
-  interface User {
-    token?: string;
-    tokenExpiration?: number;
-    refreshToken?: string;
-  }
   interface Session {
     sessionToken?: string;
     user: User;

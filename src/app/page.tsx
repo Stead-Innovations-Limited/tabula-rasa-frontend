@@ -27,7 +27,6 @@ export default async function Home() {
     roles: session?.user?.roles,
   }: undefined;
 
-  console.log(userData, "Where are you userData");
   return (
     <main className='w-full bg-cream'>
       <NavBarClient userData={userData}/>
