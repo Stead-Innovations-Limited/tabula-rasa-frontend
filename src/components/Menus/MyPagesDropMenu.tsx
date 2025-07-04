@@ -1,16 +1,11 @@
 "use client";
-import { useRef } from "react";
 import Link from "next/link";
 
-import useMenuBlur from "@/hooks/useMenuBlur";
 
-export default function MyPagesDropMenu({ blur }: { blur: () => void }) {
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  useMenuBlur(menuRef, blur);
+export default function MyPagesDropMenu() {
 
   return (
     <div
-      ref={menuRef}
       className='w-3/4 md:w-[20rem] flex flex-col absolute top-5 md:top-5 right-5 md:right-6 lg:right-12 z-50 bg-white text-olive rounded-2xl shadow-lg divide divide-solid divide-olive overflow-clip'
     >
       <Link

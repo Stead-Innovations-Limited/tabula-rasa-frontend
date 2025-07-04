@@ -1,18 +1,25 @@
-"use client"
-import FullUserNavBarSearch from "@/components/navs/FullUserNavBarSearch";
-import UserDashboardMenu from "@/components/Menus/UserDashboardMenu";
+import NavBarNoSearch from "@/components/navs/NavBarNoSearch";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 import Footer from "@/components/reusable-ui/Footer";
 import ScheduleBar from "@/components/schedule/ScheduleBar";
 
-export default function Layout({
-   children
-}: {
-   children: React.ReactNode;
-}) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return <p>Data fetch failed.</p>;
+  }
+  const userData = {
+    email: session?.user?.email,
+    firstName: session?.user?.firstName,
+    lastName: session?.user?.lastName,
+    roles: session?.user?.roles,
+    token: session.sessionToken,
+  };
   return (
     <>
-      <FullUserNavBarSearch renderMenu={(blur) => <UserDashboardMenu blur={blur}/>}/>
+     <NavBarNoSearch userData={userData}/>
       <ScheduleBar />
       {children}
       <Footer />

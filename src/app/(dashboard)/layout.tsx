@@ -1,7 +1,6 @@
+import NavBarSearch from "@/components/navs/NavBarSearch";
 import DashboardNav from "@/components/navs/DashboardNav";
-
 import Footer from "@/components/reusable-ui/Footer";
-import { DashboardMainNavClient } from "@/components/navs/DashboardMainNavClient";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
@@ -11,17 +10,20 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-  const userData = session?.user
-    ? {
-        email: session?.user?.email,
-        firstName: session?.user?.firstName,
-        lastName: session?.user?.lastName,
-        roles: session?.user?.roles,
-      }
-    : undefined;
+  if (!session) {
+    return <p>Data fetch failed.</p>;
+  }
+  const userData = {
+    email: session?.user?.email,
+    firstName: session?.user?.firstName,
+    lastName: session?.user?.lastName,
+    roles: session?.user?.roles,
+    token: session.sessionToken,
+  };
+
   return (
     <>
-      <DashboardMainNavClient userData={userData} />
+      <NavBarSearch userData={userData} />
       <DashboardNav />
       {children}
       <Footer />

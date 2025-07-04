@@ -1,4 +1,4 @@
-import NavBarClient from "@/components/navs/NavBarClient";
+import NavBar from "@/components/navs/NavBar";
 import Hero from "@/components/home/Hero";
 import AfterHero from "@/components/home/AfterHero";
 import RetreatSection from "@/components/home/RetreatSection";
@@ -20,16 +20,21 @@ export interface UserData {
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
-  const userData = session?.user ?{
+  if (!session) {
+    return <p>Data fetch failed.</p>;
+  }
+  const userData = {
     email: session?.user?.email,
     firstName: session?.user?.firstName,
     lastName: session?.user?.lastName,
     roles: session?.user?.roles,
-  }: undefined;
+    token: session.sessionToken,
+  };
+  console.log(userData)
 
   return (
     <main className='w-full bg-cream'>
-      <NavBarClient userData={userData}/>
+      <NavBar userData={userData}/>
       <Hero />
       <AfterHero/>
       <RetreatSection/>

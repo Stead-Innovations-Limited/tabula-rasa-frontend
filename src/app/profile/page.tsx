@@ -3,7 +3,7 @@ import Footer from "@/components/reusable-ui/Footer";
 import BusinessProfileForm from "@/components/profile/BusinessProfileForm";
 import PersonalBar from "@/components/profile/PersonalBar";
 import PersonalProfileForm from "@/components/profile/PersonalProfileForm";
-import { DashboardMainNavClient } from "@/components/navs/DashboardMainNavClient";
+import NavBarNoSearch from "@/components/navs/NavBarNoSearch";
 
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
@@ -25,8 +25,8 @@ async function page() {
 
   return (
     <>
-      <DashboardMainNavClient userData={userData} />
-      {userData?.roles === "Personal Profile" ? (
+      <NavBarNoSearch userData={userData} />
+      {userData?.roles === "Personal Account" ? (
         <>
           <PersonalBar />
           <PersonalProfileForm userData={userData} />

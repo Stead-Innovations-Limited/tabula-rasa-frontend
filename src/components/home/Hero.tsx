@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function Hero() {
   return (
@@ -30,9 +31,12 @@ function Hero() {
               <br className='hidden lg:block' />
               personal growth
             </p>
-            <Button className='w-full lg:w-fit h-10 bg-white lg:bg-olive hover:bg-white lg:hover:bg-olive text-olive lg:text-white rounded-xl px-14 
-            py-5 lg:py-6 text-xl font-medium'>
-              Explore Now
+            <Button
+              asChild
+              className='w-full lg:w-fit h-10 bg-white lg:bg-olive hover:bg-white lg:hover:bg-olive text-olive lg:text-white rounded-xl px-14 
+            py-5 lg:py-6 text-xl font-medium'
+            >
+              <Link href='/dashboard'>Explore Now</Link>
             </Button>
           </div>
         </div>

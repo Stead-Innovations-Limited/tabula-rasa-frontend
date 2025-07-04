@@ -1,6 +1,4 @@
-"use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
@@ -8,15 +6,15 @@ import { UserData } from "@/app/page";
 
 import HomeMenu from "@/components/Menus/HomeMenu";
 import AvatarComponent from "../reusable-ui/AvatarComponent";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import UserDashboardMenu from "../Menus/UserDashboardMenu";
+import BusinessDashboardMenu from "../Menus/BusinessDashboardMenu";
 
 function NavBar({
-  renderMenu,
   userData,
 }: {
-  renderMenu: (blur: () => void) => React.ReactNode;
-  userData?: UserData | null;
+  userData: UserData;
 }) {
-  const [menuOpened, setMenu] = useState(false);
 
   return (
     <div className='w-full'>
@@ -31,12 +29,18 @@ function NavBar({
         </nav>
         <div className='hidden lg:block'>
           {userData ? (
-            <AvatarComponent
-              imgUrl='https://github.com/shadcn.png'
-              firstname={userData.firstName}
-              lastname={userData.lastName}
-              setMenu={setMenu}
-            />
+            <Popover>
+              <PopoverTrigger>
+                <AvatarComponent
+                  imgUrl='https://github.com/shadcn.png'
+                  firstname={userData.firstName}
+                  lastname={userData.lastName}
+                />
+              </PopoverTrigger>
+              <PopoverContent>
+                {userData.roles === "Personal Account" ? <UserDashboardMenu userData={userData}/>: <BusinessDashboardMenu userData={userData}/>}
+              </PopoverContent>
+            </Popover>
           ) : (
             <Button
               asChild
@@ -51,7 +55,6 @@ function NavBar({
           <HomeMenu userData={userData? true: false}/>
         </div>
       </header>
-      {menuOpened && renderMenu(() => setMenu(false))}
     </div>
   );
 }

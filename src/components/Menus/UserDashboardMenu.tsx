@@ -1,24 +1,18 @@
 "use client";
 
-import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { RxPerson, GrBookmark } from "@/components/icons";
-import useMenuBlur from "@/hooks/useMenuBlur";
 
 import { UserData } from "@/app/page";
 import { signOut } from "next-auth/react";
 
 
-export default function UserDashboardMenu({ blur, userData }: { blur: () => void, userData?: UserData }) {
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  useMenuBlur(menuRef, blur);
-   
+export default function UserDashboardMenu({ userData }: { userData?: UserData }) {
   return (
     <div
-      ref={menuRef}
-      className='w-3/4 md:w-[20rem] flex flex-col gap-4 p-5 absolute top-5 md:top-5 right-5 md:right-6 lg:right-12 z-50 bg-white rounded-2xl shadow-lg'
+      className='w-full flex flex-col gap-4 p-5 z-50 bg-white rounded-2xl shadow-lg'
     >
       <div className='border border-olive rounded-xl flex flex-col items-center justify-center gap-2 p-5'>
         <div className='size-35 rounded-full overflow-clip'>
@@ -31,7 +25,7 @@ export default function UserDashboardMenu({ blur, userData }: { blur: () => void
           />
         </div>
         <h5 className='text-xl font-medium text-black'>{userData?.firstName} {userData?.lastName}</h5>
-        {userData?.roles === "Business Profile" && <p className='text-base px-6 py-0.5 bg-lightgreen text-olive rounded-lg'>
+        {userData?.roles !== "Personal Account" && <p className='text-base px-6 py-0.5 bg-lightgreen text-olive rounded-lg'>
           Vinyasa Yoga
         </p>}
       </div>
