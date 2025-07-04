@@ -1,9 +1,23 @@
 import { BsChevronRight } from "@/components/icons";
-import { practicionersData } from "@/lib/practicionersData";
 import PracticionersCards from "../reusable-ui/PracticionersCard";
 import Link from "next/link";
+import { User } from "@/lib/types";
+import getUsers from "@/server-actions/getUsers"
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth/next";
 
-export default function PracticionersContainer() {
+export default async function PracticionersContainer() {
+  const userProfiles = await getUsers() as User[];
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return (<div className="flex justify-center items-center my-10 text-center">
+      No Practicioner data available.
+    </div>)
+  }
+  const sessionId = session.user.id;
+
+  const filteredUsers = userProfiles.filter(ele => ele.id !== sessionId);
+  
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -16,15 +30,16 @@ export default function PracticionersContainer() {
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8'>{/* The Event Cards */}
           {
-            practicionersData.map((data, index) => (
+            filteredUsers.map((data, index) => (
               <PracticionersCards
                 key={index}
-                imgUrl={data.imgUrl}
-                imgAlt={data.imgAlt}
-                name={data.name}
-                specialty={data.specialty}
-                stars={data.stars}
-                address={data.address}
+                    userId={data.id}
+                // imgUrl={data.imgUrl}
+                imgAlt={data.business_name.String}
+                name={data.business_name.String}
+                specialty={data.field.String}
+                // stars={data.stars}
+                address={data.address.String}
               />
             ))
           }

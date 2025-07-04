@@ -1,9 +1,15 @@
 import PractitionersOverview from "@/components/practicioners/PractitionersOverview";
 
-export default function page() {
+export default async function page({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug: practicionerId } = await params;
+
   return (
     <>
-      <PractitionersOverview />
+      <PractitionersOverview id={practicionerId} />
     </>
   )
 }

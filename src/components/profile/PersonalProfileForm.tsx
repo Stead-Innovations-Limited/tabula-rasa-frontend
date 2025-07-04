@@ -76,7 +76,7 @@ export default function PersonalProfileForm({
         },
       });
     }
-  }, [state]);
+  });
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),

@@ -11,8 +11,19 @@ import { Button } from "@/components/ui/button";
 import { GoStarFill } from "@/components/icons";
 import EventsContainer from "./EventsContainer";
 import VenuesContainer from "./VenuesContainer";
+import getUserById from "@/server-actions/getUserById";
+import { User } from "@/lib/types";
 
-function PractitionersOverview() {
+async function PractitionersOverview({id}: {id: string}) {
+  const userDetails = await getUserById(id) as User;
+
+  const field = userDetails.field.String || "Vinyasa Yoga";
+  const businessName = userDetails.business_name.String || "Femi Adebayo";
+  const location = userDetails.address.String || "Lagos, Nigeria";
+  const description = userDetails.bio.String || 
+    "Guiding Journeys to Inner Peace & Embodied Wellness | Certified Yoga Instructor | Mindfulness Coach | Reiki Master";
+  
+
   return (
     <section className='w-full'>
       <div className='w-full p-5 lg:px-10 xl:max-w-[1140px] mx-auto font-nunito'>
@@ -38,11 +49,11 @@ function PractitionersOverview() {
               </div>
               <div className='flex flex-col gap-2 font-roboto text-olive'>
                 <p className='w-fit text-lg px-6 py-0.5 bg-lightolive rounded-lg'>
-                  Vinyasa Yoga
+                  { field }
                 </p>
                 <div className='flex items-center gap-4'>
                   <h3 className='text-2xl font-medium'>
-                    Femi Adebayo
+                    { businessName }
                   </h3>
                   <div className='flex gap-1'>
                     {Array.from({ length: 4 }).map((_, index) => (
@@ -54,10 +65,9 @@ function PractitionersOverview() {
                   </div>
                 </div>
                 <p className='text-xl'>
-                  Guiding Journeys to Inner Peace & Embodied Wellness |
-                  Certified Yoga Instructor | Mindfulness Coach | Reiki Master
+                 { description}
                 </p>
-                <p className='text-xl font-medium'>Lagos, Nigeria</p>
+                <p className='text-xl font-medium'>{location}</p>
               </div>
             </div>
 

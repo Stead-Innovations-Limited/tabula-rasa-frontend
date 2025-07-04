@@ -89,7 +89,7 @@ export default function BusinessProfileForm({
         },
       });
     }
-  }, [state]);
+  });
 
   const form = useForm<z.infer<typeof businessProfileSchema>>({
     resolver: zodResolver(businessProfileSchema),

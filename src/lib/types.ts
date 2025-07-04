@@ -96,3 +96,30 @@ interface NullableRawSchedule {
   };
   Valid: boolean;
 }
+
+
+export interface User {
+  id: string;
+  bio: NullableString;
+  image_link: NullableString;
+  phone_no: NullableString;
+  country: NullableString;
+  address: NullableString;
+  experience: NullableInt32;
+  field: NullableString;
+  business_name: NullableString;
+  roles: "Personal Account" | "Business Account";
+  working_schedule: NullableRawSchedule;
+  rate: NullableInt32;
+  created_at: string;
+}
+
+interface NullableString {
+  String: string;
+  Valid: boolean;
+}
+
+interface NullableInt32 {
+  Int32: number;
+  Valid: boolean;
+}

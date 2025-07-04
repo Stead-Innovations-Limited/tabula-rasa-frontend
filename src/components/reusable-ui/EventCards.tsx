@@ -21,6 +21,7 @@ interface EventProps {
   eventName: string;
   eventPrice: string;
   eventDate: string;
+  
 }
 
 export default async function EventCards({
