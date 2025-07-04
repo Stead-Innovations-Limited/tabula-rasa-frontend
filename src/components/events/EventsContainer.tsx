@@ -1,8 +1,9 @@
-// import EventCards from "@/components/reusable-ui/EventCards";
-// import { eventData } from "@/lib/eventData";
+import getEvents from "@/server-actions/getEvents";
+import { Event } from "@/lib/types";
+import EventCards from "../reusable-ui/EventCards";
 
-export default function EventsContainer() {
-  // const data = [...eventData, ...eventData, ...eventData];
+export default async function EventsContainer() {
+  const events = (await getEvents()) as Event[];
 
   return (
     <section className='w-full mb-8'>
@@ -10,20 +11,20 @@ export default function EventsContainer() {
         <div className='flex justify-between items-center font-roboto text-olive'>
           <h4 className='font-medium text-xl md:text-2xl'>Events</h4>
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8'>{/* The Event Cards */}
-          {/* {
-            data.map((event, index) => (
-              <EventCards
-                key={index}
-                eventId={eve}
-                imgUrl={event.imgUrl}
-                imgAlt={event.imgAlt}
-                eventName={event.eventName}
-                eventPrice={event.eventPrice}
-                eventDate={event.eventDate}
-              />
-            ))
-          } */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8'>
+          {/* The Event Cards */}
+          {events.map((event: Event, index: number) => (
+            <EventCards
+              key={index}
+              eventId={event.id}
+              venueId={event.venue_id}
+              imgUrl={"/event-pic.webp"}
+              imgAlt={event.name}
+              eventName={event.name}
+              eventPrice={"$80.00"}
+              eventDate={event.start_date.Time}
+            />
+          ))}
         </div>
       </div>
     </section>
