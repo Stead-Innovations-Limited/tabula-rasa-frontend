@@ -26,16 +26,21 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "../ui/textarea";
 import { AiOutlineLoading3Quarters } from "@/components/icons";
 
-import { businessProfileSchema } from "@/lib/definitions";
+import { businessProfileSchema } from "@/lib/clientDefinitions";
 import businessProfileAction from "@/server-actions/businessProfileAction";
 import BusinessImagePicker from "../reusable-ui/BusinessImagePicker";
 import { countriesData } from "@/lib/countries";
 import { UserData } from "@/app/page";
+import { useSession } from "next-auth/react";
+import { getUserDetails } from "@/server-actions/getUserDetails";
 
-export default function BusinessProfileForm({userData}: {
-  userData: UserData
+
+export default function BusinessProfileForm({
+  userData,
+}: {
+  userData: UserData;
 }) {
-  console.log(userData)
+  const { data: session, update } = useSession();
   const [state, action, isPending] = useActionState(
     businessProfileAction,
     undefined
@@ -50,11 +55,32 @@ export default function BusinessProfileForm({userData}: {
           description: "!text-red-500",
         },
       });
-
-      console.log(state.error);
     }
 
     if (state?.success) {
+      update({
+        user: {
+          ...session?.user,
+          firstName: state.data.firstname,
+          lastName: state.data.lastname,
+          email: state.data.email,
+        },
+      });
+
+
+      form.reset({
+        firstname: state.data.firstname,
+        lastname: state.data.lastname,
+        email: state.data.email,
+        phone: state.data.phone,
+        serviceAddress: state.data.serviceAddress,
+        expertiseArea: state.data.expertiseArea,
+        professionalExperience: state.data.professionalExperience.toString() as "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10",
+        businessRate: state.data.businessRate,
+        country: state.data.country,
+        bio: state.data.bio,
+      });
+
       toast.success(state.message, {
         classNames: {
           toast: "!text-green-700",
@@ -68,24 +94,48 @@ export default function BusinessProfileForm({userData}: {
   const form = useForm<z.infer<typeof businessProfileSchema>>({
     resolver: zodResolver(businessProfileSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      email: "",
+      firstname: userData.firstName,
+      lastname: userData.lastName,
+      email: userData.email,
       phone: "",
       serviceAddress: "",
       expertiseArea: "Vinyasa Yoga",
-      professionalExperience: "Less than 1 year",
+      professionalExperience: "1",
       businessRate: "",
       country: "Nigeria",
       bio: "",
     },
   });
 
+  useEffect(() => {
+    // Call a server action to fetch the user's business profile data
+    // and set the form's default values accordingly.
+    const fetchProfile = async () => {
+      const res = await getUserDetails(userData.token)
+      console.log(res, "Yupping")
+      return res;
+    }
+
+    // form.reset({
+
+    // });
+    fetchProfile();
+  }, [userData]);
+
   function onSubmit(formData: z.infer<typeof businessProfileSchema>) {
-    form.reset();
+    if (!session?.sessionToken || !session?.user.id) {
+      return;
+    }
+
+    const formDataWithSession = {
+      ...formData,
+      professionalExperience: parseInt(formData.professionalExperience, 10),
+      token: session.sessionToken!,
+      userId: session.user.id!,
+    };
 
     startTransition(() => {
-      action(formData);
+      action(formDataWithSession);
     });
   }
 
@@ -102,7 +152,9 @@ export default function BusinessProfileForm({userData}: {
                 name='firstname'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>First Name</FormLabel>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      First Name
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder='Bisi'
@@ -120,7 +172,9 @@ export default function BusinessProfileForm({userData}: {
                 name='lastname'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>Last Name</FormLabel>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      Last Name
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder='Adebayo'
@@ -138,7 +192,9 @@ export default function BusinessProfileForm({userData}: {
                 name='email'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>Email Address</FormLabel>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      Email Address
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type='email'
@@ -200,13 +256,15 @@ export default function BusinessProfileForm({userData}: {
                 name='expertiseArea'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>Areas of Expertise</FormLabel>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      Areas of Expertise
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none">
+                        <SelectTrigger className='w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none'>
                           <SelectValue placeholder='Select a verified email to display' />
                         </SelectTrigger>
                       </FormControl>
@@ -235,23 +293,30 @@ export default function BusinessProfileForm({userData}: {
                 name='professionalExperience'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>Professional Experience</FormLabel>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      Professional Experience
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none">
+                        <SelectTrigger className='w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none'>
                           <SelectValue placeholder='Select your professional experience' />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value='Less than 1 year'>
-                          Less than 1 year
-                        </SelectItem>
-                        <SelectItem value='1-3 years'>1-3 years</SelectItem>
-                        <SelectItem value='3-5 years'>3-5 years</SelectItem>
-                        <SelectItem value='5+ years'>5+ years</SelectItem>
+                        <SelectItem value='0'>Less than 1 year</SelectItem>
+                        <SelectItem value='1'>1 year experience</SelectItem>
+                        <SelectItem value='2'>2 years experience</SelectItem>
+                        <SelectItem value='3'>3 years experience</SelectItem>
+                        <SelectItem value='4'>4 years experience</SelectItem>
+                        <SelectItem value='5'>5 years experience</SelectItem>
+                        <SelectItem value='6'>6 years experience</SelectItem>
+                        <SelectItem value='7'>7 years experience</SelectItem>
+                        <SelectItem value='8'>8 years experience</SelectItem>
+                        <SelectItem value='9'>9 years experience</SelectItem>
+                        <SelectItem value='10'>10 years experience</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -264,7 +329,9 @@ export default function BusinessProfileForm({userData}: {
                 name='businessRate'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>Rate</FormLabel>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      Rate
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type='text'
@@ -278,31 +345,33 @@ export default function BusinessProfileForm({userData}: {
                 )}
               />
               {/* Country Selection */}
-                <FormField
-                  control={form.control}
-                  name='country'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>Country</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger className="w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none">
-                          <SelectValue placeholder='Select your country' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {countriesData.map((c) => (
-                            <SelectItem key={c.code} value={c.name}>
-                              {c.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name='country'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      Country
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className='w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none'>
+                        <SelectValue placeholder='Select your country' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countriesData.map((c) => (
+                          <SelectItem key={c.code} value={c.name}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               {/* Bio Section */}
               <div className='md:col-span-2'>
                 <FormField
@@ -310,7 +379,9 @@ export default function BusinessProfileForm({userData}: {
                   name='bio'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>Bio</FormLabel>
+                      <FormLabel className='text-olive !text-base !md:text-lg'>
+                        Bio
+                      </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder='Tell us about yourself'

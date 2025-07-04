@@ -72,6 +72,8 @@ export const personalProfileSchema = z.object({
     .string()
     .min(2, { message: "Fullname cannot be less than 2 characters" })
     .max(80, { message: "Fullname cannot be 80 characters long." }),
+  token: z.string(),
+  userId: z.string(),
 });
 
 export const businessProfileSchema = z
@@ -101,12 +103,7 @@ export const businessProfileSchema = z
         message: "Please select a valid area of expertise",
       }
     ),
-    professionalExperience: z.enum(
-      ["Less than 1 year", "1-3 years", "3-5 years", "5+ years"],
-      {
-        message: "Please select a valid professional experience",
-      }
-    ),
+    professionalExperience: z.coerce.number(),
     businessRate: z
       .string()
       .min(1, {
@@ -115,14 +112,13 @@ export const businessProfileSchema = z
       .max(10, {
         message: "Business rate cannot be more than 10 characters long.",
       }),
-    // country: z.enum([...countries], {
-    //   message: "Please select a valid country",
-    // }),
     country: z.union(countries.map((name) => z.literal(name))),
     bio: z
       .string()
       .min(10, { message: "Bio must be at least 10 characters long" })
       .max(250, { message: "Bio cannot be more than 250 characters long." }),
+    token: z.string(),
+    userId: z.string()
   })
   .refine((data) => isPossiblePhoneNumber(data.phone), {
     message: "Phone number is invalid",

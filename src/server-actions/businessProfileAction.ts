@@ -3,15 +3,21 @@
 import { z } from "zod/v4";
 
 import { businessProfileSchema } from "@/lib/definitions";
+import axios from "axios";
+import { tryCatch } from "@/utils/tryCatch";
+
+
+type BusinessProfileFormData = z.infer<typeof businessProfileSchema>;
 
 export interface BusinessProfileState {
   success?: boolean;
+  data?: BusinessProfileFormData;
   message?: string;
   error?: boolean;
   errors?: { email?: string[] };
 }
 
-type BusinessProfileFormData = z.infer<typeof businessProfileSchema>;
+
 
 export default async function businessProfileAction(state: BusinessProfileState | undefined, data: BusinessProfileFormData) {
   try {
@@ -23,24 +29,44 @@ export default async function businessProfileAction(state: BusinessProfileState 
       };
     }
 
-    const { firstname, lastname, email, phone, serviceAddress, expertiseArea, professionalExperience, businessRate, country, bio } = validatedFields.data;
+    const { firstname, lastname, email, phone, serviceAddress, expertiseArea, professionalExperience, businessRate, country, bio, token, userId } = validatedFields.data;
 
     // Here you would typically handle the business profile logic, such as calling an API
-    console.log("Business Profile Data:", {
-      firstname,
-      lastname,
-      email,
-      phone,
-      serviceAddress,
-      expertiseArea,
-      professionalExperience,
-      businessRate,
-      country,
-      bio,
+    const response = await tryCatch(async () => {
+      return await axios.patch(
+        `https://tabula-rasa-backend.up.railway.app/users/${userId}`,
+        {
+          firstname,
+          lastname,
+          phone_no: phone,
+          address: serviceAddress,
+          field: expertiseArea,
+          experience: professionalExperience,
+          business_name: firstname + " " + lastname,
+          business_rate: businessRate,
+          country,
+          bio,
+          email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
     });
+    if (response.isError) {
+      throw new Error(
+        typeof response.errors === "string"
+          ? response.errors
+          : response.errors.join(", ")
+      );
+    }
 
     return {
       success: true,
+      data: validatedFields.data,
       message: "Business profile updated successfully.",
     };
   } catch (error) {

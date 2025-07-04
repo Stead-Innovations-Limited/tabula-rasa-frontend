@@ -31,9 +31,9 @@ export default function UserDashboardMenu({ blur, userData }: { blur: () => void
           />
         </div>
         <h5 className='text-xl font-medium text-black'>{userData?.firstName} {userData?.lastName}</h5>
-        <p className='text-base px-6 py-0.5 bg-lightgreen text-olive rounded-lg'>
+        {userData?.roles === "Business Profile" && <p className='text-base px-6 py-0.5 bg-lightgreen text-olive rounded-lg'>
           Vinyasa Yoga
-        </p>
+        </p>}
       </div>
       <div className='flex flex-col gap-2 text-olive'>
         <Link

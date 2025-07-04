@@ -17,10 +17,8 @@ export async function tryCatch(
     statusCode: 200,
   };
 
-  console.log(result, "What is happening!")
   try {
     const response = await cb();
-    console.log(response)
     if (response !== undefined) {
       result.data = response.data;
     } else {
@@ -28,6 +26,8 @@ export async function tryCatch(
     }
   } catch (error) {
     result.isError = true;
+
+
     if (error instanceof AxiosError) {
       result.statusCode = error.response?.status ?? 500;
       result.errors = error.response?.data.error ?? "unexpected error occurred";

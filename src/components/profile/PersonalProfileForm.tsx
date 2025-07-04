@@ -20,19 +20,21 @@ import { Button } from "@/components/ui/button";
 import PersonalImagePicker from "../reusable-ui/PersonalImagePicker";
 import { AiOutlineLoading3Quarters, BsChevronRight } from "@/components/icons";
 import personalProfileAction from "@/server-actions/personalProfileAction";
-import { personalProfileSchema } from "@/lib/definitions";
 import { UserData } from "@/app/page";
 import { useSession } from "next-auth/react";
+
+const schema = z.object({
+  firstname: z.string().min(1, "First name is required"),
+  lastname: z.string().min(1, "Last name is required"),
+});
 
 export default function PersonalProfileForm({
   userData,
 }: {
   userData: UserData;
 }) {
-  const { data, update } = useSession();
+  const { data: session, update } = useSession();
   const [state, action, isPending] = useActionState(personalProfileAction, {
-    token: data?.sessionToken ?? "",
-    userId: data?.user.id ?? "",
     errors: {},
     success: undefined,
     message: undefined,
@@ -50,16 +52,20 @@ export default function PersonalProfileForm({
         },
       });
 
-      console.log(state.error);
     }
 
     if (state?.success) {
       update({
         user: {
-          ...data?.user,
+          ...session?.user,
           firstName: state.data.firstname,
           lastName: state.data.lastname,
         },
+      });
+
+      form.reset({
+        firstname: state.data.firstname,
+        lastname: state.data.lastname,
       });
 
       toast.success(state.message, {
@@ -70,21 +76,28 @@ export default function PersonalProfileForm({
         },
       });
     }
-  }, [state, data, update]);
+  }, [state]);
 
-  const form = useForm<z.infer<typeof personalProfileSchema>>({
-    resolver: zodResolver(personalProfileSchema),
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       firstname: userData.firstName,
       lastname: userData.lastName,
     },
   });
 
-  function onSubmit(formData: z.infer<typeof personalProfileSchema>) {
-    form.reset();
+  function onSubmit(formData: z.infer<typeof schema>) {
+    if (!session?.sessionToken || !session?.user.id) {
+      return;
+    }
 
     startTransition(() => {
-      action(formData);
+      const formDataWithSession = {
+        ...formData,
+        token: session.sessionToken!,
+        userId: session.user.id!,
+      };
+      action(formDataWithSession);
     });
   }
 

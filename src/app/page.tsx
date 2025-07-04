@@ -15,6 +15,7 @@ export interface UserData {
   firstName: string,
   lastName: string,
   roles: string,
+  token?: string,
 }
 
 export default async function Home() {

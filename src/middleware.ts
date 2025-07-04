@@ -192,12 +192,23 @@ export async function middleware(req: NextRequest) {
     (route) => path === route || path.startsWith(`${route}/`)
   );
 
-  // If visiting a public route, allow access
+  // const isPublicRoute = publicRoutes.some(
+  //   (route) => path === route || path.startsWith(`${route}/`)
+  // );
+
+  // If visiting a authRoute and is authenticated, redirect to /dashboard
   if (token && isAuthRoute) {
     const url = req.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
+
+  // If not authenticated and visit any other route
+  // if (!token && !isPublicRoute && !isAuthRoute) {
+  //   const url = req.nextUrl.clone();
+  //   url.pathname = "/login"; // Redirect to login if not authenticated
+  //   return NextResponse.redirect(url);
+  // }
 
   return NextResponse.next();
 }

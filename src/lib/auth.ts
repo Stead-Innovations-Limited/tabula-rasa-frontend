@@ -1,7 +1,9 @@
-import type { NextAuthOptions } from "next-auth"
+import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { tryCatch } from "@/utils/tryCatch";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import refreshToken from "@/server-actions/refreshToken";
 
 interface LoginResponse {
   user: {
@@ -25,6 +27,7 @@ interface LoginResponse {
     created_at: { Time: string; Valid: boolean };
   };
   access_token: string;
+  refresh_token: string;
 }
 
 interface User {
@@ -34,15 +37,21 @@ interface User {
   lastName: string;
   roles: string;
   token: string;
+  refreshToken: string;
+  tokenExpiration: number;
 }
 
 declare module "next-auth" {
+  interface User {
+    token?: string;
+    tokenExpiration?: number;
+    refreshToken?: string;
+  }
   interface Session {
     sessionToken?: string;
     user: User;
   }
 }
-
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -65,6 +74,9 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid email or password");
         }
         const data = response.data as LoginResponse;
+
+        const decoded = jwtDecode<{ expired_at: string }>(data.access_token);
+
         const user: User = {
           id: data.user.id,
           email: data.user.email,
@@ -72,6 +84,8 @@ export const authOptions: NextAuthOptions = {
           lastName: data.user.lastname.String,
           roles: data.profile.roles,
           token: data.access_token,
+          refreshToken: data.refresh_token,
+          tokenExpiration: new Date(decoded.expired_at).getTime(),
         };
         return user;
       },
@@ -81,18 +95,49 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    jwt({ token, user, trigger, session }) {
+    jwt: async ({ token, user, trigger, session }) => {
       if (user) {
-        token.accessToken = (user as User).token;
-        token.user = user;
-      }
-      if (trigger === "update" && session?.user) {
+        const u = user as User;
+        token.accessToken = u.token;
+        token.refreshToken = u.refreshToken;
+        token.tokenExpiration = u.tokenExpiration;
         token.user = {
-          ...user,
-          ...session.user
-        }
-
+          id: u.id,
+          email: u.email,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          roles: u.roles,
+        };
       }
+
+      if (trigger === "update" && session?.user) {
+        const userDetails = token.user;
+        token.user = {
+          ...(userDetails as User),
+          ...session.user,
+        };
+      }
+
+      if (Date.now() < (token.tokenExpiration as number)) {
+        return token;
+      }
+
+      // Token expired — refresh it
+      const tokenResponse: {
+        accessToken?: string;
+        tokenExpiration?: number;
+        error?: string;
+      } = await refreshToken(token.refreshToken as string);
+
+      if (
+        tokenResponse.error
+      ) {
+        console.log("Failed to refresh access token");
+      }
+
+      token.accessToken = tokenResponse.accessToken;
+      token.tokenExpiration = tokenResponse.tokenExpiration;
+
       return token;
     },
     session({ session, token }) {
