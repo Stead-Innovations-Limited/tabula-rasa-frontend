@@ -132,16 +132,14 @@
 //   return NextResponse.next();
 // }
 
-// export const config = {
-//   matcher: ["/((?!api|_next|.*\\..*).*)"],
-// };
+
 
 // import { console } from "inspector";
 // import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// const publicRoutes = ["/", "/about"];
+const publicRoutes = ["/", "/about"];
 const authRoutes = ["/login", "/signup"];
 
 // export default withAuth(
@@ -181,7 +179,6 @@ const authRoutes = ["/login", "/signup"];
 
 // Custom redirect logic as a separate export
 export async function middleware(req: NextRequest) {
-  // console.log("Middleware triggered for:", req.nextUrl.pathname);
   const token =
     req.cookies.get("next-auth.session-token")?.value ||
     req.cookies.get("__Secure-next-auth.session-token")?.value;
@@ -192,9 +189,9 @@ export async function middleware(req: NextRequest) {
     (route) => path === route || path.startsWith(`${route}/`)
   );
 
-  // const isPublicRoute = publicRoutes.some(
-  //   (route) => path === route || path.startsWith(`${route}/`)
-  // );
+  const isPublicRoute = publicRoutes.some(
+    (route) => path === route || path.startsWith(`${route}/`)
+  );
 
   // If visiting a authRoute and is authenticated, redirect to /dashboard
   if (token && isAuthRoute) {
@@ -203,18 +200,21 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // // Allow access to public and auth routes without token
-  // if (!token && (isPublicRoute || isAuthRoute)) {
-  //   return NextResponse.next();
-  // }
+  // Allow access to public and auth routes without token
+  if (!token && (isPublicRoute || isAuthRoute)) {
+    return NextResponse.next();
+  }
 
-
-  // // Redirect unauthenticated users from protected routes
-  // if (!token) {
-  //   const url = req.nextUrl.clone();
-  //   url.pathname = "/login";
-  //   return NextResponse.redirect(url);
-  // }
+  // Redirect unauthenticated users from protected routes
+  if (!token) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
+};
