@@ -31,7 +31,6 @@ import loginAction from "@/server-actions/loginAction";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 
-
 export default function LoginForm() {
   const router = useRouter();
   const [state, action, isPending] = useActionState(loginAction, undefined);
@@ -44,7 +43,6 @@ export default function LoginForm() {
     },
   });
 
-   
   useEffect(() => {
     if (state?.error) {
       toast.error(state.message, {
@@ -64,16 +62,13 @@ export default function LoginForm() {
           redirect: false,
         });
         if (result?.error) {
-          toast.error(
-            "Login failed. Please check your credentials.",
-            {
-              classNames: {
-                toast: "!text-red-500",
-                title: "!text-red-500",
-                description: "!text-red-500",
-              },
-            }
-          );
+          toast.error("Login failed. Please check your credentials.", {
+            classNames: {
+              toast: "!text-red-500",
+              title: "!text-red-500",
+              description: "!text-red-500",
+            },
+          });
         } else {
           toast.success("Login successful! Redirecting to dashboard...", {
             classNames: {
@@ -82,9 +77,8 @@ export default function LoginForm() {
               description: "!text-green-700",
             },
           });
-          setTimeout(() => {
-            router.push("/dashboard");
-          }, 1000);
+
+          router.push("/dashboard");
         }
       })();
     }

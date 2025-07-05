@@ -10,9 +10,12 @@ interface ToastState {
   errors?: { [key: string]: string[] };
   errorData?: unknown;
 }
-export default function useToast(state: ToastState | undefined, redirectString?: string) {
+export default function useToast(
+  state: ToastState | undefined,
+  redirectString?: string
+) {
   const router = useRouter();
-   useEffect(() => {
+  useEffect(() => {
     if (state?.error) {
       toast.error(state.message, {
         classNames: {
@@ -21,8 +24,6 @@ export default function useToast(state: ToastState | undefined, redirectString?:
           description: "!text-red-500",
         },
       });
-
-      console.log(state.error);
     }
 
     if (state?.success) {
@@ -34,12 +35,9 @@ export default function useToast(state: ToastState | undefined, redirectString?:
         },
       });
 
-      setTimeout(() => {
-        if (redirectString) {
+      if (redirectString) {
         router.push(redirectString);
-        }
-      }, 1000);
+      }
     }
-
   }, [state, redirectString, router]);
 }

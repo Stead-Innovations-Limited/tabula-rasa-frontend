@@ -63,20 +63,23 @@ export default function SignupForm() {
     }
 
     if (state?.success) {
-      (async() => {
+      (async () => {
         const result = await signIn("credentials", {
           email: state.data?.email,
           password: state.data?.password,
           redirect: false,
         });
         if (result?.error) {
-          toast.error("Signup successful, but auto-login failed. Please log in manually.", {
-            classNames: {
-              toast: "!text-red-500",
-              title: "!text-red-500",
-              description: "!text-red-500",
-            },
-          });
+          toast.error(
+            "Signup successful, but auto-login failed. Please log in manually.",
+            {
+              classNames: {
+                toast: "!text-red-500",
+                title: "!text-red-500",
+                description: "!text-red-500",
+              },
+            }
+          );
         } else {
           toast.success("Signup successful! Redirecting to dashboard...", {
             classNames: {
@@ -85,12 +88,9 @@ export default function SignupForm() {
               description: "!text-green-700",
             },
           });
-          setTimeout(() => {
-            router.push("/dashboard");
-          }, 1000);
+          router.push("/dashboard");
         }
-      })()
-      
+      })();
     }
   }, [state, router]);
 
