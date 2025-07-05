@@ -20,7 +20,7 @@ export default function BusinessDashboardMenu({
   userData: UserData;
 }) {
   return (
-    <div className='w-3/4 md:w-[20rem] flex flex-col gap-4 p-5 absolute top-5 md:top-5 right-5 md:right-6 lg:right-12 z-50 bg-white rounded-2xl shadow-lg'>
+    <div className='w-full flex flex-col gap-4 p-5 z-50 bg-white rounded-2xl shadow-lg'>
       <div className='border border-olive rounded-xl flex flex-col items-center justify-center gap-2 p-5'>
         <div className='size-35 rounded-full overflow-clip'>
           <Image
@@ -56,7 +56,7 @@ export default function BusinessDashboardMenu({
           Reservations
         </Link>
         <Link
-          href='/#'
+          href='/bookings'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
         >
           <LuCalendarDays className='size-5' />
