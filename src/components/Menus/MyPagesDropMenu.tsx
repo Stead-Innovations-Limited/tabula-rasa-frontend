@@ -6,7 +6,7 @@ export default function MyPagesDropMenu() {
 
   return (
     <div
-      className='w-3/4 md:w-[20rem] flex flex-col absolute top-5 md:top-5 right-5 md:right-6 lg:right-12 z-50 bg-white text-olive rounded-2xl shadow-lg divide divide-solid divide-olive overflow-clip'
+      className='w-full flex flex-col z-50 bg-white text-olive rounded-2xl shadow-lg divide divide-solid divide-olive overflow-clip'
     >
       <Link
         href='/list-venue'

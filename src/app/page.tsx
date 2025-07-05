@@ -7,8 +7,6 @@ import GallerySlides from "@/components/home/GallerySlides";
 import Subscription from "@/components/home/Subscription";
 import Footer from "@/components/reusable-ui/Footer";
 
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
 
 export interface UserData {
   email: string,
@@ -19,22 +17,10 @@ export interface UserData {
 }
 
 export default async function Home() {
-  const session = await getServerSession(authOptions)
-  if (!session) {
-    return <p>Data fetch failed.</p>;
-  }
-  const userData = {
-    email: session?.user?.email,
-    firstName: session?.user?.firstName,
-    lastName: session?.user?.lastName,
-    roles: session?.user?.roles,
-    token: session.sessionToken,
-  };
-  console.log(userData)
 
   return (
     <main className='w-full bg-cream'>
-      <NavBar userData={userData}/>
+      <NavBar/>
       <Hero />
       <AfterHero/>
       <RetreatSection/>

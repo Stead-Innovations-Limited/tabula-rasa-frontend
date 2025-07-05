@@ -203,10 +203,16 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // If not authenticated and visit any other route
-  // if (!token && !isPublicRoute && !isAuthRoute) {
+  // // Allow access to public and auth routes without token
+  // if (!token && (isPublicRoute || isAuthRoute)) {
+  //   return NextResponse.next();
+  // }
+
+
+  // // Redirect unauthenticated users from protected routes
+  // if (!token) {
   //   const url = req.nextUrl.clone();
-  //   url.pathname = "/login"; // Redirect to login if not authenticated
+  //   url.pathname = "/login";
   //   return NextResponse.redirect(url);
   // }
 

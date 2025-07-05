@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-import { UserData } from "@/app/page";
 
 import HomeMenu from "@/components/Menus/HomeMenu";
 import AvatarComponent from "../reusable-ui/AvatarComponent";
@@ -10,11 +9,21 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import UserDashboardMenu from "../Menus/UserDashboardMenu";
 import BusinessDashboardMenu from "../Menus/BusinessDashboardMenu";
 
-function NavBar({
-  userData,
-}: {
-  userData: UserData;
-}) {
+
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+
+async function NavBar() {
+  const session = await getServerSession(authOptions)
+   
+  const userData = session ? {
+    email: session?.user?.email,
+    firstName: session?.user?.firstName,
+    lastName: session?.user?.lastName,
+    roles: session?.user?.roles,
+    token: session.sessionToken,
+  }: undefined;
+
 
   return (
     <div className='w-full'>
