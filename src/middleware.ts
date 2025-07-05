@@ -193,6 +193,8 @@ export async function middleware(req: NextRequest) {
     (route) => path === route || path.startsWith(`${route}/`)
   );
 
+  // Implement business protected routes logic
+
   // If visiting a authRoute and is authenticated, redirect to /dashboard
   if (token && isAuthRoute) {
     const url = req.nextUrl.clone();
