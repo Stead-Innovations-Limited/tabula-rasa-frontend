@@ -3,6 +3,7 @@ import getUsers from "@/server-actions/getUsers";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth/next";
 import PracticionersCards from "../reusable-ui/PracticionersCard";
+import { cn } from "@/lib/utils";
 
 export default async function PracticionersContainer() {
   const userProfiles = (await getUsers()) as User[];
@@ -24,20 +25,31 @@ export default async function PracticionersContainer() {
         <div className='flex justify-between items-center font-roboto text-olive'>
           <h4 className='font-medium text-xl md:text-2xl'>Practicioners</h4>
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8'>
+        <div
+          className={cn(
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8",
+            filteredUsers.length === 0 && "!grid-cols-1"
+          )}
+        >
           {/* The Event Cards */}
-          {filteredUsers.map((data, index) => (
-            <PracticionersCards
-              key={index}
-              userId={data.id}
-              // imgUrl={data.imgUrl}
-              imgAlt={data.business_name.String}
-              name={data.business_name.String}
-              specialty={data.field.String}
-              // stars={data.stars}
-              address={data.address.String}
-            />
-          ))}
+          {filteredUsers.length !== 0 ? (
+            filteredUsers.map((data, index) => (
+              <PracticionersCards
+                key={index}
+                userId={data.id}
+                // imgUrl={data.imgUrl}
+                imgAlt={data.business_name.String}
+                name={data.business_name.String}
+                specialty={data.field.String}
+                // stars={data.stars}
+                address={data.address.String}
+              />
+            ))
+          ) : (
+            <div className='flex justify-center items-center text-center text-xl my-10 text-gray-500'>
+              No Practicioners available.
+            </div>
+          )}
         </div>
       </div>
     </section>
