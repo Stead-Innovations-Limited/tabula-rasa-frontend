@@ -140,7 +140,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const publicRoutes = ["/", "/about"];
-const authRoutes = ["/login", "/signup"];
+const authRoutes = ["/login", "/signup", "/verify-email", "/pick-account"];
 
 // export default withAuth(
 //   async function middleware(req: NextRequest) {

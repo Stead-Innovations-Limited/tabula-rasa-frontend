@@ -46,10 +46,11 @@ export default async function signupAction(
       message: "Signup failed.",
     };
   } else {
+    const data = response.data as { message?: string };
     return {
       success: true,
       data: { email, password }, // Simulating a user object
-      message: "Signup successful. You will be logged in automatically.",
+      message: data.message || "Registration successful. Please check your email to verify your account.",
     };
   }
 }

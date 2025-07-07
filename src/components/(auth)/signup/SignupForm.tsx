@@ -31,7 +31,6 @@ import {
 } from "@/components/icons";
 
 import signupAction from "@/server-actions/signupAction";
-import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
 export default function SignupForm() {
@@ -58,39 +57,20 @@ export default function SignupForm() {
           description: "!text-red-500",
         },
       });
-
-      console.log(state.error);
     }
 
     if (state?.success) {
-      (async () => {
-        const result = await signIn("credentials", {
-          email: state.data?.email,
-          password: state.data?.password,
-          redirect: false,
-        });
-        if (result?.error) {
-          toast.error(
-            "Signup successful, but auto-login failed. Please log in manually.",
-            {
-              classNames: {
-                toast: "!text-red-500",
-                title: "!text-red-500",
-                description: "!text-red-500",
-              },
-            }
-          );
-        } else {
-          toast.success("Signup successful! Redirecting to dashboard...", {
-            classNames: {
-              toast: "!text-green-700",
-              title: "!text-green-700",
-              description: "!text-green-700",
-            },
-          });
-          router.push("/dashboard");
-        }
-      })();
+      // Store the email in local Storage
+      localStorage.setItem("email", state.data?.email);
+      toast.success(state.message, {
+        classNames: {
+          toast: "!text-green-700",
+          title: "!text-green-700",
+          description: "!text-green-700",
+        },
+      });
+      // Redirect to /verify-email
+      router.push("/verify-email");
     }
   }, [state, router]);
 
