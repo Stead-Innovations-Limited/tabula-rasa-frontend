@@ -4,11 +4,13 @@ import { tryCatch } from "@/utils/tryCatch";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import refreshToken from "@/server-actions/refreshToken";
+import reSendMail from "@/server-actions/reSendMail";
 
 interface LoginResponse {
   user: {
     id: string;
     email: string;
+    is_verified: boolean;
     password: { String: string; Valid: boolean };
     firstname: { String: string; Valid: boolean };
     lastname: { String: string; Valid: boolean };
@@ -68,9 +70,24 @@ export const authOptions: NextAuthOptions = {
         if (response.isError) {
           throw new Error("Invalid email or password");
         }
+
+        
+
         const data = response.data as LoginResponse;
 
         const decoded = jwtDecode<{ expired_at: string }>(data.access_token);
+
+        // If the user is not verified, we resend a mail to the user, and then we throw an error which the client will use to redirect the user, we need token and mail.
+        if(!data.user.is_verified) {
+          const errorBody = {
+            error: "EMAIL_NOT_VERIFIED",
+            email: data.user.email,
+            token: data.access_token
+          }
+          const resendMail = await reSendMail(data.access_token);
+          console.log(resendMail);
+          throw new Error(JSON.stringify(errorBody));
+        }
 
         const user: User = {
           id: data.user.id,

@@ -11,7 +11,7 @@ import verifyEmail from "@/server-actions/verifyEmail";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export default function VerifyEmail({ token }: { token: string }) {
+export default function VerifyEmail({ token }: { token?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState<string | null | false>(false);
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ export default function VerifyEmail({ token }: { token: string }) {
     const mail = localStorage.getItem("email") || null;
     if (mail) {
       setEmail(mail);
-    } else {
+    } else if(token) {
       const req = async () => {
         const verificationResponse = (await verifyEmail(token)) as {
           error: boolean;
@@ -40,7 +40,7 @@ export default function VerifyEmail({ token }: { token: string }) {
           });
 
           setTimeout(() => {
-            router.push("/pick-account");
+            router.push("/login");
           }, 700);
         } else {
           setErrorMessage(
@@ -64,7 +64,7 @@ export default function VerifyEmail({ token }: { token: string }) {
 
   if (loading) return skeleton;
 
-  if (email && token) {
+  if (email && !token) {
     return (
       <>
         <main className='w-full h-screen flex flex-col items-center justify-center bg-cream text-[#565656] font-roboto p-5 md:p-0'>
@@ -82,13 +82,13 @@ export default function VerifyEmail({ token }: { token: string }) {
                 your registration.
               </p>
             </div>
-            <div className='flex flex-col gap-3'>
+             {/* <div className='flex flex-col gap-3'>
               <hr className='border-olive' />
               <div className='flex items-center justify-center font-normal text-lg text-center'>
                 <p className=''>Didn’t get the mail?</p>{" "}
                 <ReSendButton token={token} />
               </div>
-            </div>
+            </div> */}
           </div>
         </main>
       </>
@@ -97,7 +97,7 @@ export default function VerifyEmail({ token }: { token: string }) {
 
   if (!errorMessage) return skeleton;
 
-  return (
+  if(token && errorMessage) (
     <main className='w-full h-screen flex flex-col items-center justify-center bg-cream text-[#565656] font-roboto p-5 md:p-0'>
       <div className='flex flex-col gap-10 w-full max-w-xl mx-auto rounded-3xl shadow-lg p-8'>
         <RiMailCloseFill className='text-destructive text-9xl mx-auto' />
@@ -112,4 +112,6 @@ export default function VerifyEmail({ token }: { token: string }) {
       </div>
     </main>
   );
+
+  return skeleton;
 }
