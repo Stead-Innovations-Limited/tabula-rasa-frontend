@@ -42,6 +42,15 @@ export default function PersonalProfileForm({
     errorData: undefined,
   });
 
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      firstname: userData.firstName,
+      lastname: userData.lastName,
+    },
+  });
+
+
   useEffect(() => {
     if (state?.error) {
       toast.error(state.message, {
@@ -55,6 +64,8 @@ export default function PersonalProfileForm({
     }
 
     if (state?.success) {
+      // If there were no edits, do nothing
+      if(session && state.data.firstname === session.user.firstName && state.data.lastname === session.user.lastName) return;
       update({
         user: {
           ...session?.user,
@@ -76,16 +87,9 @@ export default function PersonalProfileForm({
         },
       });
     }
-  });
+  }, [form, update, state, session]);
 
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      firstname: userData.firstName,
-      lastname: userData.lastName,
-    },
-  });
-
+  
   function onSubmit(formData: z.infer<typeof schema>) {
     if (!session?.sessionToken || !session?.user.id) {
       return;
