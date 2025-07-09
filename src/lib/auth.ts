@@ -10,10 +10,8 @@ interface LoginResponse {
     id: string;
     email: string;
     is_verified: boolean;
-    password: { String: string; Valid: boolean };
-    firstname: { String: string; Valid: boolean };
-    lastname: { String: string; Valid: boolean };
-    created_at: { Time: string; Valid: boolean };
+    firstname: string;
+    lastname: string;
   };
   profile: {
     id: string;
@@ -66,6 +64,7 @@ export const authOptions: NextAuthOptions = {
               credentials
             )
         );
+
         if (response.isError) {
           throw new Error("Invalid email or password");
         }
@@ -87,8 +86,8 @@ export const authOptions: NextAuthOptions = {
         const user: User = {
           id: data.user.id,
           email: data.user.email,
-          firstName: data.user.firstname.String,
-          lastName: data.user.lastname.String,
+          firstName: data.user.firstname,
+          lastName: data.user.lastname,
           roles: data.profile.roles,
           // roles: "Business Account",
           token: data.access_token,
