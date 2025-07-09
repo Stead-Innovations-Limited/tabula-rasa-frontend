@@ -22,7 +22,9 @@ export default function VerifyEmail({ token }: { token?: string }) {
     const mail = localStorage.getItem("email") || null;
     if (mail) {
       setEmail(mail);
-    } else if(token) {
+    }
+    
+    if(token) {
       const req = async () => {
         const verificationResponse = (await verifyEmail(token)) as {
           error: boolean;
@@ -51,6 +53,7 @@ export default function VerifyEmail({ token }: { token?: string }) {
 
       req();
     }
+
     setLoading(false);
   }, [router, token]);
 
@@ -82,23 +85,15 @@ export default function VerifyEmail({ token }: { token?: string }) {
                 your registration.
               </p>
             </div>
-             {/* <div className='flex flex-col gap-3'>
-              <hr className='border-olive' />
-              <div className='flex items-center justify-center font-normal text-lg text-center'>
-                <p className=''>Didn’t get the mail?</p>{" "}
-                <ReSendButton token={token} />
-              </div>
-            </div> */}
           </div>
         </main>
       </>
     );
   }
-
   if (!errorMessage) return skeleton;
 
-  if(token && errorMessage) (
-    <main className='w-full h-screen flex flex-col items-center justify-center bg-cream text-[#565656] font-roboto p-5 md:p-0'>
+  if(token && errorMessage) {
+    return (<main className='w-full h-screen flex flex-col items-center justify-center bg-cream text-[#565656] font-roboto p-5 md:p-0'>
       <div className='flex flex-col gap-10 w-full max-w-xl mx-auto rounded-3xl shadow-lg p-8'>
         <RiMailCloseFill className='text-destructive text-9xl mx-auto' />
         <p className='font-medium text-xl text-center leading-[40px]'>
@@ -110,8 +105,8 @@ export default function VerifyEmail({ token }: { token?: string }) {
           <ReSendButton token={token} />
         </div>
       </div>
-    </main>
-  );
+    </main>)
+  };
 
   return skeleton;
 }

@@ -19,7 +19,6 @@ import { Event, Venue } from "@/lib/types";
 async function EventsOverview({ eventId }: { eventId: string }) {
   const eventData = await getEvent(eventId) as Event;
   const venueData = await getVenue(eventData.venue_id) as Venue;
-  console.log(venueData)
   return (
     <section className='w-full'>
       <div className='w-full p-5 lg:px-10 xl:max-w-[1140px] mx-auto font-nunito'>

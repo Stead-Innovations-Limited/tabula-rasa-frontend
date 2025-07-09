@@ -6,7 +6,6 @@ import reSendMail from "@/server-actions/reSendMail";
 
 export default async function verifyEmail(token: string) {
   try {
-    console.log(token, "Save me token");
     const response = await tryCatch(async () => {
       return await axios.post(
         "https://tabula-rasa-backend.up.railway.app/verify-email",
@@ -19,7 +18,6 @@ export default async function verifyEmail(token: string) {
       );
     });
 
-    // console.log(response, "Response from verify email");
     // If there is an error in the response, handle it
     // This could be due to an invalid or expired token
     if (response.isError) {
@@ -33,23 +31,16 @@ export default async function verifyEmail(token: string) {
           error?: boolean;
           errorMessage?: string;
         };
-        // console.log(resendResponse, "Resend response");
         // If there is an error sending mail, we throw an error
         if (resendResponse?.error) {
           throw new Error("An error occurred while verifying your mail.");
         }
-        // console.log("Resent Response final", resendResponse);
         // If the resend was successful, return a message indicating that the token has expired and a new email has been sent
         throw new Error(
           "An error occured while verifying your mail. A new verification email has been sent to you."
         );
       }
-
-      // console.log(
-      //   typeof response.errors === "string"
-      //     ? response.errors
-      //     : response.errors.join(", "), "Meekayy"
-      // );
+ 
       const error = typeof response.errors === "string"
           ? response.errors
           : response.errors.join(", ")
@@ -63,7 +54,6 @@ export default async function verifyEmail(token: string) {
       message: response.data,
     };
   } catch (error) {
-    console.log(error instanceof Error ? error.message : String(error), "Cooking errors")
     return {
       error: true,
       errorMessage: error instanceof Error ? error.message : String(error),

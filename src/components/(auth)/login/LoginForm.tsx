@@ -64,23 +64,26 @@ export default function LoginForm() {
 
         // Here we check if the result.error value is that EMAIL_NOT_VERIFIED, if so we redirect the user to the verify email page.
         // With token and email.
-        if(result?.error) {
+        if (result?.error) {
           // Parse obj body
           const err = JSON.parse(result.error);
 
-          if(typeof err === "object"){
-            if(err.error === "EMAIL_NOT_VERIFIED") {
+          if (typeof err === "object") {
+            if (err.error === "EMAIL_NOT_VERIFIED") {
               localStorage.setItem("email", err.email);
+              // We tell the user that a confirmation message was sent to their mail
+              toast.error("Your email has not been verified yet, please check your mail for a confirmation mail.", {
+                classNames: {
+                  toast: "!text-red-500",
+                  title: "!text-red-500",
+                  description: "!text-red-500",
+                },
+              });
               router.push("/verify-email");
+              return; /** We return untimely **/
             }
           }
         }
-
-
-
-
-
-
 
         if (result?.error) {
           toast.error("Login failed. Please check your credentials.", {

@@ -8,7 +8,6 @@ export default function SubBookingsNav() {
   const path = usePathname();
   const pathname = path.split("/")[3] || "";
 
-  console.log(path.split("/"));
   return (
     <ul className='flex gap-4 text-lg md:text-xl font-roboto text-olive'>
       <li className=''>

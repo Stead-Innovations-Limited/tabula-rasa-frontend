@@ -112,7 +112,6 @@ export default function BusinessProfileForm({
     // and set the form's default values accordingly.
     const fetchProfile = async () => {
       const res = await getUserDetails(userData.token)
-      console.log(res, "Yupping")
       return res;
     }
 

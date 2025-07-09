@@ -4,7 +4,6 @@ import { tryCatch } from "@/utils/tryCatch";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import refreshToken from "@/server-actions/refreshToken";
-import reSendMail from "@/server-actions/reSendMail";
 
 interface LoginResponse {
   user: {
@@ -71,8 +70,6 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid email or password");
         }
 
-        
-
         const data = response.data as LoginResponse;
 
         const decoded = jwtDecode<{ expired_at: string }>(data.access_token);
@@ -84,8 +81,6 @@ export const authOptions: NextAuthOptions = {
             email: data.user.email,
             token: data.access_token
           }
-          const resendMail = await reSendMail(data.access_token);
-          console.log(resendMail);
           throw new Error(JSON.stringify(errorBody));
         }
 
@@ -131,6 +126,7 @@ export const authOptions: NextAuthOptions = {
         };
       }
 
+      // We check if token has not expired, if it hasn't expired, return it
       if (Date.now() < (token.tokenExpiration as number)) {
         return token;
       }
@@ -142,15 +138,11 @@ export const authOptions: NextAuthOptions = {
         error?: string;
       } = await refreshToken(token.refreshToken as string);
 
-      if (
-        tokenResponse.error
-      ) {
-        console.log("Failed to refresh access token");
-      }
-
+      // Set token value and expiration
       token.accessToken = tokenResponse.accessToken;
       token.tokenExpiration = tokenResponse.tokenExpiration;
 
+      // Return token
       return token;
     },
     session({ session, token }) {
