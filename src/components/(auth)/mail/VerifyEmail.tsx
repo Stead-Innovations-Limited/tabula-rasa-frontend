@@ -7,7 +7,7 @@ import {
   IoMail,
   IoIosCheckmarkCircle
 } from "@/components/icons";
-import ReSendButton from "./ReSendButton";
+import ReSendButton from "@/components/(auth)/mail/ReSendButton";
 import verifyEmail from "@/server-actions/verifyEmail";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

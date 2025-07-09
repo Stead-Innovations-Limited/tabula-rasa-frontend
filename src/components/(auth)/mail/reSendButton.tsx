@@ -63,7 +63,7 @@ export default function ReSendButton({ token }: { token: string }) {
 
   return (
     <Button
-      className='bg-olive !hover:bg-olive text-white font-normal text-lg py-4 px-14 w-fit mx-auto'
+      className='bg-olive hover:!bg-olive text-white font-normal text-lg py-4 px-14 w-fit mx-auto'
       disabled={active && !paused}
       onClick={handleResend}
     >
