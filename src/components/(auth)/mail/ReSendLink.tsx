@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import reSendMail from "@/server-actions/reSendMail";
 import { toast } from "sonner";
 
-export default function ReSendButton({ token }: { token: string }) {
+export default function ReSendLink({ token }: { token: string }) {
   const [active, setActive] = useState(false);
   const [paused, setPaused] = useState(false);
   const [seconds, setSeconds] = useState(0);
@@ -63,11 +63,12 @@ export default function ReSendButton({ token }: { token: string }) {
 
   return (
     <Button
-      className='bg-olive !hover:bg-olive text-white font-normal text-lg py-4 px-14 w-fit mx-auto'
+      variant='link'
+      className='text-olive font-normal text-lg'
       disabled={active && !paused}
       onClick={handleResend}
     >
-      {paused ? "Retry?" : "Resend email"}
+      {paused ? "Retry?" : "Resend Email"}
       {active && !paused ? ` (${60 - seconds})` : ""}
     </Button>
   );

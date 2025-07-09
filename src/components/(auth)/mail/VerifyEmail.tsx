@@ -3,19 +3,23 @@
 import { useEffect, useState } from "react";
 import {
   AiOutlineLoading3Quarters,
+  IoIosCloseCircle,
   IoMail,
-  RiMailCloseFill,
+  IoIosCheckmarkCircle
 } from "@/components/icons";
-import ReSendButton from "./reSendButton";
+import ReSendButton from "./ReSendButton";
 import verifyEmail from "@/server-actions/verifyEmail";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function VerifyEmail({ token }: { token?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState<string | null | false>(false);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [emailVerified, setEmailVerified] = useState<boolean>(false);
 
   useEffect(() => {
     // Get email from local storage
@@ -23,8 +27,8 @@ export default function VerifyEmail({ token }: { token?: string }) {
     if (mail) {
       setEmail(mail);
     }
-    
-    if(token) {
+
+    if (token) {
       const req = async () => {
         const verificationResponse = (await verifyEmail(token)) as {
           error: boolean;
@@ -41,9 +45,7 @@ export default function VerifyEmail({ token }: { token?: string }) {
             },
           });
 
-          setTimeout(() => {
-            router.push("/login");
-          }, 700);
+          setEmailVerified(true);
         } else {
           setErrorMessage(
             verificationResponse.errorMessage ?? "Verification failed."
@@ -90,23 +92,44 @@ export default function VerifyEmail({ token }: { token?: string }) {
       </>
     );
   }
-  if (!errorMessage) return skeleton;
 
-  if(token && errorMessage) {
-    return (<main className='w-full h-screen flex flex-col items-center justify-center bg-cream text-[#565656] font-roboto p-5 md:p-0'>
-      <div className='flex flex-col gap-10 w-full max-w-xl mx-auto rounded-3xl shadow-lg p-8'>
-        <RiMailCloseFill className='text-destructive text-9xl mx-auto' />
-        <p className='font-medium text-xl text-center leading-[40px]'>
-          {errorMessage.charAt(0).toUpperCase() + errorMessage.slice(1)}
-        </p>
-        <hr className='border-olive' />
-        <div className='flex items-center justify-center gap-1 font-normal text-lg text-center'>
-          <p>Didn’t get the mail?</p>
+  // If email is verified, we show them that mail has been confirmed, and render a UI that can take them to login
+  if (emailVerified && token) {
+    return (
+      <main className='w-full h-screen flex flex-col items-center justify-center bg-cream text-[#565656] font-roboto p-5 md:p-0'>
+        <div className='flex flex-col gap-6 w-full max-w-xl mx-auto rounded-3xl shadow-lg px-8 py-12'>
+          {/* Icon div */}
+          <div className=''>
+            <IoIosCheckmarkCircle className='text-olive text-9xl mx-auto' />
+          </div>
+          {/* Instructions */}
+          <p className='font-medium text-xl text-center leading-[40px]'>
+            Your email has been confirmed. You can now log in.
+          </p>
+          <Button asChild className='bg-olive !hover:bg-olive text-white font-normal text-lg py-4 px-14 mx-auto w-fit'>
+            <Link href="/login">
+              Continue
+            </Link>
+          </Button>
+        </div>
+      </main>
+    );
+  } 
+  // Email Verification failed due to an issue or the other, we provide them a means to get a verification email.
+  else if (token && errorMessage) {
+    return (
+      <main className='w-full h-screen flex flex-col items-center justify-center bg-cream text-[#565656] font-roboto p-5 md:p-0'>
+        <div className='flex flex-col items-center justify-center gap-6 w-full max-w-xl mx-auto rounded-3xl shadow-lg py-12 px-8'>
+          <IoIosCloseCircle className='text-olive text-9xl mx-auto' />
+          <p className='font-medium text-xl text-center leading-[40px]'>
+            {errorMessage.charAt(0).toUpperCase() + errorMessage.slice(1)}
+          </p>
+
           <ReSendButton token={token} />
         </div>
-      </div>
-    </main>)
-  };
+      </main>
+    );
+  }
 
   return skeleton;
 }
