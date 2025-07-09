@@ -60,6 +60,8 @@ export default function SignupForm() {
     }
 
     if (state?.success) {
+      form.reset();
+
       // Store the email in local Storage
       localStorage.setItem("email", state.data?.email);
       toast.success(state.message, {
@@ -72,11 +74,9 @@ export default function SignupForm() {
       // Redirect to /verify-email
       router.push("/verify-email");
     }
-  }, [state, router]);
+  }, [state, router, form]);
 
   function onSubmit(formData: z.infer<typeof signupSchema>) {
-    form.reset();
-
     startTransition(() => {
       action(formData);
     });

@@ -72,13 +72,16 @@ export default function LoginForm() {
             if (err.error === "EMAIL_NOT_VERIFIED") {
               localStorage.setItem("email", err.email);
               // We tell the user that a confirmation message was sent to their mail
-              toast.error("Your email has not been verified yet, please check your mail for a confirmation mail.", {
-                classNames: {
-                  toast: "!text-red-500",
-                  title: "!text-red-500",
-                  description: "!text-red-500",
-                },
-              });
+              toast.error(
+                "Your email has not been verified yet, please check your mail for a confirmation mail.",
+                {
+                  classNames: {
+                    toast: "!text-red-500",
+                    title: "!text-red-500",
+                    description: "!text-red-500",
+                  },
+                }
+              );
               router.push("/verify-email");
               return; /** We return untimely **/
             }
@@ -94,6 +97,8 @@ export default function LoginForm() {
             },
           });
         } else {
+          form.reset();
+
           toast.success("Login successful! Redirecting to dashboard...", {
             classNames: {
               toast: "!text-green-700",
@@ -106,11 +111,9 @@ export default function LoginForm() {
         }
       })();
     }
-  }, [state, router]);
+  }, [state, router, form]);
 
   function onSubmit(formData: z.infer<typeof loginSchema>) {
-    form.reset();
-
     startTransition(() => {
       action(formData);
     });
