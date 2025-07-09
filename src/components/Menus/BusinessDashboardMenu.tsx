@@ -11,6 +11,8 @@ import {
   SlLocationPin,
   LuCalendarDays,
 } from "@/components/icons";
+
+import logoutAction from "@/server-actions/logoutAction";
 import { UserData } from "@/app/page";
 import { signOut } from "next-auth/react";
 
@@ -88,7 +90,10 @@ export default function BusinessDashboardMenu({
         className='w-full bg-olive hover:bg-olive/90 text-white rounded-md'
         onClick={async () => {
           // Handle Logout functionality
-          await signOut({ callbackUrl: "/" });
+          const logOutResponse = await logoutAction();
+          if (logOutResponse.success) {
+            await signOut({ callbackUrl: "/" });
+          }
         }}
       >
         Log Out

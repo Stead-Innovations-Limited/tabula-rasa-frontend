@@ -106,7 +106,7 @@ export default function VerifyEmail({ token }: { token?: string }) {
           <p className='font-medium text-xl text-center leading-[40px]'>
             Your email has been confirmed. You can now log in.
           </p>
-          <Button asChild className='bg-olive !hover:bg-olive text-white font-normal text-lg py-4 px-14 mx-auto w-fit'>
+          <Button asChild className='bg-olive hover:!bg-olive text-white font-normal text-lg py-4 px-14 mx-auto w-fit'>
             <Link href="/login">
               Continue
             </Link>
