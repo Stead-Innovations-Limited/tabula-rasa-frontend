@@ -28,31 +28,9 @@ export default async function businessProfileAction(state: BusinessProfileState 
         errors: z.flattenError(validatedFields.error).fieldErrors,
       };
     }
-
-    const { firstname, lastname, email, phone, serviceAddress, expertiseArea, professionalExperience, businessRate, country, bio, token, userId } = validatedFields.data;
+    const { email, phone, serviceAddress, expertiseArea, professionalExperience, businessRate, country, bio, token, userId } = validatedFields.data;
 
     console.log(email);
-    
-    const normalDetailsResponse = await tryCatch(async () => {
-      return await axios.patch(
-        `https://tabula-rasa-backend.up.railway.app/users/${userId}`,
-        { firstname, lastname },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    });
-
-    if (normalDetailsResponse.isError) {
-      throw new Error(
-        typeof normalDetailsResponse.errors === "string"
-          ? normalDetailsResponse.errors
-          : normalDetailsResponse.errors.join(", ")
-      );
-    }
 
     // Here you would typically handle the business profile logic, such as calling an API
     const response = await tryCatch(async () => {
@@ -63,11 +41,9 @@ export default async function businessProfileAction(state: BusinessProfileState 
           address: serviceAddress,
           field: expertiseArea,
           experience: professionalExperience,
-          business_name: firstname + " " + lastname,
           rate: businessRate,
           country,
           bio,
-          // email,
         },
         {
           headers: {

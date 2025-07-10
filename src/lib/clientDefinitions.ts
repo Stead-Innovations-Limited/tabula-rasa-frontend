@@ -1,8 +1,8 @@
 "use client"
 
 import { z } from "zod/v4";
-import { isPossiblePhoneNumber } from "libphonenumber-js";
-import { countries } from "./countries";
+// import { isPossiblePhoneNumber } from "libphonenumber-js";
+// import { countries } from "./countries";
 
 const isFileDefined = typeof File !== "undefined";
 
@@ -197,17 +197,11 @@ export const businessProfileSchema = z
       .string()
       .min(5, { message: "Service address cannot be less than 5 characters" })
       .max(80, { message: "Service address cannot be 80 characters long." }),
-    expertiseArea: z.enum(
-      [
-        "Vinyasa Yoga",
-        "Mindfulness & Meditation",
-        "Emotional Healing & Inner Work",
-        "Holistic Nutrition & Wellness Coaching",
-      ],
-      {
-        message: "Please select a valid area of expertise",
-      }
-    ),
+    expertiseArea: z.string().min(1, {
+      message: "Area of expertise is required"})
+      .max(50, {
+        message: "Area of expertise cannot be more than 50 characters long.",
+      }),
     professionalExperience: z.enum(
       ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
       {
@@ -222,13 +216,9 @@ export const businessProfileSchema = z
       .max(10, {
         message: "Business rate cannot be more than 10 characters long.",
       }),
-    country: z.union(countries.map((name) => z.literal(name))),
+    country: z.string(),
     bio: z
       .string()
       .min(10, { message: "Bio must be at least 10 characters long" })
       .max(250, { message: "Bio cannot be more than 250 characters long." }),
   })
-  .refine((data) => isPossiblePhoneNumber(data.phone), {
-    message: "Phone number is invalid",
-    path: ["phone"],
-  });

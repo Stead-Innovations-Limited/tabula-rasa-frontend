@@ -33,18 +33,34 @@ import { countriesData } from "@/lib/countries";
 import { UserData } from "@/app/page";
 import { useSession } from "next-auth/react";
 import { getUserDetails } from "@/server-actions/getUserDetails";
-
+import { BusinessUserResponse } from "@/server-actions/getUserDetails";
 
 export default function BusinessProfileForm({
   userData,
 }: {
   userData: UserData;
 }) {
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   const [state, action, isPending] = useActionState(
     businessProfileAction,
     undefined
   );
+
+  const form = useForm<z.infer<typeof businessProfileSchema>>({
+    resolver: zodResolver(businessProfileSchema),
+    defaultValues: {
+      firstname: userData.firstName,
+      lastname: userData.lastName,
+      email: userData.email,
+      phone: "",
+      serviceAddress: "",
+      expertiseArea: "",
+      professionalExperience: "0",
+      businessRate: "",
+      country: "",
+      bio: "",
+    },
+  });
 
   useEffect(() => {
     if (state?.error) {
@@ -58,16 +74,7 @@ export default function BusinessProfileForm({
     }
 
     if (state?.success) {
-      update({
-        user: {
-          ...session?.user,
-          firstName: state.data.firstname,
-          lastName: state.data.lastname,
-          email: state.data.email,
-        },
-      });
-
-
+      console.log("Damn successful!");
       form.reset({
         firstname: state.data.firstname,
         lastname: state.data.lastname,
@@ -75,8 +82,21 @@ export default function BusinessProfileForm({
         phone: state.data.phone,
         serviceAddress: state.data.serviceAddress,
         expertiseArea: state.data.expertiseArea,
-        professionalExperience: state.data.professionalExperience.toString() as "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10",
-        businessRate: state.data.businessRate,
+        professionalExperience: state.data.professionalExperience.toString() as
+          | "0"
+          | "1"
+          | "2"
+          | "3"
+          | "4"
+          | "5"
+          | "6"
+          | "7"
+          | "8"
+          | "9"
+          | "10",
+        businessRate:
+          state.data.businessRate.toString() ??
+          "" /** I take the string and turn into a number, since the formAction returns businessRate as a number **/,
         country: state.data.country,
         bio: state.data.bio,
       });
@@ -89,37 +109,46 @@ export default function BusinessProfileForm({
         },
       });
     }
-  });
-
-  const form = useForm<z.infer<typeof businessProfileSchema>>({
-    resolver: zodResolver(businessProfileSchema),
-    defaultValues: {
-      firstname: userData.firstName,
-      lastname: userData.lastName,
-      email: userData.email,
-      phone: "",
-      serviceAddress: "",
-      expertiseArea: "Vinyasa Yoga",
-      professionalExperience: "1",
-      businessRate: "",
-      country: "Nigeria",
-      bio: "",
-    },
-  });
+  }, [state, form]);
 
   useEffect(() => {
-    // Call a server action to fetch the user's business profile data
-    // and set the form's default values accordingly.
+    // This useEffect fetches the user's business profile data
+    // and populates the form with the data.
+    // It runs only once when the component mounts or when userData or form changes.
     const fetchProfile = async () => {
-      const res = await getUserDetails(userData.token)
-      return res;
-    }
+      const response = await getUserDetails(userData.token);
 
-    // form.reset({
+      // Handle error response
+      if ((response as BusinessUserResponse)?.error) return;
 
-    // });
+      const res = response as BusinessUserResponse;
+      console.log(res, "Response from getUserDetails");
+      form.reset({
+        firstname: userData.firstName,
+        lastname: userData.lastName,
+        email: userData.email,
+        phone: res.phone_no,
+        serviceAddress: res.address,
+        expertiseArea: res.field,
+        professionalExperience: res.experience?.toString() as
+          | "0"
+          | "1"
+          | "2"
+          | "3"
+          | "4"
+          | "5"
+          | "6"
+          | "7"
+          | "8"
+          | "9",
+        businessRate: res.rate?.toString() ?? "",
+        country: res.country,
+        bio: res.bio,
+      });
+    };
+
     fetchProfile();
-  }, [userData]);
+  }, [userData, form]);
 
   function onSubmit(formData: z.infer<typeof businessProfileSchema>) {
     if (!session?.sessionToken || !session?.user.id) {
@@ -129,6 +158,9 @@ export default function BusinessProfileForm({
     const formDataWithSession = {
       ...formData,
       professionalExperience: parseInt(formData.professionalExperience, 10),
+      businessRate: parseInt(
+        formData.businessRate.replace(/[^0-9.]/g, "")
+      ) /** I take the string and turn into a numeber **/,
       token: session.sessionToken!,
       userId: session.user.id!,
     };
@@ -159,6 +191,7 @@ export default function BusinessProfileForm({
                         placeholder='Bisi'
                         type='text'
                         {...field}
+                        disabled
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                       />
                     </FormControl>
@@ -178,6 +211,7 @@ export default function BusinessProfileForm({
                       <Input
                         placeholder='Adebayo'
                         type='text'
+                        disabled
                         {...field}
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                       />
@@ -198,6 +232,7 @@ export default function BusinessProfileForm({
                       <Input
                         type='email'
                         placeholder='you@example.com'
+                        disabled
                         {...field}
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                       />
@@ -216,7 +251,6 @@ export default function BusinessProfileForm({
                     </FormLabel>
                     <FormControl>
                       <Input
-                        type='tel'
                         placeholder='XXX-XXXX-XXXX'
                         {...field}
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
@@ -258,30 +292,14 @@ export default function BusinessProfileForm({
                     <FormLabel className='text-olive !text-base !md:text-lg'>
                       Areas of Expertise
                     </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className='w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none'>
-                          <SelectValue placeholder='Select a verified email to display' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value='Vinyasa Yoga'>
-                          Vinyasa Yoga
-                        </SelectItem>
-                        <SelectItem value='Mindfulness & Meditation'>
-                          Mindfulness & Meditation
-                        </SelectItem>
-                        <SelectItem value='Emotional Healing & Inner Work'>
-                          Emotional Healing & Inner Work
-                        </SelectItem>
-                        <SelectItem value='Holistic Nutrition & Wellness Coaching'>
-                          Holistic Nutrition & Wellness Coaching
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <Input
+                        type='text'
+                        placeholder='Your area of expertise'
+                        {...field}
+                        className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -353,8 +371,8 @@ export default function BusinessProfileForm({
                       Country
                     </FormLabel>
                     <Select
+                      value={field.value} // force value from react-hook-form
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
                     >
                       <SelectTrigger className='w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none'>
                         <SelectValue placeholder='Select your country' />
