@@ -12,7 +12,8 @@ interface ToastState {
 }
 export default function useToast(
   state: ToastState | undefined,
-  redirectString?: string
+  redirectString?: string | undefined,
+  navigationCallback?: () => void
 ) {
   const router = useRouter();
   useEffect(() => {
@@ -38,6 +39,10 @@ export default function useToast(
       if (redirectString) {
         router.push(redirectString);
       }
+
+      if (navigationCallback) { // If there is a navigation callback, apply the callback
+        navigationCallback();
+      }
     }
-  }, [state, redirectString, router]);
+  }, [state, redirectString, router, navigationCallback]);
 }

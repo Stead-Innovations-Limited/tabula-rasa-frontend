@@ -15,7 +15,6 @@ export default function MyDropzone({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       "image/*": [],
-      "video/*": [],
     },
     multiple: true,
     onDrop: (acceptedFiles) => {

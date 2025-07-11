@@ -1,5 +1,12 @@
 "use server";
 
+import { revalidatePath } from 'next/cache'
+import { Session } from "next-auth";
+import axios from "axios";
+import { tryCatch } from "@/utils/tryCatch";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+
 import { z } from "zod/v4";
 import { listVenueSchema } from "@/lib/definitions";
 type ListVenueFormData = z.infer<typeof listVenueSchema>;
@@ -7,7 +14,8 @@ export interface ListVenueState {
   success?: boolean;
   message?: string;
   error?: boolean;
-  errors?: { venueName?: string[];
+  errors?: {
+    venueName?: string[];
     venueImages?: string[];
     venueType?: string[];
     venueDescription?: string[];
@@ -18,7 +26,8 @@ export interface ListVenueState {
     onSiteAccomodation?: string[];
     roomType?: string[];
     numberOfRooms?: string[];
-    pricePerHour?: string[]; };
+    pricePerHour?: string[];
+  };
 }
 
 export default async function listVenueAction(
@@ -26,6 +35,23 @@ export default async function listVenueAction(
   data: ListVenueFormData
 ) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (
+      !session ||
+      !(session as Session & { sessionToken?: string }).sessionToken
+    ) {
+      throw new Error("Token is required to fetch user details.");
+    }
+    if (
+      !session ||
+      (session as Session & { roles?: string }).user.roles !== "Business Account"
+    ) {
+      throw new Error("You are not authorized to list a venue.");
+    }
+
+    const token = session.sessionToken;
+
     const validatedFields = listVenueSchema.safeParse(data);
 
     if (!validatedFields.success) {
@@ -48,28 +74,48 @@ export default async function listVenueAction(
       numberOfRooms,
       sleeps,
       bedConfiguration,
-      roomAmenities,
+      // roomAmenities,
       pricePerHour,
     } = validatedFields.data;
 
-    // Here you would typically handle the business profile logic, such as calling an API
-    console.log("List Venue Data:", {
-      venueName,
-      venueFiles,
-      venueType,
-      venueDescription,
-      location,
-      dimensions,
-      maxCapacity,
-      facilities,
-      onSiteAccomodation,
-      roomType,
-      numberOfRooms,
-      sleeps,
-      bedConfiguration,
-      roomAmenities,
-      pricePerHour,
+    const response = await tryCatch(async () => {
+      return await axios.post(
+        `https://tabula-rasa-backend.up.railway.app/venues/`,{
+          name: venueName,
+          type: venueType,
+          description: venueDescription,
+          location,
+          dimension: dimensions,
+          capacity: parseInt(maxCapacity),
+          facilities: [facilities],
+          image_links: venueFiles,
+          has_accomodation: onSiteAccomodation === "yes" ? true : false,
+          room_type: roomType,
+          no_of_rooms: parseInt(numberOfRooms),
+          sleeps,
+          bed_type: bedConfiguration,
+          booking_price: parseInt(pricePerHour),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
     });
+
+    if (response.isError) {
+      console.log(response.errors, "response.errors");
+      throw new Error(
+        typeof response.errors === "string"
+          ? response.errors
+          : response.errors.join(", ")
+      );
+    }
+
+    revalidatePath('/(dashboard)/venues', 'page')
+    revalidatePath('/(dashboard)/dashboard', 'page')
 
     return { success: true, message: "Venue listed successfully!" };
   } catch (error) {

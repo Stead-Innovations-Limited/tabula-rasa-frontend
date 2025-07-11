@@ -289,9 +289,10 @@ export const listVenueSchema = z.object({
     .string()
     .min(2, { message: "Venue name cannot be less than 2 characters" })
     .max(80, { message: "Venue name cannot be 80 characters long." }),
-  venueType: z.enum(["Yoga Studio", "Wellness Center", "Retreat Space"], {
-    message: "Please select a valid venue type",
-  }),
+  venueType: z
+    .string()
+    .min(5, { message: "Venue type cannot be less than 2 characters" })
+    .max(40, { message: "Venue type cannot be 80 characters long." }),
   venueDescription: z
     .string()
     .min(10, {

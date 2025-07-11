@@ -28,7 +28,7 @@ export default async function VenueContainer() {
               <VenueCards
                 key={index}
                 venueId={venue.id}
-                imgUrl={"/room3.webp"}
+                imgUrl={venue.image_links[0]}
                 imgAlt={venue.name}
                 venueName={venue.name}
                 venuePrice={`$${venue.booking_price.Int64}`}

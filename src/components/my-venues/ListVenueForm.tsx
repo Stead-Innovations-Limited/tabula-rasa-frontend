@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useActionState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,18 +31,20 @@ import { AiOutlineLoading3Quarters } from "@/components/icons";
 
 import { listVenueSchema } from "@/lib/clientDefinitions";
 import listVenueAction from "@/server-actions/listVenueAction";
+import handleFileUploads from "@/server-actions/handleFileUploads";
 
 import useToast from "@/hooks/useToast";
 
 export default function ListVenueForm() {
+  const router = useRouter();
   const [state, action, isPending] = useActionState(listVenueAction, undefined);
 
-  useToast(state);
+  useToast(state, undefined, () => router.back());
 
   const form = useForm<z.infer<typeof listVenueSchema>>({
     resolver: zodResolver(listVenueSchema),
     defaultValues: {
-      venueFiles: [],
+      venueFiles: [] as File[],
       venueName: "",
       venueType: "Yoga Studio",
       venueDescription: "",
@@ -59,11 +62,38 @@ export default function ListVenueForm() {
     },
   });
 
-  function onSubmit(formData: z.infer<typeof listVenueSchema>) {
-    form.reset();
+  async function onSubmit(formData: z.infer<typeof listVenueSchema>) {
+    // Here what i want to do is send the file i got here to get the presignedUrl and generated Url
+    const files = formData.venueFiles;
+    if (files.length === 0) return;
 
+    // Upload images to R2 and get URLs
+    const uploadedUrls = await Promise.all(
+      files.map(async (file: File) => {
+        const res = await  handleFileUploads(file.name, file.size, file.type);
+        if (res.error || !res.presignedUrl || !res.fileName) return;
+        const { presignedUrl, fileName } = res;
+
+        await fetch(presignedUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+
+        return fileName; // Save only the final URL
+      })
+    );
+
+    // Replace the files in formData with URLs
+    const payload = {
+      ...formData,
+      venueFiles: uploadedUrls,
+    };
+    // Then i make the request normally to my server action with my data
     startTransition(() => {
-      action(formData);
+      action(payload);
     });
   }
 
@@ -71,10 +101,7 @@ export default function ListVenueForm() {
     <section className='w-full'>
       <div className='w-full xl:max-w-[1140px] mx-auto px-5 py-8 md:pt-14 md:pb-20'>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-10'
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-10'>
             <div className='grid grid-cols-1 md:grid-cols-6 gap-5'>
               <div className='md:col-span-6'>
                 <FormField
@@ -82,7 +109,9 @@ export default function ListVenueForm() {
                   name='venueFiles'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-olive !text-base !md:text-lg">Upload Compelling Images & Videos</FormLabel>
+                      <FormLabel className='text-olive !text-base !md:text-lg'>
+                        Upload Compelling Images & Videos
+                      </FormLabel>
 
                       <MyDropzone
                         value={field.value}
@@ -448,4 +477,3 @@ export default function ListVenueForm() {
     </section>
   );
 }
-

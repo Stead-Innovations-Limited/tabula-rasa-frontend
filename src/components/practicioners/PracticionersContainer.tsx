@@ -1,12 +1,12 @@
 import { User } from "@/lib/types";
-import getUsers from "@/server-actions/getUsers";
+import getPractitioners from "@/server-actions/getPractitioners";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth/next";
 import PracticionersCards from "../reusable-ui/PracticionersCard";
 import { cn } from "@/lib/utils";
 
 export default async function PracticionersContainer() {
-  const userProfiles = (await getUsers()) as User[];
+  const userProfiles = (await getPractitioners()) as User[];
   const session = await getServerSession(authOptions);
   if (!session) {
     return (

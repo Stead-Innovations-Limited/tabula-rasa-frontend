@@ -2,13 +2,13 @@ import { BsChevronRight } from "@/components/icons";
 import PracticionersCards from "../reusable-ui/PracticionersCard";
 import Link from "next/link";
 import { User } from "@/lib/types";
-import getUsers from "@/server-actions/getUsers";
+import getPractitioners from "@/server-actions/getPractitioners";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth/next";
 import { cn } from "@/lib/utils";
 
 export default async function PracticionersContainer() {
-  const userProfiles = (await getUsers()) as User[];
+  const userProfiles = (await getPractitioners()) as User[];
   const session = await getServerSession(authOptions);
   if (!session) {
     return (
@@ -34,7 +34,12 @@ export default async function PracticionersContainer() {
             <BsChevronRight />
           </Link>
         </div>
-        <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8', filteredUsers.length === 0 && '!grid-cols-1')}>
+        <div
+          className={cn(
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8",
+            filteredUsers.length === 0 && "!grid-cols-1"
+          )}
+        >
           {/* The Event Cards */}
           {filteredUsers.length !== 0 ? (
             filteredUsers.map((data, index) => (

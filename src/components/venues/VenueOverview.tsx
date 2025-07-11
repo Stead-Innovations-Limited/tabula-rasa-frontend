@@ -13,25 +13,6 @@ import VenueOverviewImageSlides from "./VenueOverviewImageSlides";
 import getVenue from "@/server-actions/getVenue";
 import { Venue } from "@/lib/types";
 
-const roomData = [
-  {
-    roomName: "Room 1",
-    location: "Tabula Rasa Resort",
-    image: "/room1.webp",
-  },
-  {
-    roomName: "Room 2",
-    location: "Tabula Rasa Resort",
-    image: "/room2.webp",
-  },
-  {
-    roomName: "Room 3",
-    location: "Tabula Rasa Resort",
-    image: "/room1.webp",
-  },
-];
-
-
 export default async function VenueOverview({venueId}: {venueId: string}) {
   const venueData = await getVenue(venueId) as Venue;
 
@@ -40,7 +21,7 @@ export default async function VenueOverview({venueId}: {venueId: string}) {
       <div className="w-full p-5 lg:px-10 xl:max-w-[1140px] mx-auto font-nunito">
         <Card className='py-0 overflow-clip !gap-0'>
               <CardHeader className='flex flex-col w-full aspect-video md:aspect-[16/7] relative !px-0'>  
-                <VenueOverviewImageSlides roomData={roomData}/>
+                <VenueOverviewImageSlides images={venueData.image_links}/>
                 <CardTitle className='sr-only'>{venueData.name}</CardTitle>
                 <CardDescription className='sr-only'>
                   {venueData.description.String}

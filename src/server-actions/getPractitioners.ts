@@ -6,8 +6,7 @@ import { tryCatch } from "@/utils/tryCatch";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
-
-export default async function getUsers() {
+export default async function getPractitioners() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -22,7 +21,7 @@ export default async function getUsers() {
 
     const response = await tryCatch(async () => {
       return await axios.get(
-        `https://tabula-rasa-backend.up.railway.app/users/`,
+        `https://tabula-rasa-backend.up.railway.app/users/practitioners`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
