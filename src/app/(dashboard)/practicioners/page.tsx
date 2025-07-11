@@ -6,7 +6,7 @@ export default function page() {
     <>
       <DashboardBanner />
       <PractitionerContainer />
-      
+  
     </>
   )
 }

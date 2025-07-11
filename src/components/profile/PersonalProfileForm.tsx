@@ -23,6 +23,7 @@ import personalProfileAction from "@/server-actions/personalProfileAction";
 import setAccountToBusiness from "@/server-actions/setAccountToBusiness";
 import { UserData } from "@/app/page";
 import { useSession } from "next-auth/react";
+import useToast from "@/hooks/useToast";
 
 const schema = z.object({
   firstname: z.string().min(1, "First name is required"),
@@ -92,16 +93,9 @@ export default function PersonalProfileForm({
 
   };
 
+  useToast(state);
+
   useEffect(() => {
-    if (state?.error) {
-      toast.error(state.message, {
-        classNames: {
-          toast: "!text-red-500",
-          title: "!text-red-500",
-          description: "!text-red-500",
-        },
-      });
-    }
 
     if (state?.success) {
       // If there were no edits, do nothing
@@ -124,14 +118,6 @@ export default function PersonalProfileForm({
       form.reset({
         firstname: state.data.firstname,
         lastname: state.data.lastname,
-      });
-
-      toast.success(state.message, {
-        classNames: {
-          toast: "!text-green-700",
-          title: "!text-green-700",
-          description: "!text-green-700",
-        },
       });
     }
   }, [form, update, state, session]);
