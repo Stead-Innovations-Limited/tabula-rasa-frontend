@@ -3,6 +3,7 @@ import { alex, nunito, roboto } from "@/components/fonts";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import SessionProviders from "@/app/SessionProviders";
+import { HeroUIProviders } from "./HeroUIProviders";
 
 export const metadata: Metadata = {
   title: "Tabula Rasa",
@@ -19,7 +20,9 @@ export default function RootLayout({
       <body
         className={`${alex.variable} ${nunito.variable} ${roboto.variable} antialiased`}
       >
-        <SessionProviders>{children}</SessionProviders>
+        <SessionProviders>
+          <HeroUIProviders>{children}</HeroUIProviders>
+        </SessionProviders>
         <Toaster />
       </body>
     </html>
