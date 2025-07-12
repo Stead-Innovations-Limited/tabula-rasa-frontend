@@ -12,6 +12,7 @@ export interface UserData {
   email: string,
   firstName: string,
   lastName: string,
+  profileImage: string,
   roles: string,
   token?: string,
 }

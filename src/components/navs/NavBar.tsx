@@ -20,6 +20,7 @@ async function NavBar() {
     email: session?.user?.email,
     firstName: session?.user?.firstName,
     lastName: session?.user?.lastName,
+    profileImage: session?.user?.profileImage || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
     roles: session?.user?.roles,
     token: session.sessionToken,
   }: undefined;
@@ -41,7 +42,7 @@ async function NavBar() {
             <Popover>
               <PopoverTrigger>
                 <AvatarComponent
-                  imgUrl='https://github.com/shadcn.png'
+                  imgUrl={userData.profileImage}
                   firstname={userData.firstName}
                   lastname={userData.lastName}
                 />

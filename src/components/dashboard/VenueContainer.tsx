@@ -6,7 +6,14 @@ import { Venue } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export default async function VenueContainer() {
-  const venues = (await getVenues()) as Venue[];
+  const venues = (await getVenues()) as Venue[] | { error: boolean; errorData?: string; message?: string };
+  if (!Array.isArray(venues)) {
+    return (
+      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
+        {venues.message || "Failed to fetch venues."}
+      </div>
+    );
+  }
 
   return (
     <section className='w-full mb-8'>
@@ -23,7 +30,7 @@ export default async function VenueContainer() {
         </div>
         <div className={cn(`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8`, venues.length === 0 && '!grid-cols-1')}>
           {/* The Venue Cards */}
-          {venues.length !== 0 ? (
+          {venues.length > 0 ? (
             venues.map((venue, index) => (
               <VenueCards
                 key={index}

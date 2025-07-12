@@ -4,7 +4,14 @@ import EventCards from "../reusable-ui/EventCards";
 import { cn } from "@/lib/utils";
 
 export default async function EventsContainer() {
-  const events = (await getEvents()) as Event[];
+  const events = (await getEvents()) as Event[] | { error: boolean; errorData?: string; message?: string };
+  if (!Array.isArray(events)) {
+    return (
+      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
+        {events.message || "Failed to fetch events."}
+      </div>
+    ); 
+  };
 
   return (
     <section className='w-full mb-8'>
@@ -19,7 +26,7 @@ export default async function EventsContainer() {
           )}
         >
           {/* The Event Cards */}
-          {events.length !== 0 ? (
+          {events.length > 0 ? (
             events.map((event: Event, index: number) => (
               <EventCards
                 key={index}

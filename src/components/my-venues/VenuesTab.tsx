@@ -25,7 +25,7 @@ import Link from "next/link";
 
 export default async function VenuesTab() {
   const venues = await getMyVenues() as Venue[];
-
+  console.log(venues, "Venues fetched in VenuesTab");
   const openVenues = venues.filter(ele => ele.is_available.Bool)
   const closedVenues = venues.filter(ele => !ele.is_available.Bool);
 

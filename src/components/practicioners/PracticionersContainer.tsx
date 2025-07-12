@@ -6,7 +6,14 @@ import PracticionersCards from "../reusable-ui/PracticionersCard";
 import { cn } from "@/lib/utils";
 
 export default async function PracticionersContainer() {
-  const userProfiles = (await getPractitioners()) as User[];
+  const userProfiles = (await getPractitioners()) as User[] | { error: boolean; errorData?: string; message?: string };
+  if(!Array.isArray(userProfiles)) {
+    return (
+      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
+        {userProfiles.message || "Failed to fetch Practitioners."}
+      </div>
+    );
+  }
   const session = await getServerSession(authOptions);
   if (!session) {
     return (
@@ -32,7 +39,7 @@ export default async function PracticionersContainer() {
           )}
         >
           {/* The Event Cards */}
-          {filteredUsers.length !== 0 ? (
+          {filteredUsers.length > 0 ? (
             filteredUsers.map((data, index) => (
               <PracticionersCards
                 key={index}

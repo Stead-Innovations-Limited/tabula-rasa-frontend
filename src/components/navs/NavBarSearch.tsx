@@ -15,14 +15,15 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import UserDashboardMenu from "../Menus/UserDashboardMenu";
-import { UserData } from "@/app/page";
 import MyPagesDropMenu from "../Menus/MyPagesDropMenu";
 import BusinessDashboardMenu from "../Menus/BusinessDashboardMenu";
+import { useSession } from "next-auth/react";
 
 
-export default function FullUserNavBarSearch({userData}: { userData: UserData}) {
+export default function FullUserNavBarSearch() {
   const pathname = usePathname();
-
+  const { data: session } = useSession();
+  const userData = session?.user;
   return (
     <div className='w-full bg-olive'>
       <header className='w-full xl:max-w-[1140px] mx-auto flex flex-row justify-between items-center p-5 lg:px-5 text-white'>
@@ -38,7 +39,7 @@ export default function FullUserNavBarSearch({userData}: { userData: UserData}) 
         </div>
 
         <nav className='flex items-center gap-8 font-roboto font-normal text-2xl'>
-          {userData.roles !== "Personal Account" && <div className='hidden md:block'>
+          {userData && userData.roles !== "Personal Account" && <div className='hidden md:block'>
             <Popover>
               <PopoverTrigger asChild>
                 <HiPlus className='size-6' />
@@ -65,13 +66,13 @@ export default function FullUserNavBarSearch({userData}: { userData: UserData}) 
             <Popover>
               <PopoverTrigger>
                 <AvatarComponent
-                  imgUrl='https://github.com/shadcn.png'
-                  firstname={userData.firstName}
-                  lastname={userData.lastName}
+                  imgUrl={userData?.profileImage || undefined}
+                  firstname={userData?.firstName || ""}
+                  lastname={userData?.lastName || ""}
                 />
               </PopoverTrigger>
               <PopoverContent>
-                {userData.roles === "Personal Account" ? <UserDashboardMenu userData={userData}/>: <BusinessDashboardMenu userData={userData}/>}
+                {userData && (userData.roles === "Personal Account" ? <UserDashboardMenu userData={userData}/>: <BusinessDashboardMenu userData={userData}/>)}
               </PopoverContent>
             </Popover>
           </Link>

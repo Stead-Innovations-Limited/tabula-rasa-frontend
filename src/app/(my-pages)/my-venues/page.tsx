@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import VenuesBar from "@/components/my-venues/VenuesBar";
 import VenuesTab from "@/components/my-venues/VenuesTab";
 

@@ -17,6 +17,7 @@ interface LoginResponse {
     id: string;
     bio: { String: string; Valid: boolean };
     phone_no: { String: string; Valid: boolean };
+    image_link: { String: string; Valid: boolean };
     country: { String: string; Valid: boolean };
     address: { String: string; Valid: boolean };
     experience: { Int32: number; Valid: boolean };
@@ -34,6 +35,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
+  profileImage: string
   roles: string;
   token: string;
   refreshToken: string;
@@ -88,6 +90,7 @@ export const authOptions: NextAuthOptions = {
           email: data.user.email,
           firstName: data.user.firstname,
           lastName: data.user.lastname,
+          profileImage: data.profile.image_link.String || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
           roles: data.profile.roles,
           // roles: "Business Account",
           token: data.access_token,
@@ -113,6 +116,7 @@ export const authOptions: NextAuthOptions = {
           email: u.email,
           firstName: u.firstName,
           lastName: u.lastName,
+          profileImage: u.profileImage,
           roles: u.roles,
         };
       }

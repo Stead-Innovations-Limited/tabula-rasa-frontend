@@ -17,13 +17,14 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { Button } from "@/components/ui/button";
-import PersonalImagePicker from "../reusable-ui/PersonalImagePicker";
+// import PersonalImagePicker from "../reusable-ui/PersonalImagePicker";
 import { AiOutlineLoading3Quarters, BsChevronRight } from "@/components/icons";
 import personalProfileAction from "@/server-actions/personalProfileAction";
 import setAccountToBusiness from "@/server-actions/setAccountToBusiness";
 import { UserData } from "@/app/page";
 import { useSession } from "next-auth/react";
 import useToast from "@/hooks/useToast";
+import ProfileImagePicker from "../reusable-ui/ProfileImagePicker";
 
 const schema = z.object({
   firstname: z.string().min(1, "First name is required"),
@@ -161,7 +162,8 @@ export default function PersonalProfileForm({
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-10'>
-            <PersonalImagePicker />
+            {/* <PersonalImagePicker /> */}
+            <ProfileImagePicker />
             <hr className='border-olive w-full' />
             <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
               <FormField

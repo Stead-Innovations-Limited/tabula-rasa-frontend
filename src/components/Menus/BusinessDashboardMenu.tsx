@@ -24,16 +24,15 @@ export default function BusinessDashboardMenu({
   return (
     <div className='w-full flex flex-col gap-4 p-5 z-50 bg-white rounded-2xl shadow-lg'>
       <div className='border border-olive rounded-xl flex flex-col items-center justify-center gap-2 p-5'>
-        <div className='size-35 rounded-full overflow-clip'>
+        <div className='size-35 rounded-full overflow-clip relative'>
           <Image
-            src='/user.webp'
+            src={userData?.profileImage || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp"}
             alt='User Profile Image'
-            width={500}
-            height={300}
-            className='object-cover object-center'
+            fill
+            className='object-cover object-center scale-125'
           />
         </div>
-        <h5 className='text-xl font-medium text-black'>
+        <h5 className='text-xl font-medium text-black text-center'>
           {userData?.firstName} {userData?.lastName}
         </h5>
         {userData?.roles !== "Personal Account" && (

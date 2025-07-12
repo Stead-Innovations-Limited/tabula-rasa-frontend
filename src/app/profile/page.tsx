@@ -19,13 +19,14 @@ async function page() {
         email: session?.user?.email,
         firstName: session?.user?.firstName,
         lastName: session?.user?.lastName,
+        profileImage: session?.user?.profileImage || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
         roles: session?.user?.roles,
         token: session.sessionToken,
       }
 
   return (
     <>
-      <NavBarNoSearch userData={userData} />
+      <NavBarNoSearch />
       {userData?.roles === "Personal Account" ? (
         <>
           <PersonalBar />

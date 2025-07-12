@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { toast } from "sonner";
 
 import MyDropzone from "@/components/reusable-ui/MyDropzone";
 import { AiOutlineLoading3Quarters } from "@/components/icons";
@@ -70,7 +71,17 @@ export default function ListVenueForm() {
     // Upload images to R2 and get URLs
     const uploadedUrls = await Promise.all(
       files.map(async (file: File) => {
-        const res = await  handleFileUploads(file.name, file.size, file.type);
+        const res = await handleFileUploads(file.name, file.size, file.type);
+        // If there's an error, we show a toast
+        if (res.error) {
+          toast.error(res.error, {
+            classNames: {
+              toast: "!text-red-500",
+              title: "!text-red-500",
+              description: "!text-red-500",
+            },
+          });
+        }
         if (res.error || !res.presignedUrl || !res.fileName) return;
         const { presignedUrl, fileName } = res;
 

@@ -4,7 +4,15 @@ import VenueCards from "../reusable-ui/VenueCards";
 import { cn } from "@/lib/utils";
 
 export default async function VenueContainer() {
-  const venues = (await getVenues()) as Venue[];
+  const venues = (await getVenues()) as Venue[] | { error: boolean; errorData?: string; message?: string };;
+
+  if (!Array.isArray(venues)) {
+    return (
+      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
+        {venues.message || "Failed to fetch venues."}
+      </div>
+    );
+  }
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -18,7 +26,7 @@ export default async function VenueContainer() {
           )}
         >
           {/* The Venue Cards */}
-          {venues.length !== 0 ? (
+          {venues.length > 0 ? (
             venues.map((venue, index) => (
               <VenueCards
                 key={index}

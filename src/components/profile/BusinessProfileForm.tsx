@@ -28,12 +28,13 @@ import { AiOutlineLoading3Quarters } from "@/components/icons";
 
 import { businessProfileSchema } from "@/lib/clientDefinitions";
 import businessProfileAction from "@/server-actions/businessProfileAction";
-import BusinessImagePicker from "../reusable-ui/BusinessImagePicker";
+// import BusinessImagePicker from "../reusable-ui/BusinessImagePicker";
 import { countriesData } from "@/lib/countries";
 import { UserData } from "@/app/page";
 import { useSession } from "next-auth/react";
 import { getUserDetails } from "@/server-actions/getUserDetails";
 import { BusinessUserResponse } from "@/server-actions/getUserDetails";
+import ProfileImagePicker from "../reusable-ui/ProfileImagePicker";
 
 export default function BusinessProfileForm({
   userData,
@@ -175,7 +176,8 @@ export default function BusinessProfileForm({
       <div className='w-full xl:max-w-[1140px] mx-auto p-5 md:pt-10 md:pb-20'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-10'>
-            <BusinessImagePicker />
+            {/* <BusinessImagePicker /> */}
+            <ProfileImagePicker />
             <hr className='border-olive w-full' />
             <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
               <FormField

@@ -78,6 +78,10 @@ export default async function listVenueAction(
       pricePerHour,
     } = validatedFields.data;
 
+    if(venueFiles.length < 1) {
+      throw new Error("Please upload at least one image for the venue.");
+    }
+
     const response = await tryCatch(async () => {
       return await axios.post(
         `https://tabula-rasa-backend.up.railway.app/venues/`,{

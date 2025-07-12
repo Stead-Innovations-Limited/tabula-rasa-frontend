@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import DashboardBanner from "@/components/dashboard/DashboardBanner";
 import EventsContainer from "@/components/events/EventsContainer";
 
