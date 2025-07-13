@@ -12,7 +12,7 @@ async function page({
   return (
     <>
       <EventsOverview eventId={eventId} />
-      <SimilarEventsContainer eventId={eventId} />
+      <SimilarEventsContainer />
     </>
   )
 }
