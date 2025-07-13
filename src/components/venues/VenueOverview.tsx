@@ -9,12 +9,10 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import VenueOverviewImageSlides from "./VenueOverviewImageSlides";
-import getVenue from "@/server-actions/getVenue";
 import { Venue } from "@/lib/types";
 import SavedVenueBtn from "./SavedVenueBtn";
 
-export default async function VenueOverview({venueId, isSaved}: {venueId: string, isSaved: boolean}) {
-  const venueData = await getVenue(venueId) as Venue;
+export default async function VenueOverview({venueData, isSaved}: {venueData: Venue, isSaved: boolean}) {
 
   return (
     <section className="w-full">
@@ -28,7 +26,7 @@ export default async function VenueOverview({venueId, isSaved}: {venueId: string
                 </CardDescription>
               </CardHeader>
               <CardContent className='relative flex flex-col items-center justify-center gap-5 rounded-xl -mt-5 z-2 bg-white py-10 px-5 md:px-10 text-olive'>
-                <div className="w-full flex flex-col gap-4 sm:flex-row items-start justify-between">
+                <div className="w-full flex gap-4 flex-row items-start justify-between">
                   {/* The Event name and type div */}
                   <div className="flex flex-col gap-4">
                     <h2 className="text-olive font-nunito text-2xl lg:text-3xl font-semibold">
@@ -38,7 +36,7 @@ export default async function VenueOverview({venueId, isSaved}: {venueId: string
                       {venueData.type.String}
                     </p>
                   </div>
-                  <SavedVenueBtn isSaved={isSaved}/>
+                  <SavedVenueBtn venueId={venueData.id} isSaved={isSaved}/>
                 </div>
                 {/* The Card Details */}
                 <div className="w-full flex flex-col gap-5">

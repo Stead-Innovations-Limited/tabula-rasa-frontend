@@ -1,29 +1,88 @@
 "use client";
-import { startTransition, useState, useEffect } from "react";
+import { startTransition, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { SlHeart } from "@/components/icons";
-export default function SavedVenueBtn({isSaved}: {isSaved: boolean}) {
+import { FaHeart, SlHeart } from "@/components/icons";
+import saveVenue from "@/server-actions/saveVenue";
+import removeSavedVenue from "@/server-actions/removeSavedVenue";
+import { toast } from "sonner";
+
+const errorClass = {
+  classNames: {
+    toast: "!text-red-500",
+    title: "!text-red-500",
+    description: "!text-red-500",
+  },
+};
+
+const successClass = {
+  classNames: {
+    toast: "!text-green-700",
+    title: "!text-green-700",
+    description: "!text-green-700",
+  },
+};
+
+export default function SavedVenueBtn({
+  venueId,
+  isSaved,
+}: {
+  venueId: string;
+  isSaved: boolean;
+}) {
+  // Using useRef to prevent multiple clicks while loading
+  const loadingRef = useRef(false);
   const [saved, setSaved] = useState(isSaved);
 
-  useEffect(() => {
-    // This effect runs when the component mounts or when `saved` changes
-    if (saved) {
-      // Call an action to add this to saved venues
-    } else {
-      // Call an action to remove this from saved venues
-    }
-  }, [saved]);
+  const handleToggle = () => {
+    if (loadingRef.current) return; // Prevent multiple clicks if already loading
+
+    startTransition(async () => {
+      loadingRef.current = true;
+      if (saved) {
+        // Remove saved venue
+        const res = await removeSavedVenue(venueId);
+        if (res.error) {
+          toast.error(res.message, errorClass);
+        } else {
+          toast.success(res.message, successClass);
+          // Toggle setSaved State
+          startTransition(() => {
+            setSaved((prev) => !prev);
+          });
+        }
+        // Set loadingRef to false after the operation
+        loadingRef.current = false;
+      } else {
+        // Save venue
+        const res = await saveVenue(venueId);
+        if (res.error) {
+          toast.error(res.message, errorClass);
+        } else {
+          toast.success(res.message, successClass);
+          // Toggle setSaved State
+          startTransition(() => {
+            setSaved((prev) => !prev);
+          });
+        }
+        // Set loadingRef to false after the operation
+        loadingRef.current = false;
+      }
+    });
+  };
 
   return (
     <>
       {/* The Save button to adding the event to Saved List */}
       <div className=''>
-        <Button onClick={() => {
-          startTransition(() => {
-            setSaved((prev) => !prev);
-          });
-        }} className='bg-olive text-white hover:bg-darkolive rounded-full size-12 items-center justify-center'>
-          <SlHeart className='size-6' />
+        <Button
+          onClick={handleToggle}
+          className='bg-olive text-white hover:bg-darkolive rounded-full size-12 items-center justify-center'
+        >
+          {isSaved ? (
+            <FaHeart className='size-6' />
+          ) : (
+            <SlHeart className='size-6' />
+          )}
         </Button>
       </div>
     </>

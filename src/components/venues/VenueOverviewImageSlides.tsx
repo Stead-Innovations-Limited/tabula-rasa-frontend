@@ -23,6 +23,7 @@ export default function VenueOverviewImageSlides({
               src={img}
               alt={img + index}
               fill={true}
+              priority={true}
               className='absolute object-cover object-center'
             />
           </CarouselItem>
