@@ -1,104 +1,119 @@
 "use client";
 
 import { z } from "zod/v4";
+import { parseDateTime } from "@internationalized/date";
 
-export const listVenueSchema = z.object({
-  venueFiles: z.any(),
-  venueName: z
-    .string()
-    .min(2, { message: "Venue name cannot be less than 2 characters" })
-    .max(80, { message: "Venue name cannot be 80 characters long." }),
-  venueType: z
-    .string()
-    .min(5, { message: "Venue type cannot be less than 2 characters" })
-    .max(40, { message: "Venue type cannot be 80 characters long." }),
-  venueDescription: z
-    .string()
-    .min(10, {
-      message: "Venue description must be at least 10 characters long",
-    })
-    .max(500, {
-      message: "Venue description cannot be more than 500 characters long.",
+export const listVenueSchema = z
+  .object({
+    venueFiles: z.any(),
+    venueName: z
+      .string()
+      .min(2, { message: "Venue name cannot be less than 2 characters" })
+      .max(80, { message: "Venue name cannot be 80 characters long." }),
+    venueType: z
+      .string()
+      .min(5, { message: "Venue type cannot be less than 2 characters" })
+      .max(40, { message: "Venue type cannot be 80 characters long." }),
+    venueDescription: z
+      .string()
+      .min(10, {
+        message: "Venue description must be at least 10 characters long",
+      })
+      .max(500, {
+        message: "Venue description cannot be more than 500 characters long.",
+      }),
+    location: z
+      .string()
+      .min(5, {
+        message: "Location cannot be less than 5 characters",
+      })
+      .max(100, {
+        message: "Location cannot be more than 100 characters long.",
+      }),
+    dimensions: z
+      .string()
+      .min(5, {
+        message: "Dimension cannot be less than 5 characters",
+      })
+      .max(100, {
+        message: "Dimension cannot be more than 100 characters long.",
+      }),
+    maxCapacity: z
+      .string()
+      .min(1, {
+        message: "Please enter the maximum capacity of the venue",
+      })
+      .max(30, {
+        message: "Maximum capacity cannot be more than 30 characters long.",
+      }),
+    facilities: z
+      .string()
+      .min(5, {
+        message: "Facilities cannot be less than 5 characters",
+      })
+      .max(500, {
+        message: "Facilities cannot be more than 500 characters long.",
+      }),
+    onSiteAccomodation: z.enum(["yes", "no"], {
+      message: "Please select a valid option for on-site accommodation",
     }),
-  location: z
-    .string()
-    .min(5, {
-      message: "Location cannot be less than 5 characters",
-    })
-    .max(100, {
-      message: "Location cannot be more than 100 characters long.",
+    roomType: z
+      .string()
+      .min(8, {
+        message: "Room type cannot be less than 8 characters",
+      })
+      .max(50, {
+        message: "Room type cannot be more than 50 characters long.",
+      }),
+    numberOfRooms: z
+      .string()
+      .min(1, {
+        message: "No of Rooms cannot be less than 1 character",
+      })
+      .max(100, {
+        message: "No of Rooms cannot be more than 100 characters long.",
+      }),
+    sleeps: z.string().min(1, {
+      message: "Please enter the number of people the venue can sleep",
     }),
-  dimensions: z
-    .string()
-    .min(5, {
-      message: "Dimension cannot be less than 5 characters",
-    })
-    .max(100, {
-      message: "Dimension cannot be more than 100 characters long.",
-    }),
-  maxCapacity: z
-    .string()
-    .min(1, {
-      message: "Please enter the maximum capacity of the venue",
-    })
-    .max(30, {
-      message: "Maximum capacity cannot be more than 30 characters long.",
-    }),
-  facilities: z
-    .string()
-    .min(5, {
-      message: "Facilities cannot be less than 5 characters",
-    })
-    .max(500, {
-      message: "Facilities cannot be more than 500 characters long.",
-    }),
-  onSiteAccomodation: z.enum(["yes", "no"], {
-    message: "Please select a valid option for on-site accommodation",
-  }),
-  roomType: z
-    .string()
-    .min(8, {
-      message: "Room type cannot be less than 8 characters",
-    })
-    .max(50, {
-      message: "Room type cannot be more than 50 characters long.",
-    }),
-  numberOfRooms: z
-    .string()
-    .min(5, {
-      message: "No of Rooms cannot be less than 5 characters",
-    })
-    .max(100, {
-      message: "No of Rooms cannot be more than 100 characters long.",
-    }),
-  sleeps: z.string().min(1, {
-    message: "Please enter the number of people the venue can sleep",
-  }),
-  bedConfiguration: z
-    .string()
-    .min(5, {
-      message: "Bed configuration cannot be less than 5 characters",
-    })
-    .max(100, {
-      message: "Bed configuration cannot be more than 100 characters long.",
-    }),
-  roomAmenities: z
-    .string()
-    .min(5, {
-      message: "Room amenities cannot be less than 5 characters",
-    })
-    .max(500, {
-      message: "Room amenities cannot be more than 500 characters long.",
-    }),
-  pricePerHour: z
-    .string()
-    .min(1, {
-      message: "Price per hour cannot be less than 5 characters",
-    })
-    .max(80, {
-      message: "Price per hour cannot be more than 80 characters long.",
-    }),
-});
+    bedConfiguration: z
+      .string()
+      .min(5, {
+        message: "Bed configuration cannot be less than 5 characters",
+      })
+      .max(100, {
+        message: "Bed configuration cannot be more than 100 characters long.",
+      }),
+    roomAmenities: z
+      .string()
+      .min(5, {
+        message: "Room amenities cannot be less than 5 characters",
+      })
+      .max(500, {
+        message: "Room amenities cannot be more than 500 characters long.",
+      }),
+    pricePerHour: z
+      .string()
+      .min(1, {
+        message: "Price per hour cannot be less than 5 characters",
+      })
+      .max(80, {
+        message: "Price per hour cannot be more than 80 characters long.",
+      }),
+  })
+  // Here i do a check to ensure that the maxCapacity, numberOfRooms and pricePerHour can be a valid number
+  .refine((data) => !isNaN(Number(data.maxCapacity)), {
+    message: "Please enter a valid capacity(number) for the venue",
+    path: ["maxCapacity"],
+  })
+  .refine((data) => !isNaN(Number(data.numberOfRooms)), {
+    message: "Please enter a valid number of rooms",
+    path: ["numberOfRooms"],
+  })
+  .refine((data) => !isNaN(Number(data.pricePerHour)), {
+    message: "Please enter a valid price per hour",
+    path: ["pricePerHour"],
+  });
 
 export const createEventSchema = z
   .object({
@@ -107,9 +122,10 @@ export const createEventSchema = z
       .string()
       .min(2, { message: "Event title cannot be less than 2 characters" })
       .max(80, { message: "Event title cannot be 80 characters long." }),
-    eventTheme: z.enum(["Retreat", "Wellness", "Mindfulness"], {
-      message: "Please select a valid event theme.",
-    }),
+    eventTheme: z
+      .string()
+      .min(2, { message: "Event theme cannot be less than 2 characters" })
+      .max(80, { message: "Event theme cannot be 80 characters long." }),
     eventDescription: z
       .string()
       .min(10, {
@@ -118,18 +134,14 @@ export const createEventSchema = z
       .max(500, {
         message: "Event description cannot be more than 500 characters long.",
       }),
-    keyActivities: z.enum(
-      ["Yoga", "Meditation", "Nutrition", "Wellness Coaching"],
-      {
-        message: "Please select at least one key activity.",
-      }
-    ),
-    targetAudience: z.enum(
-      ["All", "Adults", "Children", "Seniors", "Families"],
-      {
-        message: "Please select a valid target audience.",
-      }
-    ),
+    keyActivities: z
+      .string()
+      .min(2, { message: "Key activities cannot be less than 2 characters" })
+      .max(80, { message: "Key activities cannot be 80 characters long." }),
+    targetAudience: z
+      .string()
+      .min(2, { message: "Target Audience cannot be less than 2 characters" })
+      .max(80, { message: "Target Audience cannot be 80 characters long." }),
     location: z
       .string()
       .min(5, {
@@ -143,6 +155,12 @@ export const createEventSchema = z
     }),
     endDate: z.date({
       error: "End date is required",
+    }),
+    startTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$/, {
+      message: "Start time must be in HH:MM:SS format",
+    }),
+    endTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$/, {
+      message: "End time must be in HH:MM:SS format",
     }),
     maxParticipantsNo: z.enum(
       [
@@ -161,16 +179,35 @@ export const createEventSchema = z
     pricePerParticipant: z
       .string()
       .min(1, {
-        message: "Price per participant cannot be less than 5 characters",
+        message: "Price per participant cannot be less than 1 character",
       })
       .max(80, {
         message:
           "Price per participant cannot be more than 80 characters long.",
       }),
   })
-  .refine((data) => data.endDate > data.startDate, {
+  .refine((data) => data.endDate >= data.startDate, {
     message: "endDate must be after startDate",
     path: ["endDate"],
+  })
+  // Here i do a check to ensure that the end time is after the start time
+  .refine(
+    (data) =>
+      parseDateTime(
+        data.endDate.toISOString().split("T")[0].concat("T", data.endTime)
+      ) >
+      parseDateTime(
+        data.startDate.toISOString().split("T")[0].concat("T", data.startTime)
+      ),
+    {
+      message: "endTime must be later than startTime",
+      path: ["endTime"],
+    }
+  )
+  // Here i do a check to ensure that the price per participant can be a valid number
+  .refine((data) => !isNaN(Number(data.pricePerParticipant)), {
+    message: "Please enter a valid price per participant",
+    path: ["pricePerParticipant"],
   });
 
 export const businessProfileSchema = z.object({

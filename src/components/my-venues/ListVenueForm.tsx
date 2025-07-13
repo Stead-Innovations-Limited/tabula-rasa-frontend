@@ -66,7 +66,16 @@ export default function ListVenueForm() {
   async function onSubmit(formData: z.infer<typeof listVenueSchema>) {
     // Here what i want to do is send the file i got here to get the presignedUrl and generated Url
     const files = formData.venueFiles;
-    if (files.length === 0) return;
+    if (files.length === 0) {
+      toast.error("Please upload at least an image of the venue", {
+        classNames: {
+          toast: "!text-red-500",
+          title: "!text-red-500",
+          description: "!text-red-500",
+        },
+      });
+      return;
+    }
 
     // Upload images to R2 and get URLs
     const uploadedUrls = await Promise.all(

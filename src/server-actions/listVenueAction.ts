@@ -99,6 +99,7 @@ export default async function listVenueAction(
           sleeps,
           bed_type: bedConfiguration,
           booking_price: parseInt(pricePerHour),
+          is_available: true,
         },
         {
           headers: {
@@ -110,7 +111,6 @@ export default async function listVenueAction(
     });
 
     if (response.isError) {
-      console.log(response.errors, "response.errors");
       throw new Error(
         typeof response.errors === "string"
           ? response.errors
