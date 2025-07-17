@@ -4,8 +4,9 @@ import VenueCards from "../reusable-ui/VenueCards";
 import { cn } from "@/lib/utils";
 
 export default async function VenueContainer() {
-  const venues = (await getVenues()) as Venue[] | { error: boolean; errorData?: string; message?: string };;
-
+  const venues = (await getVenues()) as
+    | Venue[]
+    | { error: boolean; errorData?: string; message?: string };
   if (!Array.isArray(venues)) {
     return (
       <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
@@ -31,7 +32,7 @@ export default async function VenueContainer() {
               <VenueCards
                 key={index}
                 venueId={venue.id}
-                imgUrl={"/room3.webp"}
+                imgUrl={venue.image_links[0]}
                 imgAlt={venue.name}
                 venueName={venue.name}
                 venuePrice={`$${venue.booking_price.Int64}`}
