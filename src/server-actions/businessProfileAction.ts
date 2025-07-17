@@ -5,6 +5,7 @@ import { z } from "zod/v4";
 import { businessProfileSchema } from "@/lib/definitions";
 import axios from "axios";
 import { tryCatch } from "@/utils/tryCatch";
+import workSchedule from "@/lib/workSchedule";
 
 
 type BusinessProfileFormData = z.infer<typeof businessProfileSchema>;
@@ -28,9 +29,9 @@ export default async function businessProfileAction(state: BusinessProfileState 
         errors: z.flattenError(validatedFields.error).fieldErrors,
       };
     }
-    const { email, phone, serviceAddress, expertiseArea, professionalExperience, businessRate, country, bio, token, userId } = validatedFields.data;
+    const { phone, serviceAddress, expertiseArea, professionalExperience, businessRate, country, bio, token, userId } = validatedFields.data;
 
-    console.log(email);
+
 
     // Here you would typically handle the business profile logic, such as calling an API
     const response = await tryCatch(async () => {
@@ -44,6 +45,7 @@ export default async function businessProfileAction(state: BusinessProfileState 
           rate: businessRate,
           country,
           bio,
+          working_schedule: workSchedule, // We set this data when user creates a business profile
         },
         {
           headers: {

@@ -1,15 +1,13 @@
+"use client";
+
 import { Toggle } from "@/components/ui/toggle";
-const days = [
-  { name: "Monday", value: "monday" },
-  { name: "Tuesday", value: "tuesday" },
-  { name: "Wednesday", value: "wednesday" },
-  { name: "Thursday", value: "thursday" },
-  { name: "Friday", value: "friday" },
-  { name: "Saturday", value: "saturday" },
-  { name: "Sunday", value: "sunday" },
-];
+import availabilityDaySetting from "@/hooks/useAvailability";
+import {useWorkDaysToggle} from "@/hooks/useAvailabilityDaysToggle";
+import { WorkDay } from "@/hooks/useAvailabilityDaysToggle";
 
 export default function WorkingDays() {
+
+  
   return (
     <div className='w-full'>
       <div className='w-full flex flex-col gap-4'>
@@ -28,12 +26,40 @@ export default function WorkingDays() {
 }
 
 function DayToggle() {
+  // This tells us which kind of day setting is active
+  const daySetting = availabilityDaySetting((state) => state.daySetting);
+  const workDays = useWorkDaysToggle((state) => state.workDays);
+  const setWorkDays = useWorkDaysToggle((state) => state.setWorkDays);
+
+  function handleToggle(day: string) {
+    // We prevent toggling for Saturday and Sunday if the daySetting is "custom"
+    // or if the daySetting is "everyday" we allow toggling for all days
+    // This is to ensure that the toggling logic respects the daySetting
+    if (daySetting === "everyday" || (daySetting === "custom" && day !== "saturday" && day !== "sunday")) {
+      // Toggle the is_open property for the selected day
+    setWorkDays((prev: Record<string, WorkDay>) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        is_open: !prev[day].is_open,
+      },
+    }));
+  }
+  }
   return (
     <div className='w-full flex flex-wrap md:flex-nowrap gap-4 '>
-      {days.map((day) => (
-        <Toggle variant={"outline"} aria-label={`Toggle ${day.name}`} key={day.value} value={day.value} className="md:w-full">
-          {day.name}
-        </Toggle>
+      {Object.entries(workDays).map(([key, dayObj]) => (
+        // We use the daySetting to determine which days to show
+        // If daySetting is "everyday", we show all days
+        // If daySetting is "custom", we show only the days defined in customDays
+        daySetting === "everyday" ?
+        (<Toggle variant={"outline"} aria-label={`Toggle ${key}`} key={key} value={key} pressed={dayObj.is_open} onPressedChange={() => handleToggle(key)} className="md:w-full">
+          {key}
+        </Toggle>) :
+        (<Toggle variant={"outline"} aria-label={`Toggle ${key}`} key={key} value={key} pressed={key !== "saturday" && key !== "sunday" ? dayObj.is_open : false} onPressedChange={() => handleToggle(key)} className="md:w-full">
+          {key}
+        </Toggle>)
+
       ))}
     </div>
   );

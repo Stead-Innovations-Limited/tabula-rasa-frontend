@@ -25,7 +25,7 @@ interface NullableRawMessage<T> {
   Valid: boolean;
 }
 
-interface WorkingSchedule {
+export interface WorkingSchedule {
   [day: string]: {
     is_open: boolean;
     opens_at: string;

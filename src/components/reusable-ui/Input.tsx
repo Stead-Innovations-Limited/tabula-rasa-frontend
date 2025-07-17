@@ -94,8 +94,9 @@ function BookingsFilter({ className }: { className?: string }) {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value='upcoming'>Up Coming</SelectItem>
-        <SelectItem value='done'>Done</SelectItem>
-        <SelectItem value='all'>All</SelectItem>
+        <SelectItem value='done'>Pending</SelectItem>
+        <SelectItem value='approved'>Approved</SelectItem>
+        <SelectItem value='rejected'>Rejected</SelectItem>
       </SelectContent>
     </Select>
   );
