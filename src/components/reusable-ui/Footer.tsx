@@ -21,8 +21,8 @@ function Footer() {
             {/* Links */}
             <div className='hidden md:flex flex-row gap-4 text-olive text-xl'>
               <Link href='/'>Home</Link>
-              <Link href='/about'>About Us</Link>
-              <Link href='/offerings'>Offerings</Link>
+              <Link href='/#about'>About Us</Link>
+              <Link href='/#offerings'>Offerings</Link>
             </div>
           </div>
 
@@ -54,10 +54,10 @@ function Footer() {
                 <h4 className="font-semibold text-base md:text-2xl">Business</h4>
                 <ul className="flex flex-col gap-4 text-base md:text-xl">
                   <li className="">
-                    <Link href='#' className="whitespace-nowrap">Create Business Profile</Link>
+                    <Link href='/profile' className="whitespace-nowrap">Create Business Profile</Link>
                   </li>
                   <li>
-                    <Link href='#' className="whitespace-nowrap">Create Listing</Link>
+                    <Link href='/list-venue' className="whitespace-nowrap">Create Listing</Link>
                   </li>
                 </ul>
               </div>
@@ -65,9 +65,9 @@ function Footer() {
           </div>
 
           <div className='w-full flex flex-row justify-center items-center gap-4 mb-4 md:mb-0 md:hidden text-olive text-base'>
-              <Link href='/home'>Home</Link>
-              <Link href='/about'>About Us</Link>
-              <Link href='/offerings'>Offerings</Link>
+              <Link href='/'>Home</Link>
+              <Link href='/#about'>About Us</Link>
+              <Link href='/#offerings'>Offerings</Link>
             </div>
         </div>
         <Separator orientation='horizontal' className='bg-white' />

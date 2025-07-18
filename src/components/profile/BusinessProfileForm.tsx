@@ -75,7 +75,6 @@ export default function BusinessProfileForm({
     }
 
     if (state?.success) {
-      console.log("Damn successful!");
       form.reset({
         firstname: state.data.firstname,
         lastname: state.data.lastname,
@@ -123,7 +122,6 @@ export default function BusinessProfileForm({
       if ((response as BusinessUserResponse)?.error) return;
 
       const res = response as BusinessUserResponse;
-      console.log(res, "Response from getUserDetails");
       form.reset({
         firstname: userData.firstName,
         lastname: userData.lastName,

@@ -43,23 +43,17 @@ function HomeMenu({userData}: {userData: boolean}) {
           </SheetHeader>
           <nav className='mt-20 flex flex-col gap-y-2 text-[#333] font-worksans font-medium text-base'>
             <Link
-              href={"/about"}
+              href={"/#about"}
               className={cn(
                 "px-6 py-3"
-                //   {
-                //   "text-purple-500": "about" == activeSection,
-                // }
               )}
             >
               About
             </Link>
             <Link
-              href={"/"}
+              href={"/#offerings"}
               className={cn(
                 "px-6 py-3"
-                //   {
-                //   "text-purple-500": "services" == activeSection,
-                // }
               )}
             >
               Offerings
@@ -68,9 +62,6 @@ function HomeMenu({userData}: {userData: boolean}) {
               href={"/"}
               className={cn(
                 "px-6 py-3"
-                //   {
-                //   "text-purple-500": "certifications" == activeSection,
-                // }
               )}
             >
               Contact

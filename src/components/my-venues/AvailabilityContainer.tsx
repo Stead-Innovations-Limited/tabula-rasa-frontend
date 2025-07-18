@@ -1,22 +1,22 @@
 "use client";
-import { useWorkDaysToggle } from "@/hooks/useAvailabilityDaysToggle";
 import { Button } from "../ui/button";
-import WorkingDays from "./WorkingDays";
-import WorkingHours from "./WorkingHours";
-import saveWorkSchedule from "@/server-actions/saveWorkSchedule";
+import WorkingDays from "@/components/my-venues/WorkingDays";
+import WorkingHours from "@/components/my-venues/WorkingHours";
+import saveVenueSchedule from "@/server-actions/saveVenueSchedule";
 import { toast } from "sonner";
 import { parseTime} from "@internationalized/date";
 import { WorkDays } from "@/hooks/useAvailabilityDaysToggle";
 import { useEffect } from "react";
+import useVenueSchedule from "@/hooks/useVenueSchedule";
 
-export default function AvailabilityContainer({workSchedule}:{workSchedule: WorkDays}) {
-  const setInitWorkDays = useWorkDaysToggle((state) => state.setInitWorkDays);
+export default function AvailabilityContainer({venueId, venueSchedule: fetchedVenueSchedule}:{venueId: string, venueSchedule: WorkDays | null}) {
+  const setInitVenueSchedule = useVenueSchedule((state) => state.setInitVenueSchedule);
   // Initialize the work schedule when the component mounts
   useEffect(() => {
-    setInitWorkDays(workSchedule);
-  }, [setInitWorkDays, workSchedule]);
+    setInitVenueSchedule(fetchedVenueSchedule);
+  }, [setInitVenueSchedule, fetchedVenueSchedule]);
 
-  const workDays = useWorkDaysToggle((state) => state.workDays);
+  const venueSchedule = useVenueSchedule((state) => state.venueSchedule);
 
   return (
     <section className='w-full'>
@@ -26,7 +26,7 @@ export default function AvailabilityContainer({workSchedule}:{workSchedule: Work
             onClick={async () => {
               // We try to find any day that has an invalid time setting
               // If any day has an invalid time setting, we show an error toast
-              const inValidDays = Object.entries(workDays).find(
+              const inValidDays = Object.entries(venueSchedule).find(
                 // Key is not really used here, but we keep it for clarity
                 // We check if the opens_at time is after closes_at time
                 ([key, day]) => key && day.opens_at && day.closes_at && parseTime(day.opens_at).compare(parseTime(day.closes_at)) > 1 
@@ -44,7 +44,7 @@ export default function AvailabilityContainer({workSchedule}:{workSchedule: Work
                 });
                 return;
               }
-              const result = await saveWorkSchedule(workDays);
+              const result = await saveVenueSchedule(venueId, venueSchedule);
               if (result.error) {
                 // Display error toast
                 toast.error(result.message, {

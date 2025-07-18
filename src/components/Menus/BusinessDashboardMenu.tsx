@@ -57,7 +57,7 @@ export default function BusinessDashboardMenu({
           Reservations
         </Link>
         <Link
-          href='/bookings'
+          href='/availability'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
         >
           <LuCalendarDays className='size-5' />

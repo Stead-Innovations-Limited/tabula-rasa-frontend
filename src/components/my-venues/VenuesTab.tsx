@@ -25,7 +25,6 @@ import Link from "next/link";
 
 export default async function VenuesTab() {
   const venues = await getMyVenues() as Venue[];
-  console.log(venues, "Venues fetched in VenuesTab");
   const openVenues = venues.filter(ele => ele.is_available.Bool)
   const closedVenues = venues.filter(ele => !ele.is_available.Bool);
 
@@ -48,7 +47,7 @@ export default async function VenuesTab() {
             {
               openVenues.length > 0 ? (
                 openVenues.map((venue, index) => (
-                  <VenueCards index={index} key={venue.id} venueData={venue} />
+                  <VenueCards index={index} key={venue.id} venueData={venue} state="open"/>
                 ))
               ) : (
                 <div className='flex justify-center items-center text-center text-xl text-gray-500'>No open venues available.</div>
@@ -67,7 +66,7 @@ export default async function VenuesTab() {
             {
               closedVenues.length > 0 ? (
                 closedVenues.map((venue, index) => (
-                  <VenueCards index={index} key={venue.id} venueData={venue} />
+                  <VenueCards index={index} key={venue.id} venueData={venue} state="closed" />
                 ))
               ) : (
                 <div className='flex justify-center items-center text-center text-xl text-gray-500'>No closed venues available.</div>
@@ -80,7 +79,7 @@ export default async function VenuesTab() {
   );
 }
 
-function VenueCards({ index, venueData }: { index: number, venueData: Venue }) {
+function VenueCards({ index, venueData, state }: { index: number, venueData: Venue, state: string }) {
   return (
     <Card
       className={cn(
@@ -90,8 +89,8 @@ function VenueCards({ index, venueData }: { index: number, venueData: Venue }) {
     >
       <CardHeader className='w-full md:w-64 aspect-square md:aspect-[3/2] relative rounded-xl overflow-clip'>
         <Image
-          src='/room1.webp'
-          alt='Venue Image'
+          src={ venueData.image_links[0] || '/room1.webp'}
+          alt={`Image of ${venueData.name}`}
           fill={true}
           className='absolute object-cover object-center'
         />
@@ -121,7 +120,7 @@ function VenueCards({ index, venueData }: { index: number, venueData: Venue }) {
         </div>
       </CardContent>
       <CardFooter className='hidden md:flex'>
-        <VenueCardPopOverMenu venueId={venueData.id}/>
+        <VenueCardPopOverMenu venueId={venueData.id} state={state}/>
       </CardFooter>
     </Card>
   );

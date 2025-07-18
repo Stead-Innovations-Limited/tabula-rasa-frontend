@@ -23,7 +23,9 @@ export default function FullBusinessNavBarSearch() {
   return (
     <div className='w-full bg-olive'>
       <header className='w-full xl:max-w-[1140px] mx-auto flex flex-row justify-between items-center p-5 lg:px-5 text-white'>
-        <h1 className='font-alex text-3xl lg:text-5xl'>Tabula Rasa</h1>
+        <h1 className='font-alex text-3xl lg:text-5xl'>
+          <Link href={"/"}>Tabula Rasa</Link>
+        </h1>
         <nav className='flex items-center gap-8 font-roboto font-normal text-2xl'>
           {userData && userData.roles !== "Personal Account" && <div className='hidden md:block'>
             <Popover>

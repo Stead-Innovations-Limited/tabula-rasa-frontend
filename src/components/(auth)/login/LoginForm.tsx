@@ -107,7 +107,9 @@ export default function LoginForm() {
             },
           });
 
-          router.push("/dashboard");
+          // router.push("/dashboard");
+          // Due to deployments inactivities, router.push seesm not to work
+          window.location.href = "/dashboard"; // Redirect to dashboard 
         }
       })();
     }

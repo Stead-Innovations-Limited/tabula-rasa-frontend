@@ -5,9 +5,8 @@ import axios from "axios";
 import { tryCatch } from "@/utils/tryCatch";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { User } from "@/lib/types";
-
-export default async function getWorkSchedule() {
+import { revalidatePath } from "next/cache";
+export default async function openOrCloseVenue(venueId: string, state: boolean) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -15,14 +14,16 @@ export default async function getWorkSchedule() {
       !session ||
       !(session as Session & { sessionToken?: string }).sessionToken
     ) {
-      throw new Error("Token is required to fetch work schedule.");
+      throw new Error("Token is required to close this venue.");
     }
 
     const token = session.sessionToken;
 
     const response = await tryCatch(async () => {
-      return await axios.get(
-        `https://tabula-rasa-backend.up.railway.app/users/me`,
+      return await axios.patch(
+        `https://tabula-rasa-backend.up.railway.app/venues/${venueId}`,{
+          is_available: state,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -39,13 +40,17 @@ export default async function getWorkSchedule() {
           : response.errors.join(", ")
       );
     }
-    const user = response.data as User;
-    return user.working_schedule.RawMessage;
+    // Revalidate the path to ensure the latest data is fetched
+    revalidatePath(`/my-venues/${venueId}`);
+    return {
+      error: false,
+      message: "Venue closed successfully.",
+    };
   } catch (error) {
     return {
       error: true,
       errorData: error,
-      message: "Failed to fetch work schedule.",
+      message: "Failed to close venue.",
     };
   }
 }
