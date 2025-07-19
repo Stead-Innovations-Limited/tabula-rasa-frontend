@@ -12,13 +12,14 @@ export default function AvatarComponent({
   lastname,
 }: AvatarProps) {
    
+  const name = firstname.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase()
   return (
     <Avatar
       className='cursor-pointer'
     >
-      <AvatarImage src={imgUrl} alt='@shadcn' />
+      <AvatarImage src={imgUrl} alt={`Profile picture for ${name}`} />
       <AvatarFallback>
-        {firstname.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase()}
+        {name}
       </AvatarFallback>
     </Avatar>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
@@ -34,13 +34,34 @@ import { listVenueSchema } from "@/lib/clientDefinitions";
 import listVenueAction from "@/server-actions/listVenueAction";
 import handleFileUploads from "@/server-actions/handleFileUploads";
 
-import useToast from "@/hooks/useToast";
 
 export default function ListVenueForm() {
   const router = useRouter();
   const [state, action, isPending] = useActionState(listVenueAction, undefined);
 
-  useToast(state, undefined, () => router.back());
+  useEffect(() => {
+      if (state?.error) {
+        toast.error(state.message, {
+          classNames: {
+            toast: "!text-red-500",
+            title: "!text-red-500",
+            description: "!text-red-500",
+          },
+        });
+      }
+  
+      if (state?.success) {
+        toast.success(state.message, {
+          classNames: {
+            toast: "!text-green-700",
+            title: "!text-green-700",
+            description: "!text-green-700",
+          },
+        });
+  
+        router.push("/dashboard");
+      }
+    }, [state, router])
 
   const form = useForm<z.infer<typeof listVenueSchema>>({
     resolver: zodResolver(listVenueSchema),
@@ -83,15 +104,16 @@ export default function ListVenueForm() {
         const res = await handleFileUploads(file.name, file.size, file.type);
         // If there's an error, we show a toast
         if (res.error) {
-          toast.error(res.error, {
+          toast.error(res.message, {
             classNames: {
               toast: "!text-red-500",
               title: "!text-red-500",
               description: "!text-red-500",
             },
           });
+          return false;
         }
-        if (res.error || !res.presignedUrl || !res.fileName) return;
+        if (res.error || !res.presignedUrl || !res.fileName) return false;
         const { presignedUrl, fileName } = res;
 
         await fetch(presignedUrl, {
@@ -106,10 +128,14 @@ export default function ListVenueForm() {
       })
     );
 
+    // We remove all instances of failed uploads
+    const parsedUploads = uploadedUrls.filter(ele => ele !== false);
+    if(parsedUploads.length < 1) return;
+
     // Replace the files in formData with URLs
     const payload = {
       ...formData,
-      venueFiles: uploadedUrls,
+      venueFiles: parsedUploads,
     };
     // Then i make the request normally to my server action with my data
     startTransition(() => {

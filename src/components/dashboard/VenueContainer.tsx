@@ -6,15 +6,15 @@ import { Venue } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export default async function VenueContainer() {
-  const venues = (await getVenues()) as Venue[] | { error: boolean; errorData?: string; message?: string };
-  if (!Array.isArray(venues)) {
+  const venuesData = (await getVenues()) as Venue[] | { error: boolean; errorData?: string; message?: string };
+  if (!Array.isArray(venuesData)) {
     return (
       <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
-        {venues.message || "Failed to fetch venues."}
+        {venuesData.message || "Failed to fetch venues."}
       </div>
     );
   }
-
+  const venues = venuesData.filter(ele => ele.is_available.Bool);
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,7 +24,7 @@ interface EventProps {
 
 export default function PracticionersCards({
   userId,
-  imgUrl = "/user.webp",
+  imgUrl,
   imgAlt = "A serene saturday event image",
   name = "Micheal Stewart",
   specialty = "Vinyasa Yoga",
@@ -29,7 +32,9 @@ export default function PracticionersCards({
   address = "Wellness Center, Lagos",
 }: EventProps) {
 
-  const imgUrlString = imgUrl || "/user.webp";
+  const fallbackImgUrl = "/avatar.jpg"
+
+  const imgUrlString = imgUrl?.trim() && !imgUrl.includes("example.com") ? imgUrl :"/avatar.jpg";
   const imgAltString = imgAlt || "A serene saturday event image";
   const starsCount = stars > 5 ? 5 : stars < 0 ? 0 : stars; // Ensure stars are between 0 and 5
   const starsData = Math.round(starsCount); // Round to the nearest whole number
@@ -37,13 +42,15 @@ export default function PracticionersCards({
   const specialtyString = specialty || "Vinyasa Yoga"; // Fallback for specialty if not provided
   const addressString = address || "Wellness Center, Lagos"; // Fallback for address if not provided
 
+  const [imgSrc, setImgSrc] = useState(imgUrlString)
+
   return (
     <Card className='py-0 overflow-clip !gap-0'>
       <CardHeader className='w-full aspect-square relative'>
         <Link href={`/practicioners/${userId}`} className="relative z-5 my-5 ml-auto bg-olive size-10 rounded-xl flex items-center justify-center">
           <GoArrowUpRight className="size-5 text-white" />
         </Link>
-        <Image src={imgUrlString} alt={imgAltString} fill={true} className='absolute object-cover object-center' />
+        <Image src={imgSrc} alt={imgAltString} fill={true} className='absolute object-cover object-center' onError={() => setImgSrc(fallbackImgUrl)}/>
         <CardTitle className='sr-only'>{nameString}</CardTitle>
         <CardDescription className='sr-only'>
           Event card about the {nameString} event.
