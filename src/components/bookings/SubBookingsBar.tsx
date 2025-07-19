@@ -1,5 +1,5 @@
 import SubBookingsNav from "../navs/SubBookingsNav"
-export default function SubBookingsBar() {
+export default function SubBookingsBar({venueId}: {venueId: string}) {
   return (
     <div className="w-full bg-linear-to-r from-olivewhite to-olive">
       <div className="w-full xl:max-w-[1140px] mx-auto p-5 pb-0">
@@ -11,7 +11,7 @@ export default function SubBookingsBar() {
             View, update, and organize all your upcoming and past appointments, sessions, or reservations in one convenient place.
           </p>
         </div>
-        <SubBookingsNav />
+        <SubBookingsNav venueId={venueId} />
       </div>
     </div>
   )

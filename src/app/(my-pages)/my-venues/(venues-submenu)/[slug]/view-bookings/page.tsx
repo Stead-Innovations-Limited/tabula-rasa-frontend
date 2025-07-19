@@ -1,9 +1,14 @@
 import SubBookingsContainer from "@/components/bookings/SubBookingsContainer";
 
-export default function page() {
+export default async function page({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
   return (
     <>
-      <SubBookingsContainer/>
+      <SubBookingsContainer venueId={slug} />
     </>
   )
 }
