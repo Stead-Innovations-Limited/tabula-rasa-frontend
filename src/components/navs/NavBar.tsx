@@ -35,7 +35,7 @@ async function NavBar() {
         <nav className='hidden lg:flex gap-10 items-center font-roboto font-normal text-2xl text-olive'>
           <Link href='/#about'>About</Link>
           <Link href='/#offerings'>Offerings</Link>
-          <Link href='/#'>Contact</Link>
+          <Link href='/contact'>Contact</Link>
         </nav>
         <div className='hidden lg:block'>
           {userData ? (

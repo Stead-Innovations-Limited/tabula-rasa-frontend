@@ -489,3 +489,15 @@ export const createEventSchema = z
     message: "Please enter a valid price per participant",
     path: ["pricePerParticipant"],
   });
+
+export const contactSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: "Name cannot be less than 2 characters" })
+    .max(80, { message: "Name cannot be 80 characters long." }),
+  email: z.email({ message: "Please enter a valid email." }).trim(),
+  message: z
+    .string()
+    .min(10, { message: "Message cannot be less than 10 characters" })
+    .max(1024, { message: "Service address cannot be 1024 characters long." }),
+})

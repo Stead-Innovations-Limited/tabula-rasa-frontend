@@ -33,9 +33,9 @@ function SubscriptionForm() {
   return (
     <form action={formAction}>
 
-      <div className="relative border-0 lg:border border-solid flex flex-col gap-8 lg:gap-0 lg:flex-row items-center justify-end border-olive rounded-xl lg:h-16">
-        <Input type="email" className="lg:absolute w-full h-10 caret-olive placeholder:text-olive lg:h-full border border-solid border-olive lg:border-0" placeholder="Email Address" name="email" required/>
-        <Button className="bg-olive hover:bg-olive w-3/4 lg:w-fit text-white px-8 py-5 mr-3">
+      <div className="relative border-0 lg:border border-solid flex flex-col gap-8 lg:gap-0 lg:flex-row items-center justify-end border-olive rounded-xl lg:h-16 overflow-clip">
+        <Input type="email" className="lg:absolute z-1 w-full h-10 caret-olive placeholder:text-olive lg:h-full border border-solid border-olive lg:border-0" placeholder="Email Address" name="email" required/>
+        <Button className="relative z-2 bg-olive hover:bg-olive w-3/4 lg:w-fit text-white px-8 py-5 mr-3">
           {isPending ? (
             <>
               Loading{" "}
