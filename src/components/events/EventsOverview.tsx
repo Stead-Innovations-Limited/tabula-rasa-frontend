@@ -25,8 +25,8 @@ async function EventsOverview({ eventId }: { eventId: string }) {
         <Card className='py-0 overflow-clip !gap-0'>
           <CardHeader className='w-full aspect-video md:aspect-[16/7] relative'>
             <Image
-              src='/meditation.webp'
-              alt='Meditation Haven'
+              src={eventData.image_links[0] || "/event-pic.webp"}
+              alt={eventData.name}
               fill={true}
               className='absolute object-cover object-center'
             />

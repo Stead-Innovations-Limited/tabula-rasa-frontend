@@ -32,7 +32,7 @@ export default async function EventsContainer() {
                 key={index}
                 eventId={event.id}
                 venueId={event.venue_id}
-                imgUrl={"/event-pic.webp"}
+                imgUrl={event.image_links[0] || "/event-pic.webp"}
                 imgAlt={event.name}
                 eventName={event.name}
                 eventPrice={"$80.00"}
