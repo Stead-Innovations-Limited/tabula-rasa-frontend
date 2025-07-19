@@ -11,12 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { SlHeart } from "@/components/icons";
 import getEvent from "@/server-actions/getEvent";
 import getVenue from "@/server-actions/getVenue";
 import { Event, Venue } from "@/lib/types";
+import SavedEventBtn from "./SavedEventBtn";
 
-async function EventsOverview({ eventId }: { eventId: string }) {
+async function EventsOverview({ eventId, isSaved }: { eventId: string; isSaved: boolean }) {
   const eventData = await getEvent(eventId) as Event;
   const venueData = await getVenue(eventData.venue_id) as Venue;
   return (
@@ -48,11 +48,7 @@ async function EventsOverview({ eventId }: { eventId: string }) {
                 </p>
               </div>
               {/* The Save button to adding the event to Saved List */}
-              <div className=''>
-                <Button className='bg-olive text-white hover:bg-darkolive rounded-full size-12 items-center justify-center'>
-                  <SlHeart className='size-6' />
-                </Button>
-              </div>
+              <SavedEventBtn eventId={eventId} isSaved={isSaved} />
             </div>
             {/* The Card Details */}
             <div className='w-full flex flex-col gap-5'>
