@@ -16,8 +16,11 @@ import {
 } from "@/components/icons";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import getMyEvents from "@/server-actions/getMyEvents";
 
-export default function EventsContainer() {
+export default async function EventsContainer() {
+  const eventsData = await getMyEvents();
+  console.log(eventsData, "Thod")
   return (
     <div className='w-full mb-8'>
       <div className='flex flex-col gap-6'>

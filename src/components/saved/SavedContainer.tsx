@@ -61,7 +61,7 @@ export default function SavedContainer({
   );
 }
 
-async function VenueCards({ venueId }: { venueId: string }) {
+export async function VenueCards({ venueId }: { venueId: string }) {
   const venueData = (await getVenue(venueId)) as Venue;
   if ("error" in venueData) {
     return <p>Error loading event data.</p>;
@@ -111,7 +111,7 @@ async function VenueCards({ venueId }: { venueId: string }) {
   );
 }
 
-async function EventCards({ eventId }: { eventId: string }) {
+export async function EventCards({ eventId }: { eventId: string }) {
   const eventData = (await getEvent(eventId)) as
     | Event
     | { error: boolean; errorData?: string; message?: string };

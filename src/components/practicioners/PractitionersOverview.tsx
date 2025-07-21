@@ -1,4 +1,3 @@
-import Image from "next/image";
 
 import {
   Card,
@@ -13,6 +12,7 @@ import EventsContainer from "./EventsContainer";
 import VenuesContainer from "./VenuesContainer";
 import getUserById from "@/server-actions/getUserById";
 import { User } from "@/lib/types";
+import PractitionerImageFallback from "./PractitionerImageFallback";
 
 async function PractitionersOverview({id}: {id: string}) {
   const userDetails = await getUserById(id) as User;
@@ -22,7 +22,6 @@ async function PractitionersOverview({id}: {id: string}) {
   const location = userDetails.address.String || "Lagos, Nigeria";
   const description = userDetails.bio.String || 
     "Guiding Journeys to Inner Peace & Embodied Wellness | Certified Yoga Instructor | Mindfulness Coach | Reiki Master";
-  
 
   return (
     <section className='w-full'>
@@ -34,12 +33,7 @@ async function PractitionersOverview({id}: {id: string}) {
             <div className='w-full px-5 md:px-10 flex flex-col gap-5'>
               <div className='flex flex-col gap-5 md:gap-0 md:flex-row items-start md:items-center md:justify-between -mt-15 md:-mt-24'>
                 <div className='relative  size-30 md:size-48 rounded-full overflow-hidden'>
-                  <Image
-                    src='/user.webp'
-                    alt='User Profile Image'
-                    fill={true}
-                    className='absolute object-cover object-center'
-                  />
+                  <PractitionerImageFallback imgUrl={userDetails.image_link.String} imgAlt={`Profile picture for ${userDetails.business_name.String}`} />
                 </div>
 
                 <Button className='font-roboto px-18 py-2 rounded-full text-white bg-olive hover:bg-olive md:mt-16'>
