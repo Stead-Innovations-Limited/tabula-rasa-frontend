@@ -4,6 +4,7 @@ import { Toggle } from "@/components/ui/toggle";
 import availabilityDaySetting from "@/hooks/useAvailability";
 import {useWorkDaysToggle} from "@/hooks/useAvailabilityDaysToggle";
 import { WorkDay } from "@/hooks/useAvailabilityDaysToggle";
+import { useEffect } from "react";
 
 export default function WorkingDays() {
 
@@ -31,11 +32,24 @@ function DayToggle() {
   const workDays = useWorkDaysToggle((state) => state.workDays);
   const setWorkDays = useWorkDaysToggle((state) => state.setWorkDays);
 
+  useEffect(() => {
+    // If the daySetting changes to everyday, we set all days to open
+    if (daySetting === "everyday") {
+      setWorkDays((prev: Record<string, WorkDay>) => {
+        const newDays = { ...prev };
+        Object.keys(newDays).forEach((key) => {
+          newDays[key].is_open = true;
+        });
+        return newDays;
+      });
+    }
+  }, [daySetting, setWorkDays])
+
   function handleToggle(day: string) {
     // We prevent toggling for Saturday and Sunday if the daySetting is "custom"
     // or if the daySetting is "everyday" we allow toggling for all days
     // This is to ensure that the toggling logic respects the daySetting
-    if (daySetting === "everyday" || (daySetting === "custom" && day !== "saturday" && day !== "sunday")) {
+    if (daySetting === "everyday" || (daySetting === "custom")) {
       // Toggle the is_open property for the selected day
     setWorkDays((prev: Record<string, WorkDay>) => ({
       ...prev,
@@ -52,14 +66,9 @@ function DayToggle() {
         // We use the daySetting to determine which days to show
         // If daySetting is "everyday", we show all days
         // If daySetting is "custom", we show only the days defined in customDays
-        daySetting === "everyday" ?
-        (<Toggle variant={"outline"} aria-label={`Toggle ${key}`} key={key} value={key} pressed={dayObj.is_open} onPressedChange={() => handleToggle(key)} className="md:w-full">
-          {key}
-        </Toggle>) :
-        (<Toggle variant={"outline"} aria-label={`Toggle ${key}`} key={key} value={key} pressed={key !== "saturday" && key !== "sunday" ? dayObj.is_open : false} onPressedChange={() => handleToggle(key)} className="md:w-full">
-          {key}
-        </Toggle>)
-
+        <Toggle variant={"outline"} aria-label={`Toggle ${key}`} key={key} value={key} pressed={daySetting === "everyday"? true: dayObj.is_open} onPressedChange={() => handleToggle(key)} className="md:w-full">
+          {key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}
+        </Toggle>
       ))}
     </div>
   );

@@ -36,7 +36,7 @@ export default function WorkingHourTabs() {
         </TabsContent>
         <TabsContent value="custom" className="w-full flex flex-col gap-5">
           {Object.entries(workDays).map(([key, dayObj]) => (
-            key !== "sunday" && key !== "saturday" && dayObj.is_open && <DayHourCard
+            dayObj.is_open && <DayHourCard
               key={key}
               day={key}
               dayObj={dayObj}
