@@ -9,15 +9,13 @@ import {
   FaHeart,
   HiPlus
 } from "@/components/icons";
-import AvatarComponent from "../reusable-ui/AvatarComponent";
 import { Input } from "../ui/input";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-import UserDashboardMenu from "../Menus/UserDashboardMenu";
 import MyPagesDropMenu from "../Menus/MyPagesDropMenu";
-import BusinessDashboardMenu from "../Menus/BusinessDashboardMenu";
 import { useSession } from "next-auth/react";
+import PopOverMenu from "../Menus/PopOverMenu";
 
 
 export default function FullUserNavBarSearch() {
@@ -65,18 +63,7 @@ export default function FullUserNavBarSearch() {
             <LuBell className='size-6' />
           </Link>
           <Link href='#'>
-            <Popover>
-              <PopoverTrigger>
-                <AvatarComponent
-                  imgUrl={userData?.profileImage || undefined}
-                  firstname={userData?.firstName || ""}
-                  lastname={userData?.lastName || ""}
-                />
-              </PopoverTrigger>
-              <PopoverContent>
-                {userData && (userData.roles === "Personal Account" ? <UserDashboardMenu userData={userData}/>: <BusinessDashboardMenu userData={userData}/>)}
-              </PopoverContent>
-            </Popover>
+            <PopOverMenu userData={userData} />
           </Link>
         </nav>
       </header>

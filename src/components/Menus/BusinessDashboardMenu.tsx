@@ -18,8 +18,10 @@ import { signOut } from "next-auth/react";
 
 export default function BusinessDashboardMenu({
   userData,
+  close,
 }: {
   userData: UserData;
+  close: () => void;
 }) {
   return (
     <div className='w-full flex flex-col gap-4 p-5 z-50 bg-white rounded-2xl shadow-lg'>
@@ -45,6 +47,7 @@ export default function BusinessDashboardMenu({
         <Link
           href='/profile'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+          onClick={close}
         >
           <RxPerson className='size-5' />
           My Profile
@@ -52,6 +55,7 @@ export default function BusinessDashboardMenu({
         <Link
           href='/saved'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+          onClick={close}
         >
           <GrBookmark className='size-5' />
           Reservations
@@ -59,6 +63,7 @@ export default function BusinessDashboardMenu({
         <Link
           href='/availability'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+          onClick={close}
         >
           <LuCalendarDays className='size-5' />
           My Schedule
@@ -66,6 +71,7 @@ export default function BusinessDashboardMenu({
         <Link
           href='/my-events'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+          onClick={close}
         >
           <HiOutlineTicket className='size-5' />
           My Events
@@ -73,6 +79,7 @@ export default function BusinessDashboardMenu({
         <Link
           href='/my-venues'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+          onClick={close}
         >
           <SlLocationPin className='size-5' />
           My Venues
@@ -80,6 +87,7 @@ export default function BusinessDashboardMenu({
         <Link
           href='/#'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+          onClick={close}
         >
           <PiCurrencyCircleDollar className='size-5' />
           Payments
@@ -88,6 +96,7 @@ export default function BusinessDashboardMenu({
       <Button
         className='w-full bg-olive hover:bg-olive/90 text-white rounded-md'
         onClick={async () => {
+          close(); // Close the menu before logging out
           // Handle Logout functionality
           const logOutResponse = await logoutAction();
           if (logOutResponse.success) {

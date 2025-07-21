@@ -11,8 +11,10 @@ import { signOut } from "next-auth/react";
 
 export default function UserDashboardMenu({
   userData,
+  close
 }: {
   userData?: UserData;
+  close: () => void;
 }) {
    
   return (
@@ -39,6 +41,7 @@ export default function UserDashboardMenu({
         <Link
           href='/profile'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+          onClick={close}
         >
           <RxPerson className='size-5' />
           My Profile
@@ -46,6 +49,7 @@ export default function UserDashboardMenu({
         <Link
           href='/saved'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
+          onClick={close}
         >
           <GrBookmark className='size-5' />
           Reservations
@@ -54,6 +58,7 @@ export default function UserDashboardMenu({
       <Button
         className='w-full bg-olive hover:bg-olive/90 text-white rounded-md'
         onClick={async () => {
+          close(); // Close the menu before logging out
           // Handle Logout functionality
           const logOutResponse = await logoutAction();
           if (logOutResponse.success) {

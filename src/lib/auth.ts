@@ -30,16 +30,16 @@ interface LoginResponse {
   refresh_token: string;
 }
 
-interface User {
+export interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
   profileImage: string
   roles: string;
-  token: string;
-  refreshToken: string;
-  tokenExpiration: number;
+  token?: string;
+  refreshToken?: string;
+  tokenExpiration?: number;
 }
 
 declare module "next-auth" {

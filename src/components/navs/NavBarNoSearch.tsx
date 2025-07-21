@@ -2,19 +2,17 @@
 
 import { usePathname } from "next/navigation";
 import { HiPlus, FaHeart, SlHeart, LuShoppingCart, LuBell } from "@/components/icons";
-import AvatarComponent from "../reusable-ui/AvatarComponent";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import BusinessDashboardMenu from "../Menus/BusinessDashboardMenu";
 
 import Link from "next/link";
 import MyPagesDropMenu from "../Menus/MyPagesDropMenu";
 import { cn } from "@/lib/utils";
-import UserDashboardMenu from "../Menus/UserDashboardMenu";
 import { useSession } from "next-auth/react";
+import PopOverMenu from "../Menus/PopOverMenu";
 
 export default function FullBusinessNavBarSearch() {
   const pathname = usePathname();
@@ -51,18 +49,7 @@ export default function FullBusinessNavBarSearch() {
             <LuBell className='size-6' />
           </Link>
           <Link href='#'>
-            <Popover>
-              <PopoverTrigger>
-                <AvatarComponent
-                  imgUrl={userData?.profileImage || undefined}
-                  firstname={userData?.firstName || ""}
-                  lastname={userData?.lastName || ""}
-                />
-              </PopoverTrigger>
-              <PopoverContent>
-                {userData && (userData.roles === "Personal Account" ? <UserDashboardMenu userData={userData}/>: <BusinessDashboardMenu userData={userData}/>)}
-              </PopoverContent>
-            </Popover>
+              <PopOverMenu userData={userData} />
           </Link>
         </nav>
       </header>

@@ -2,21 +2,16 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-
 import HomeMenu from "@/components/Menus/HomeMenu";
-import AvatarComponent from "../reusable-ui/AvatarComponent";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import UserDashboardMenu from "../Menus/UserDashboardMenu";
-import BusinessDashboardMenu from "../Menus/BusinessDashboardMenu";
-
-
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import PopOverMenu from "../Menus/PopOverMenu";
 
 async function NavBar() {
   const session = await getServerSession(authOptions)
    
   const userData = session ? {
+    id: session?.user?.id,
     email: session?.user?.email,
     firstName: session?.user?.firstName,
     lastName: session?.user?.lastName,
@@ -39,18 +34,7 @@ async function NavBar() {
         </nav>
         <div className='hidden lg:block'>
           {userData ? (
-            <Popover>
-              <PopoverTrigger>
-                <AvatarComponent
-                  imgUrl={userData.profileImage}
-                  firstname={userData.firstName}
-                  lastname={userData.lastName}
-                />
-              </PopoverTrigger>
-              <PopoverContent>
-                {userData.roles === "Personal Account" ? <UserDashboardMenu userData={userData}/>: <BusinessDashboardMenu userData={userData}/>}
-              </PopoverContent>
-            </Popover>
+            <PopOverMenu userData={userData} />
           ) : (
             <Button
               asChild
