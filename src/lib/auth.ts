@@ -109,11 +109,10 @@ export const authOptions: NextAuthOptions = {
         callback_url: { label: "Callback Url", type: "text" },
       },
       authorize: async (credentials) => {
-        if(credentials) console.log(credentials);
         const response = await tryCatch(
           async () =>
             await axios.get(
-              `https://tabula-rasa-backend.up.railway.app${credentials?.callback_url}`,
+              `https://tabula-rasa-backend.up.railway.app/auth/google/callback?${credentials?.callback_url}`,
             )
         );
 
