@@ -1,6 +1,6 @@
 "use client";
-import { useActionState, useEffect, startTransition } from "react";
-
+import { useActionState, useEffect, useRef, startTransition } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
@@ -41,11 +41,14 @@ export default function BusinessProfileForm({
 }: {
   userData: UserData;
 }) {
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { data: session, update } = useSession();
   const [state, action, isPending] = useActionState(
     businessProfileAction,
     undefined
   );
+  const stopperRef = useRef<boolean>(false);
+
 
   const form = useForm<z.infer<typeof businessProfileSchema>>({
     resolver: zodResolver(businessProfileSchema),
@@ -101,6 +104,7 @@ export default function BusinessProfileForm({
         bio: state.data.bio,
       });
 
+
       toast.success(state.message, {
         classNames: {
           toast: "!text-green-700",
@@ -110,6 +114,22 @@ export default function BusinessProfileForm({
       });
     }
   }, [state, form]);
+
+
+  useEffect(() => {
+    if (state?.success && stopperRef.current) {
+      // There were edits, update data
+      update({
+        user: {
+          ...session?.user,
+          roles: "Business Account"
+        },
+      });
+
+      stopperRef.current = false;
+      router.push("/dashboard");
+    }
+  }, [update, session, state, router]);
 
   useEffect(() => {
     // This useEffect fetches the user's business profile data
@@ -149,7 +169,10 @@ export default function BusinessProfileForm({
     fetchProfile();
   }, [userData, form]);
 
+  // Function to handle form submission
+  // It checks if the session token and user ID are available before proceeding.
   function onSubmit(formData: z.infer<typeof businessProfileSchema>) {
+    stopperRef.current = true;
     if (!session?.sessionToken || !session?.user.id) {
       return;
     }

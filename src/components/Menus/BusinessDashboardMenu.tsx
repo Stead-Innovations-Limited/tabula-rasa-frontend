@@ -45,7 +45,7 @@ export default function BusinessDashboardMenu({
       </div>
       <div className='flex flex-col gap-2 text-olive'>
         <Link
-          href='/profile'
+          href={userData?.roles === "Personal Account" ? "/personal-profile" : "/business-profile"}
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
           onClick={close}
         >

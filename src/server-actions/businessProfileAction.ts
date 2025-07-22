@@ -46,6 +46,7 @@ export default async function businessProfileAction(state: BusinessProfileState 
           country,
           bio,
           working_schedule: workSchedule, // We set this data when user creates a business profile
+          roles: "Business Account",
         },
         {
           headers: {
