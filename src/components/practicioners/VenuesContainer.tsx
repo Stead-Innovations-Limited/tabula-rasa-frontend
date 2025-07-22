@@ -1,33 +1,16 @@
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-// import Image from "next/image";
-// import {
-//   SlLocationPin,
-//   GoPerson,
-//   PiHouse,
-//   PiCurrencyDollarSimple,
-// } from "@/components/icons";
-// import { Button } from "../ui/button";
-// import { cn } from "@/lib/utils";
-import getMyVenues from "@/server-actions/getMyVenues";
+import getVenues from "@/server-actions/getVenues";
 import { VenueCards } from "../saved/SavedContainer";
-// import { venueData } from "@/lib/venueData";
 import { Venue } from "@/lib/types";
 
-export default async function VenuesContainer() {
-  const venuesData = (await getMyVenues()) as
+export default async function VenuesContainer({ practitionerId }: { practitionerId: string }) {
+  const venuesData = (await getVenues()) as
     | Venue[]
     | { error: boolean; errorData: string; message: string };
   if (!Array.isArray(venuesData)) {
     return <p>Error</p>;
   }
   const availableVenues = venuesData.filter(
-    (venue) => venue.is_available.Bool === true
+    (venue) => venue.is_available.Bool === true && venue.owned_by === practitionerId
   );
   return (
     <div className='w-full mb-8'>

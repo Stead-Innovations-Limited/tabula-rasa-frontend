@@ -73,8 +73,8 @@ async function PractitionersOverview({id}: {id: string}) {
             </CardDescription>
           </CardHeader>
           <CardContent className='relative flex flex-col items-center justify-center gap-5 z-2 bg-white pt-10 px-5 md:px-10 text-olive'>
-            <EventsContainer />
-            <VenuesContainer />
+            <EventsContainer practitionerId={id} />
+            <VenuesContainer practitionerId={id} />
           </CardContent>
           
         </Card>

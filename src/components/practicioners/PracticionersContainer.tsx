@@ -44,7 +44,7 @@ export default async function PracticionersContainer() {
               <PracticionersCards
                 key={index}
                 userId={data.id}
-                // imgUrl={data.imgUrl}
+                imgUrl={data.image_link.String}
                 imgAlt={data.business_name.String}
                 name={data.business_name.String}
                 specialty={data.field.String}
