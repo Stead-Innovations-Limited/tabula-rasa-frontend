@@ -8,10 +8,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter
+  CardFooter,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress"
+import { Progress } from "@/components/ui/progress";
 import { Button } from "../ui/button";
 
 import EventCardPopOverMenu from "../Menus/EventCardPopOverMenu";
@@ -23,6 +23,7 @@ import {
   LuCalendarDays,
 } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function EventsTab() {
   return (
@@ -40,13 +41,24 @@ export default function EventsTab() {
               Closed
             </TabsTrigger>
           </TabsList>
-          <TabsContent value='open' className='w-full flex flex-col gap-5 p-5 md:p-10 rounded-3xl shadow-lg'>
+          <TabsContent
+            value='open'
+            className='w-full flex flex-col gap-5 p-5 md:p-10 rounded-3xl shadow-lg'
+          >
             {Array.from({ length: 3 }, (_, index) => (
               <EventCards index={index} key={index} />
             ))}
-            <Button className='w-full md:w-3/4 md:!h-fit py-3 bg-olive hover:bg-olive/90 text-white mx-auto mt-10 text-lg'>Create New Event</Button>
+            <Button
+              className='w-full md:w-3/4 md:!h-fit py-3 bg-olive hover:bg-olive/90 text-white mx-auto mt-10 text-lg'
+              asChild
+            >
+              <Link href={"/create-event"}>Create New Event</Link>
+            </Button>
           </TabsContent>
-          <TabsContent value='closed' className='w-full flex flex-col gap-5 grayscale p-5 md:p-10 rounded-3xl shadow-lg'>
+          <TabsContent
+            value='closed'
+            className='w-full flex flex-col gap-5 grayscale p-5 md:p-10 rounded-3xl shadow-lg'
+          >
             {Array.from({ length: 2 }, (_, index) => (
               <EventCards index={index} key={index} />
             ))}
@@ -99,7 +111,7 @@ function EventCards({ index }: { index: number }) {
             <GoPerson className='size-6 text-olive' /> All Levels Welcome
           </p>
         </div>
-        <Progress value={50} className="" />
+        <Progress value={50} className='' />
       </CardContent>
       <CardFooter className='hidden md:flex'>
         <EventCardPopOverMenu />

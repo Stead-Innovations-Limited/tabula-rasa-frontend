@@ -1,16 +1,11 @@
-import SubBookingsBar from "@/components/bookings/SubBookingsBar";
 
-export default async function Layout({
+export default function MyVenuesLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ venueId: string }>;
 }) {
-  const { venueId } = await params
   return (
     <>
-      <SubBookingsBar venueId={venueId} />
       {children}
     </>
   );

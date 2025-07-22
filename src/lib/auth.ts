@@ -53,6 +53,7 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
+      id: "custom",
       name: "Login",
       credentials: {
         email: { label: "Email", type: "email" },
@@ -100,6 +101,56 @@ export const authOptions: NextAuthOptions = {
         return user;
       },
     }),
+    // Credential provider for google login
+    CredentialsProvider({
+      id: "google",
+      name: "Google",
+      credentials: {
+        callback_url: { label: "Callback Url", type: "text" },
+      },
+      authorize: async (credentials) => {
+        if(credentials) console.log(credentials);
+        const response = await tryCatch(
+          async () =>
+            await axios.get(
+              `https://tabula-rasa-backend.up.railway.app${credentials?.callback_url}`,
+            )
+        );
+
+        if (response.isError) {
+          throw new Error("Google Sign In failed");
+        }
+
+        const data = response.data as LoginResponse;
+
+        const decoded = jwtDecode<{ expired_at: string }>(data.access_token);
+
+        // If the user is not verified, we resend a mail to the user, and then we throw an error which the client will use to redirect the user, we need token and mail.
+        if(!data.user.is_verified) {
+          const errorBody = {
+            error: "EMAIL_NOT_VERIFIED",
+            email: data.user.email,
+            token: data.access_token
+          }
+          throw new Error(JSON.stringify(errorBody));
+        }
+
+        const user: User = {
+          id: data.user.id,
+          email: data.user.email,
+          firstName: data.user.firstname,
+          lastName: data.user.lastname,
+          profileImage: data.profile.image_link.String || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
+          roles: data.profile.roles,
+          // roles: "Business Account",
+          token: data.access_token,
+          refreshToken: data.refresh_token,
+          tokenExpiration: new Date(decoded.expired_at).getTime(),
+        };
+        return user;
+      },
+    }),
+
   ],
   pages: {
     signIn: "/login",

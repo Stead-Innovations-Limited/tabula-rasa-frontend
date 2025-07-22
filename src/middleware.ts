@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const publicRoutes = ["/", "/about"];
-const authRoutes = ["/login", "/signup", "/verify-email", "/pick-account"];
+const authRoutes = ["/login", "/signup", "/verify-email", "/pick-account", "/auth/google/callback"];
 
 // export default withAuth(
 //   async function middleware(req: NextRequest) {

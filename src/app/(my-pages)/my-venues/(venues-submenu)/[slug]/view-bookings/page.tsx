@@ -1,3 +1,4 @@
+import SubBookingsBar from "@/components/bookings/SubBookingsBar";
 import SubBookingsContainer from "@/components/bookings/SubBookingsContainer";
 
 export default async function page({
@@ -8,6 +9,7 @@ export default async function page({
   const { slug } = await params
   return (
     <>
+      <SubBookingsBar venueId={slug} />
       <SubBookingsContainer venueId={slug} />
     </>
   )

@@ -56,7 +56,7 @@ export default function LoginForm() {
 
     if (state?.success) {
       (async () => {
-        const result = await signIn("credentials", {
+        const result = await signIn("custom", {
           email: state.data?.email,
           password: state.data?.password,
           redirect: false,
@@ -196,8 +196,13 @@ export default function LoginForm() {
           <hr className='w-full border-olive' />
 
           <div className='flex items-center justify-center gap-2'>
-            <Button className='bg-white hover:bg-white/80 !px-8 py-6 shadow-sm shadow-olive/10'>
+            <Button className='bg-white hover:bg-white/80 !px-8 py-6 shadow-sm shadow-olive/10'
+            // onClick={async () => await signIn("google", { redirect: false })}
+            asChild
+            >
+              <Link href="https://tabula-rasa-backend.up.railway.app/auth/google/login">
               <FcGoogle className='size-6' />
+              </Link >
             </Button>
             <Button className='bg-white hover:bg-white/80 !px-8 py-6 shadow-sm shadow-olive/10'>
               <FaApple className='size-6 text-black' />

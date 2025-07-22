@@ -1,3 +1,4 @@
+import SubBookingsBar from "@/components/bookings/SubBookingsBar";
 import AvailabilityContainer from "@/components/my-venues/AvailabilityContainer";
 import { Venue } from "@/lib/types";
 import getVenue from "@/server-actions/getVenue";
@@ -17,5 +18,9 @@ export default async function page({
     return <p>Error</p>;
   }
   const venueSchedule = venueData.working_schedule.RawMessage;
-  return <AvailabilityContainer venueId={venueData.id} venueSchedule={venueSchedule} />;
+  return (
+  <>
+  <SubBookingsBar venueId={slug} />
+  <AvailabilityContainer venueId={venueData.id} venueSchedule={venueSchedule} />
+  </>);
 }
