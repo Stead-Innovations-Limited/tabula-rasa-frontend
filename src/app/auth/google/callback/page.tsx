@@ -1,20 +1,11 @@
-"use client";
-import { usePathname, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { useEffect } from "react";
+import { Suspense } from 'react';
+import Calle from './Calle';
 
-export default function Page() {
-  const pathname = usePathname();
-   const searchParams = useSearchParams();
-  console.log("Pathname:", pathname, "Search Params:", searchParams.toString());
-  useEffect(()=> {
-    if (pathname.startsWith("/auth/google/callback")) {
-    signIn("google", {
-      callback_url: `${pathname}?${searchParams.toString()}`,
-    });
-  }
-  }, [pathname, searchParams])
-  
-
-  return <div>Loading</div>;
+ export default function Page() {
+  return(<>
+  <div>Loading</div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Calle />
+    </Suspense>
+  </>);
 }
