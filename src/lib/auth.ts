@@ -103,7 +103,7 @@ export const authOptions: NextAuthOptions = {
     }),
     // Credential provider for google login
     CredentialsProvider({
-      id: "google",
+      id: "auth_google",
       name: "Google",
       credentials: {
         callback_url: { label: "Callback Url", type: "text" },

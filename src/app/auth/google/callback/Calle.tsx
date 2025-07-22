@@ -9,8 +9,10 @@ function Calle() {
     console.log("Pathname:", pathname, "Search Params:", searchParams.toString());
     useEffect(()=> {
       if (pathname.startsWith("/auth/google/callback")) {
-      signIn("google", {
+      signIn("auth_google", {
         callback_url: `${pathname}?${searchParams.toString()}`,
+        redirect: true,
+        callbackUrl: "/",
       });
     }
     }, [pathname, searchParams])
