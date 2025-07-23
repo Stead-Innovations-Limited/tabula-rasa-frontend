@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, startTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [state, action, isPending] = useActionState(loginAction, undefined);
 
@@ -42,6 +43,44 @@ export default function LoginForm() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    // We call this immediately invoked function to handle the case where the user is redirected back from Google login
+    // and we need to sign them in with the credentials provided in the search params.
+    const stringifiedSearchParams: string = searchParams.toString();
+    (async () => { 
+    if (stringifiedSearchParams !== "") {
+      const callback_url = `/auth/google/callback?${stringifiedSearchParams}`;
+      const result = await signIn("auth_google", {
+        callback_url: callback_url,
+        redirect: false,
+        callbackUrl: "/",
+      });
+
+      if (result?.error) {
+        toast.error("Login failed. Please check your credentials.", {
+          classNames: {
+            toast: "!text-red-500",
+            title: "!text-red-500",
+            description: "!text-red-500",
+          },
+        });
+      } else {
+        toast.success("Login successful! Redirecting to dashboard...", {
+          classNames: {
+            toast: "!text-green-700",
+            title: "!text-green-700",
+            description: "!text-green-700",
+          },
+        });
+
+        // router.push("/dashboard");
+        // Due to deployments inactivities, router.push seesm not to work
+        window.location.href = "/dashboard"; // Redirect to dashboard
+      }
+    }
+  })()
+  }, [searchParams, router]);
 
   useEffect(() => {
     if (state?.error) {
@@ -109,7 +148,7 @@ export default function LoginForm() {
 
           // router.push("/dashboard");
           // Due to deployments inactivities, router.push seesm not to work
-          window.location.href = "/dashboard"; // Redirect to dashboard 
+          window.location.href = "/dashboard"; // Redirect to dashboard
         }
       })();
     }
@@ -195,17 +234,15 @@ export default function LoginForm() {
 
           <hr className='w-full border-olive' />
 
-          <div className='flex items-center justify-center gap-2'>
-            <Button className='bg-white hover:bg-white/80 !px-8 py-6 shadow-sm shadow-olive/10'
-            // onClick={async () => await signIn("google", { redirect: false })}
-            asChild
+          <div className='w-full flex items-center justify-center gap-2'>
+            <Button
+              className='w-full bg-white hover:bg-olive transition-colo !px-8 py-6 shadow-sm shadow-olive/10'
+              // onClick={async () => await signIn("google", { redirect: false })}
+              asChild
             >
-              <Link href="https://tabula-rasa-backend.up.railway.app/auth/google/login">
-              <FcGoogle className='size-6' />
-              </Link >
-            </Button>
-            <Button className='bg-white hover:bg-white/80 !px-8 py-6 shadow-sm shadow-olive/10'>
-              <FaApple className='size-6 text-black' />
+              <Link href='https://tabula-rasa-backend.up.railway.app/auth/google/login'>
+                <FcGoogle className='size-6' />
+              </Link>
             </Button>
           </div>
         </div>
