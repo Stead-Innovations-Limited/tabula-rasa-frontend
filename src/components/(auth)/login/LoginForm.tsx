@@ -24,7 +24,6 @@ import { PasswordInput } from "@/components/reusable-ui/Input";
 import {
   AiOutlineLoading3Quarters,
   FcGoogle,
-  FaApple,
 } from "@/components/icons";
 
 import loginAction from "@/server-actions/loginAction";
@@ -236,7 +235,7 @@ export default function LoginForm() {
 
           <div className='w-full flex items-center justify-center gap-2'>
             <Button
-              className='w-full bg-white hover:bg-olive transition-colo !px-8 py-6 shadow-sm shadow-olive/10'
+              className='w-full bg-white hover:bg-olive transition-colors duration-150 !px-8 py-6 shadow-sm shadow-olive/10'
               // onClick={async () => await signIn("google", { redirect: false })}
               asChild
             >
