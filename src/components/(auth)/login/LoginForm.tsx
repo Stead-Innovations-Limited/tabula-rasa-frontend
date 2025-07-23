@@ -1,8 +1,8 @@
 "use client";
 
-import { useActionState, useEffect, startTransition } from "react";
+import { useActionState, useEffect, startTransition, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,17 +21,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/reusable-ui/Input";
-import {
-  AiOutlineLoading3Quarters,
-  FcGoogle,
-} from "@/components/icons";
+import { AiOutlineLoading3Quarters, FcGoogle } from "@/components/icons";
 
 import loginAction from "@/server-actions/loginAction";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
+import GoogleSignInRedirect from "./GoogleSignInRedirect";
 
 export default function LoginForm() {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [state, action, isPending] = useActionState(loginAction, undefined);
 
@@ -42,44 +39,6 @@ export default function LoginForm() {
       password: "",
     },
   });
-
-  useEffect(() => {
-    // We call this immediately invoked function to handle the case where the user is redirected back from Google login
-    // and we need to sign them in with the credentials provided in the search params.
-    const stringifiedSearchParams: string = searchParams.toString();
-    (async () => { 
-    if (stringifiedSearchParams !== "") {
-      const callback_url = `/auth/google/callback?${stringifiedSearchParams}`;
-      const result = await signIn("auth_google", {
-        callback_url: callback_url,
-        redirect: false,
-        callbackUrl: "/",
-      });
-
-      if (result?.error) {
-        toast.error("Login failed. Please check your credentials.", {
-          classNames: {
-            toast: "!text-red-500",
-            title: "!text-red-500",
-            description: "!text-red-500",
-          },
-        });
-      } else {
-        toast.success("Login successful! Redirecting to dashboard...", {
-          classNames: {
-            toast: "!text-green-700",
-            title: "!text-green-700",
-            description: "!text-green-700",
-          },
-        });
-
-        // router.push("/dashboard");
-        // Due to deployments inactivities, router.push seesm not to work
-        window.location.href = "/dashboard"; // Redirect to dashboard
-      }
-    }
-  })()
-  }, [searchParams, router]);
 
   useEffect(() => {
     if (state?.error) {
@@ -160,92 +119,97 @@ export default function LoginForm() {
   }
 
   return (
-    <div className='md:px-5 md:shadow-xs md:shadow-olive/20 md:rounded-md'>
-      <div className='md:max-w-sm w-full p-5 py-14 font-roboto flex flex-col gap-5'>
-        <div className='flex flex-col items-center gap-2 text-center text-olive'>
-          <h1 className='text-2xl font-bold font-nunito'>Welcome Back</h1>
-          {/* <p className='text-muted-foreground text-sm text-balance'>
+    <>
+      <Suspense fallback={null}>
+      <GoogleSignInRedirect />
+      </Suspense>
+      <div className='md:px-5 md:shadow-xs md:shadow-olive/20 md:rounded-md'>
+        <div className='md:max-w-sm w-full p-5 py-14 font-roboto flex flex-col gap-5'>
+          <div className='flex flex-col items-center gap-2 text-center text-olive'>
+            <h1 className='text-2xl font-bold font-nunito'>Welcome Back</h1>
+            {/* <p className='text-muted-foreground text-sm text-balance'>
             Enter your email below to login to your account
           </p> */}
-        </div>
-        {/* The form Inputs */}
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-olive'>Email Address</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='you@example.com'
-                      {...field}
-                      className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-olive'>Password</FormLabel>
-                  <FormControl>
-                    <PasswordInput
-                      placeholder='Enter your password'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className='w-full flex items-center justify-center'>
-              <Button
-                type='submit'
-                className='bg-olive hover:bg-olive/80 text-white disabled:bg-olive/80 px-8'
-              >
-                {isPending ? (
-                  <>
-                    Loading{" "}
-                    <AiOutlineLoading3Quarters className='animate-spin size-4' />
-                  </>
-                ) : (
-                  <>Log In</>
+          </div>
+          {/* The form Inputs */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+              <FormField
+                control={form.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-olive'>Email Address</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='you@example.com'
+                        {...field}
+                        className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
+              />
+              <FormField
+                control={form.control}
+                name='password'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-olive'>Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        placeholder='Enter your password'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className='w-full flex items-center justify-center'>
+                <Button
+                  type='submit'
+                  className='bg-olive hover:bg-olive/80 text-white disabled:bg-olive/80 px-8'
+                >
+                  {isPending ? (
+                    <>
+                      Loading{" "}
+                      <AiOutlineLoading3Quarters className='animate-spin size-4' />
+                    </>
+                  ) : (
+                    <>Log In</>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+          {/* The seperator and metas */}
+          <div className='flex flex-col items-center justify-center gap-4'>
+            <p className=''>
+              Don’t have an account? &nbsp;
+              <Link href='/signup' className='font-semibold text-lightolive'>
+                Sign Up
+              </Link>
+            </p>
+
+            <hr className='w-full border-olive' />
+
+            <div className='w-full flex items-center justify-center gap-2'>
+              <Button
+                className='w-full bg-white hover:bg-olive transition-colors duration-150 !px-8 py-6 shadow-sm shadow-olive/10'
+                // onClick={async () => await signIn("google", { redirect: false })}
+                asChild
+              >
+                <Link href='https://tabula-rasa-backend.up.railway.app/auth/google/login'>
+                  <FcGoogle className='size-6' />
+                </Link>
               </Button>
             </div>
-          </form>
-        </Form>
-        {/* The seperator and metas */}
-        <div className='flex flex-col items-center justify-center gap-4'>
-          <p className=''>
-            Don’t have an account? &nbsp;
-            <Link href='/signup' className='font-semibold text-lightolive'>
-              Sign Up
-            </Link>
-          </p>
-
-          <hr className='w-full border-olive' />
-
-          <div className='w-full flex items-center justify-center gap-2'>
-            <Button
-              className='w-full bg-white hover:bg-olive transition-colors duration-150 !px-8 py-6 shadow-sm shadow-olive/10'
-              // onClick={async () => await signIn("google", { redirect: false })}
-              asChild
-            >
-              <Link href='https://tabula-rasa-backend.up.railway.app/auth/google/login'>
-                <FcGoogle className='size-6' />
-              </Link>
-            </Button>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
