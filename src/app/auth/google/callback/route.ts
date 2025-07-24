@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams.toString();
-  const redirectBase = request.nextUrl.origin;
+  const redirectBase = "https://tabula-rasa-frontend.up.railway.app";
   console.log("Redirect Base", redirectBase);
 
   const targetUrl = searchParams

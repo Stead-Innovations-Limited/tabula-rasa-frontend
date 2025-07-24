@@ -1,7 +1,7 @@
 import PaymentsNav from "./PaymentsNav"
 export default function PaymentsBar() {
   return (
-    <div className="w-full bg-linear-to-r from-olivewhite to-olive">
+    <div className="w-full hidden md:block bg-linear-to-r from-olivewhite to-olive">
       <div className="w-full xl:max-w-[1140px] mx-auto p-5 pb-0">
         <div className="flex flex-col gap-2 font-roboto text-olive">
           <h2 className="text-3xl md:text-4xl font-semibold">
