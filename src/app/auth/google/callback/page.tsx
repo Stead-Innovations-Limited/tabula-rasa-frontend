@@ -1,8 +1,32 @@
-// // app/auth/google/callback/route.ts
-// import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-import { Suspense } from "react";
-import Calle from "./Calle";
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams.toString();
+  const redirectBase = request.nextUrl.origin;
+
+  const targetUrl = searchParams
+    ? `${redirectBase}/login?${searchParams}`
+    : `${redirectBase}/login`;
+
+  return NextResponse.redirect(targetUrl);
+}
+
+
+// export default function page() {
+//   return (
+//     <div className="flex h-screen items-center justify-center">
+//       <div className="w-full max-w-md">
+//         <Suspense fallback={<div className="text-center">Loading...</div>}>
+//           {/* <GoogleSignInRedirect /> */}
+//           <Calle />
+//         </Suspense>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+// import { NextRequest, NextResponse } from "next/server";
 
 // export async function GET(request: NextRequest) {
 //   const searchParams = request.nextUrl.searchParams.toString();
@@ -12,17 +36,3 @@ import Calle from "./Calle";
 //   // Redirect to /login with query attached
 //   return NextResponse.redirect(new URL(`/login?${searchParams}`, request.url));
 // }
-
-
-export default function page() {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="w-full max-w-md">
-        <Suspense fallback={<div className="text-center">Loading...</div>}>
-          {/* <GoogleSignInRedirect /> */}
-          <Calle />
-        </Suspense>
-      </div>
-    </div>
-  );
-}
