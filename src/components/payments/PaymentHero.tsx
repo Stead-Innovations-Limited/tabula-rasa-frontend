@@ -4,25 +4,25 @@ import { Button } from "../ui/button";
 function PaymentHero() {
   return (
     <div className='w-full'>
-      <div className='w-full xl:max-w-[1140px] mx-auto p-5 pb-0'>
-        <h3 className='text-2xl font-semibold hidden md:block'>Account</h3>
-        <div className=''>
-          <div className=''>
-            <h3 className='text-xl font-semibold'>Payments</h3>
-            <div className='flex flex-col justify-center items-center md:justify-left'>
-              <p className='text-lg'>
+      <div className='w-full xl:max-w-[1140px] mx-auto md:p-5 pb-0 font-roboto'>
+        <h3 className='text-4xl md:mt-8 font-semibold hidden md:block text-olive'>Account</h3>
+        <div className='bg-olive md:bg-white md:mt-6 pb-8 md:pb-0'>
+          <div className='text-white md:bg-olive rounded-2xl md:px-16 p-5'>
+            <h3 className='md:hidden text-xl font-semibold text-center md:text-left'>Payments</h3>
+            <div className='flex flex-col gap-5 justify-center items-center md:items-start'>
+              <p className='text-lg inline-flex items-center gap-1 mt-14 md:mt-0'>
                 Available Balance &nbsp;{" "}
                 <span>
-                  <BsInfoCircle />
+                  <BsInfoCircle className="text-base" />
                 </span>
               </p>
-              <p className='text-2xl font-semibold'>$0.00</p>
+              <p className='text-4xl font-semibold -mt-2 md:mt-0'>$ 0.00</p>
             </div>
           </div>
 
-          <div className='flex flex-row gap-8'>
-            <Button>Add Money</Button>
-            <Button>Request Withdrawal</Button>
+          <div className='flex flex-row items-center justify-center md:justify-start md:items-left gap-4 mt-2 md:mt-4'>
+            <Button className="bg-lightolive text-olive px-6 py-2">Add Money</Button>
+            <Button className="bg-lightolive text-olive px-6 py-2">Request Withdrawal</Button>
           </div>
         </div>
       </div>
