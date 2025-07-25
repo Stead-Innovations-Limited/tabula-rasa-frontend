@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { HiPlus, FaHeart, SlHeart, LuShoppingCart, LuBell } from "@/components/icons";
+import { HiPlus, FaHeart, SlHeart, LuBell } from "@/components/icons";
 import {
   Popover,
   PopoverContent,
@@ -41,9 +41,6 @@ export default function FullBusinessNavBarSearch() {
             ) : (
               <SlHeart className='size-6' />
             )}
-          </Link>
-          <Link href='#' className='hidden md:block'>
-            <LuShoppingCart className='size-6' />
           </Link>
           <Link href='#' className='hidden md:block'>
             <LuBell className='size-6' />
