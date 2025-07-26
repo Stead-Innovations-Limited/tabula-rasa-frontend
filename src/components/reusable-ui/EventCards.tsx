@@ -10,23 +10,20 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { LuCalendarDays, SlLocationPin, GoArrowUpRight } from "@/components/icons";
-import getVenue from "@/server-actions/getVenue";
-import { Venue } from "@/lib/types";
 
 interface EventProps {
   eventId: string;
-  venueId: string;
   imgUrl: string;
   imgAlt: string;
   eventName: string;
   eventPrice: string;
   eventDate: string;
-  
+  location: string
 }
 
-export default async function EventCards({
+export default function EventCards({
   eventId,
-  venueId,
+  location,
   imgUrl,
   imgAlt,
   eventName,
@@ -34,7 +31,6 @@ export default async function EventCards({
   eventDate
 }: EventProps) {
   // Fetch the venue data using the eventId
-  const venueData = await getVenue(venueId) as Venue;
 
   return (
     <Card className='py-0 overflow-clip !gap-0'>
@@ -52,7 +48,7 @@ export default async function EventCards({
         <h5 className='text-2xl font-medium'>{eventName}</h5>
         <p className='text-lg'>{eventPrice}</p>
         <p className='flex items-start gap-1 text-lg'><LuCalendarDays className="size-4 mt-1 text-olive"/> {format(new Date(eventDate), "PPPP")}</p>
-        <p className='flex items-start gap-1 text-lg'><SlLocationPin className="size-4 mt-1 text-olive" />{venueData.location.String}</p>
+        <p className='flex items-start gap-1 text-lg'><SlLocationPin className="size-4 mt-1 text-olive" />{location}</p>
       </CardContent>
     </Card>
   );

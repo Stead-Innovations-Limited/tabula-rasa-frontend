@@ -1,19 +1,21 @@
+"use client";
 import EventCards from "@/components/reusable-ui/EventCards";
-import getSimilarEvents from "@/server-actions/getSimilarEvents";
+import { filterEvents } from "@/lib/filterFns";
 import { Event } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useQueryState } from "nuqs";
+type EventWithVenue = Event & {
+  location: string;
+};
 
-export default async function SimilarEventsContainer() {
-  const events = (await getSimilarEvents()) as Event[];
-  if (!Array.isArray(events) || events.length === 0) {
-    return (
-      <div className='w-full my-8'>
-        <p className='text-red-500 text-center'>
-          Failed to load similar events.
-        </p>
-      </div>
-    );
-  }
+export default function SimilarEventsContainer({
+  events,
+}: {
+  events: EventWithVenue[];
+}) {
+  const [searchVal] = useQueryState("search");
+
+  const filteredEvents = filterEvents(events, searchVal || "");
   return (
     <section className='w-full my-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -27,13 +29,13 @@ export default async function SimilarEventsContainer() {
           )}
         >
           {/* The Event Cards */}
-          {events.length > 0 ? (
-            events.map((event: Event, index: number) => (
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event: EventWithVenue, index: number) => (
               <EventCards
                 key={index}
                 eventId={event.id}
-                venueId={event.venue_id}
-                imgUrl={"/event-pic.webp"}
+                location={event.location}
+                imgUrl={event.image_links[0] || "/event-pic.webp"}
                 imgAlt={event.name}
                 eventName={event.name}
                 eventPrice={"$80.00"}
@@ -42,7 +44,9 @@ export default async function SimilarEventsContainer() {
             ))
           ) : (
             <div className='flex justify-center items-center text-center text-xl my-10 text-gray-500'>
-              No similar events available.
+              {searchVal?.trim()
+                ? " No events matches your search"
+                : "No similar events available."}
             </div>
           )}
         </div>

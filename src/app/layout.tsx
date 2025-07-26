@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import SessionProviders from "@/app/SessionProviders";
 import { HeroUIProviders } from "./HeroUIProviders";
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export const metadata: Metadata = {
   title: "Tabula Rasa",
@@ -21,7 +22,9 @@ export default function RootLayout({
         className={`${alex.variable} ${nunito.variable} ${roboto.variable} antialiased`}
       >
         <SessionProviders>
-          <HeroUIProviders>{children}</HeroUIProviders>
+          <HeroUIProviders>
+            <NuqsAdapter>{children}</NuqsAdapter>
+          </HeroUIProviders>
         </SessionProviders>
         <Toaster />
       </body>

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-
+import { useQueryState } from 'nuqs';
 import {
   CiSearch,
   SlHeart,
@@ -25,6 +25,8 @@ export default function FullUserNavBarSearch() {
   const userData = session?.user;
   const isMobile = useIsMobile();
 
+  const [searchVal, setSearchVal] = useQueryState('search');
+
 
   return (
     <div className='w-full bg-olive'>
@@ -38,6 +40,8 @@ export default function FullUserNavBarSearch() {
           <Input
             type='text'
             placeholder=''
+            value={searchVal || ""}
+            onChange={(e) => setSearchVal(e.target.value)}
             className='absolute inset-0 bg-white text-olive placeholder:text-olive placeholder:font-normal font-roboto text-lg rounded-[0.625rem] md:rounded-full pl-10 pr-4 py-2 caret-olive'
           />
         </div>

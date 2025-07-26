@@ -1,19 +1,15 @@
-import getSimilarVenues from "@/server-actions/getSimilarVenues";
 import VenueCards from "../reusable-ui/VenueCards";
 import { Venue } from "@/lib/types";
+import { filterVenues } from "@/lib/filterFns";
+import { useQueryState } from "nuqs";
 
-export default async function SimilarVenueContainer() {
-  const venueData = (await getSimilarVenues()) as Venue[];
-  if (!Array.isArray(venueData) || venueData.length === 0) {
-    return (
-      <div className='w-full my-8'>
-        <p className='text-red-500 text-center'>
-          Failed to load similar events.
-        </p>
-      </div>
-    );
-  }
-
+export default function SimilarVenueContainer({
+  venuesData,
+}: {
+  venuesData: Venue[];
+}) {
+  const [searchVal] = useQueryState("search");
+  const venues = filterVenues(venuesData, searchVal || "");
   return (
     <section className='w-full my-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -22,8 +18,8 @@ export default async function SimilarVenueContainer() {
         </div>
         <div className='flex gap-5 overflow-x-auto scrollbar-hide'>
           {/* The Venue Cards */}
-          {venueData.length > 0 ? (
-            venueData.map((venue, index) => (
+          {venues.length > 0 ? (
+            venues.map((venue, index) => (
               <VenueCards
                 key={index}
                 venueId={venue.id}
@@ -36,8 +32,10 @@ export default async function SimilarVenueContainer() {
               />
             ))
           ) : (
-            <div className='w-full flex justify-center items-center text-center text-xl my-10 text-gray-500'>
-              No similar venues available.
+            <div className='flex justify-center items-center text-center text-xl my-10 text-gray-500'>
+              {searchVal?.trim()
+                ? "No venues matches your search"
+                : "No venues available."}
             </div>
           )}
         </div>
