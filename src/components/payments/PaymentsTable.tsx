@@ -104,13 +104,13 @@ function PaymentsTable<TData, TValue>({
   return (
     <div className='w-full'>
       <div className='w-full xl:max-w-[1140px] p-5 mx-auto overflow-hidden rounded-md'>
-        <div className='font-roboto flex flex-col md:flex-row md:justify-between items-center mb-4 md:mb-6'>
+        <div className='font-roboto flex flex-col md:flex-row md:justify-between gap-4 mb-4 md:mb-6'>
           {/* Table Header + filter and input */}
           <div className='text-olive'>
             <h4 className='font-semibold text-3xl'>Transaction History</h4>
             <p className='font-medium text-2xl'>Recent Activity</p>
           </div>
-          <div className='flex gap-5'>
+          <div className='flex flex-col md:flex-row gap-3 md:gap-5'>
             {/* The Select Input for picking filter and approved state */}
             <div className=''>
               <Select
@@ -137,7 +137,7 @@ function PaymentsTable<TData, TValue>({
                 onChange={(e) => handleSearch(String(e.target.value))}
                 className='max-w-sm pl-3 py-2  pr-7'
               />
-              <CiSearch className="absolute right-2 top-1/2 translate-y-[-50%] text-lg" />
+              <CiSearch className="absolute right-2 top-1/2 translate-y-[-50%] text-lg text-olive" />
             </div>
           </div>
         </div>
