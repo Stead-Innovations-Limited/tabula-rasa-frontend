@@ -43,7 +43,7 @@ export function formatRelativeTime(date: string | Date): string {
 
 export default function NotificationLi({notification}: { notification: Notification }) {
   return (
-    <div className='flex gap-2 md:gap-4 items-center justify-center py-4 px-5 hover:bg-olive group'>
+    <div className='flex gap-2 md:gap-4 items-start md:items-center md:justify-center py-4 px-5 hover:bg-olive group'>
       <span className='inline-block !size-2 bg-olive rounded-full group-hover:bg-white' />
       <p className='grow group-hover:text-white'>
         {notification.message}
