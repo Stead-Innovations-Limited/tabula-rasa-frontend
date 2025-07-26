@@ -6,7 +6,8 @@ import {
   SlHeart,
   LuBell,
   FaHeart,
-  HiPlus
+  HiPlus,
+  GoBellFill,
 } from "@/components/icons";
 import { Input } from "../ui/input";
 import { usePathname } from "next/navigation";
@@ -15,7 +16,6 @@ import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import MyPagesDropMenu from "../Menus/MyPagesDropMenu";
 import { useSession } from "next-auth/react";
 import PopOverMenu from "../Menus/PopOverMenu";
-
 
 export default function FullUserNavBarSearch() {
   const pathname = usePathname();
@@ -37,17 +37,19 @@ export default function FullUserNavBarSearch() {
           />
         </div>
 
-        <nav className='flex items-center gap-8 font-roboto font-normal text-2xl'>
-          {userData && userData.roles !== "Personal Account" && <div className='hidden md:block'>
-            <Popover>
-              <PopoverTrigger asChild>
-                <HiPlus className='size-6' />
-              </PopoverTrigger>
-              <PopoverContent>
-                <MyPagesDropMenu />
-              </PopoverContent>
-            </Popover>
-          </div>}
+        <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl'>
+          {userData && userData.roles !== "Personal Account" && (
+            <div className=''>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <HiPlus className='size-6' />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <MyPagesDropMenu />
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
           <Link href='/saved' className={cn("hidden md:block")}>
             {pathname === "/saved" ? (
               <FaHeart className='size-6' />
@@ -55,12 +57,14 @@ export default function FullUserNavBarSearch() {
               <SlHeart className='size-6' />
             )}
           </Link>
-          <Link href='notifications' className='hidden md:block'>
-            <LuBell className='size-6' />
+          <Link href='notifications' className=''>
+            {pathname === "/notifications" ? (
+              <GoBellFill className='size-6' />
+            ) : (
+              <LuBell className='size-6' />
+            )}
           </Link>
-          <Link href='#'>
-            <PopOverMenu userData={userData} />
-          </Link>
+          <PopOverMenu userData={userData} />
         </nav>
       </header>
     </div>

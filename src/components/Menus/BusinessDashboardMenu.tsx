@@ -85,7 +85,7 @@ export default function BusinessDashboardMenu({
           My Venues
         </Link>
         <Link
-          href='/#'
+          href='/account'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
           onClick={close}
         >

@@ -1,7 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { HiPlus, FaHeart, SlHeart, LuBell } from "@/components/icons";
+import {
+  HiPlus,
+  FaHeart,
+  SlHeart,
+  LuBell,
+  GoBellFill,
+} from "@/components/icons";
 import {
   Popover,
   PopoverContent,
@@ -24,17 +30,19 @@ export default function FullBusinessNavBarSearch() {
         <h1 className='font-alex text-3xl lg:text-5xl'>
           <Link href={"/"}>Tabula Rasa</Link>
         </h1>
-        <nav className='flex items-center gap-8 font-roboto font-normal text-2xl'>
-          {userData && userData.roles !== "Personal Account" && <div className='hidden md:block'>
-            <Popover>
-              <PopoverTrigger asChild>
-                <HiPlus className='size-6' />
-              </PopoverTrigger>
-              <PopoverContent>
-                <MyPagesDropMenu />
-              </PopoverContent>
-            </Popover>
-          </div>}
+        <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl'>
+          {userData && userData.roles !== "Personal Account" && (
+            <div className=''>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <HiPlus className='size-6' />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <MyPagesDropMenu />
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
           <Link href='/saved' className={cn("hidden md:block")}>
             {pathname === "/saved" ? (
               <FaHeart className='size-6' />
@@ -42,12 +50,14 @@ export default function FullBusinessNavBarSearch() {
               <SlHeart className='size-6' />
             )}
           </Link>
-          <Link href='notifications' className='hidden md:block'>
-            <LuBell className='size-6' />
+          <Link href='notifications' className=''>
+            {pathname === "/notifications" ? (
+              <GoBellFill className='size-6' />
+            ) : (
+              <LuBell className='size-6' />
+            )}
           </Link>
-          <Link href='#'>
-              <PopOverMenu userData={userData} />
-          </Link>
+          <PopOverMenu userData={userData} />
         </nav>
       </header>
     </div>
