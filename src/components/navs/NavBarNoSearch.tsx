@@ -42,7 +42,7 @@ export default function FullBusinessNavBarSearch() {
               <SlHeart className='size-6' />
             )}
           </Link>
-          <Link href='#' className='hidden md:block'>
+          <Link href='notifications' className='hidden md:block'>
             <LuBell className='size-6' />
           </Link>
           <Link href='#'>

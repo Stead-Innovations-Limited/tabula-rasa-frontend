@@ -97,3 +97,13 @@ export interface User {
   rate: NullableInt32;
   created_at: string;
 }
+
+// ========== NOTIFICATION INTERFACE ==========
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
