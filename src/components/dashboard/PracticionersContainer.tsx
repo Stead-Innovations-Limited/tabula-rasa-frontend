@@ -27,7 +27,7 @@ export default async function PracticionersContainer() {
   const sessionId = session.user.id;
 
   const filteredUsers = userProfiles.filter((ele) => ele.id !== sessionId);
-
+  console.log(filteredUsers, "Practitioners fetched successfully");
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>

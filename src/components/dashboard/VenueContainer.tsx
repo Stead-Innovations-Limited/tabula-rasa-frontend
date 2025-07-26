@@ -15,6 +15,8 @@ export default async function VenueContainer() {
     );
   }
   const venues = venuesData.filter(ele => ele.is_available.Bool);
+  console.log(venues, "Venues fetched successfully");
+  
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
