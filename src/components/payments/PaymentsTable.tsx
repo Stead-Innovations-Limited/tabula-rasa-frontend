@@ -130,7 +130,7 @@ function PaymentsTable<TData, TValue>({
               </Select>
             </div>
             {/* The Text input for searching across description, status and amount */}
-            <div className='relative border rounded-full overflow-clip'>
+            <div className='relative border rounded-full h-fit overflow-clip'>
               <Input
                 placeholder='Search'
                 value={table.getState().globalFilter ?? ""}
@@ -206,6 +206,7 @@ function PaymentsTable<TData, TValue>({
             {Array.from({ length: noOfPages }, (_, index) => (
               <Button
                 key={index}
+                className={"bg-lightolive text-olive hover:bg-white hover:border-1 hover:border-lightolive"}
                 variant={index === pagination.pageIndex ? "default" : "outline"}
                 size='sm'
                 onClick={() =>
