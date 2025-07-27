@@ -186,11 +186,12 @@ export default function CreateEventForm({
               description: "!text-red-500",
             },
           });
+          return false;
         }
 
         // If there is an error, or if the presigned URL or file name is not returned, we return early
         // This is to ensure that we do not try to upload the file if the presigned URL is not valid
-        if (res.error || !res.presignedUrl || !res.fileName) return;
+        if (res.error || !res.presignedUrl || !res.fileName) return false;
 
         // Destructure the presignedUrl and fileName from the response
         const { presignedUrl, fileName } = res;
@@ -209,6 +210,11 @@ export default function CreateEventForm({
         return fileName; // Save only the final URL
       })
     );
+
+    // We remove all instances of failed uploads
+    const parsedUploads = uploadedUrls.filter(ele => ele !== false);
+    if(parsedUploads.length < 1) return;
+
     // Replace the files in formData with URLs
     const payload = {
       ...formData,

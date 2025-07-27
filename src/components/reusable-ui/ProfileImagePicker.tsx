@@ -44,23 +44,15 @@ export default function ProfileImagePicker() {
       // If there's an error, we show a toast
       if (res.error) {
         errorToast(res.message);
+        return false;
       }
       // If there is an error, or if the presigned URL or file name is not returned, we return early
       // This is to ensure that we do not try to upload the file if the presigned URL is not valid
       if (res.error || !res.presignedUrl || !res.fileName) {
         setUploading(false);
-        return;
+        return false;
       }
       const { presignedUrl, fileName } = res;
-
-      // Upload the file to the presigned URL
-      // await fetch(presignedUrl, {
-      //   method: "PUT",
-      //   body: file,
-      //   headers: {
-      //     "Content-Type": file.type,
-      //   },
-      // });
 
       await axios.put(presignedUrl, file, {
         headers: {
@@ -80,6 +72,7 @@ export default function ProfileImagePicker() {
       if (profileImageResponse.error) {
         setUploading(false);
         errorToast(profileImageResponse.message);
+        return false;
       }
       // Update the profileImage on the session
       update({
