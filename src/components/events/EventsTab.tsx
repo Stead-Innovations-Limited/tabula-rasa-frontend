@@ -24,8 +24,17 @@ import {
 } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import getMyEvents from "@/server-actions/getMyEvents";
 
-export default function EventsTab() {
+export default async function EventsTab() {
+  const events = await getMyEvents() as Event | { error: boolean, errorData?: string, message?: string };
+  if (!Array.isArray(events)) {
+    return (
+      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
+        {"Failed to fetch events or venues."}
+      </div>
+    );
+  }
   return (
     <section className='w-full'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex px-5 py-6 md:py-14'>
