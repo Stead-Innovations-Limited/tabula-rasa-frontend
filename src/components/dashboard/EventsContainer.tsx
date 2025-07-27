@@ -12,11 +12,8 @@ type EventWithVenue = Event & {
   location: string;
 };
 
-
 export default function EventsContainer({events}: { events: EventWithVenue[]}) {
-  
   const [searchVal] = useQueryState('search');
-
   const filteredEvents = filterEvents(events, searchVal || "");
   return (
     <section className='w-full mb-8'>

@@ -1,3 +1,5 @@
+"use client";
+
 import VenueCards from "../reusable-ui/VenueCards";
 import { Venue } from "@/lib/types";
 import { filterVenues } from "@/lib/filterFns";

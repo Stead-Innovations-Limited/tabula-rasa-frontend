@@ -1,9 +1,11 @@
+export const dynamic = "force-dynamic";
+
 import DashboardBanner from "@/components/dashboard/DashboardBanner";
-import PractitionerContainer from "@/components/practicioners/PracticionersContainer";
 import { authOptions } from "@/lib/auth";
 import { User } from "@/lib/types";
 import getPractitioners from "@/server-actions/getPractitioners";
 import { getServerSession } from "next-auth";
+import PracticionersContainerWrapper from "@/components/practicioners/PractitionersContainerWrapper";
 
 export default async function page() {
   const userProfiles = (await getPractitioners()) as User[] | { error: boolean; errorData?: string; message?: string };
@@ -29,8 +31,7 @@ export default async function page() {
   return (
     <>
       <DashboardBanner />
-      <PractitionerContainer practitioners={filteredUsers} />
-
+      <PracticionersContainerWrapper practitioners={filteredUsers} />
     </>
   )
 }

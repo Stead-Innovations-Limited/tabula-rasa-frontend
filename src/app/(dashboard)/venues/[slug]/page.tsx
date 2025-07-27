@@ -1,10 +1,11 @@
+
 import VenueOverview from "@/components/venues/VenueOverview";
-import SimilarVenueContainer from "@/components/venues/SimilarVenueContainer";
 import getSavedVenue from "@/server-actions/getSavedVenue";
 import { Saved } from "@/server-actions/getSavedVenue";
 import getVenue from "@/server-actions/getVenue";
 import { Venue } from "@/lib/types";
 import getSimilarVenues from "@/server-actions/getSimilarVenues";
+import SimilarVenueContainerWrapper from "@/components/venues/SimilarVenueContainerWrapper";
 
 export default async function page({
   params,
@@ -33,7 +34,7 @@ export default async function page({
     <>
       {/* I do a type conversion, if savedVenue is an empty array, it will be falsy, else it will be truthy  */}
       <VenueOverview venueData={venueData} isSaved={!!savedVenue} />
-      <SimilarVenueContainer venuesData={venues}/>
+      <SimilarVenueContainerWrapper venues={venues} />
     </>
   );
 }

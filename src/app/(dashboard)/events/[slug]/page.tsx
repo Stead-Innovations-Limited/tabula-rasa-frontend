@@ -1,9 +1,9 @@
 import EventsOverview from "@/components/events/EventsOverview";
-import SimilarEventsContainer from "@/components/events/SimilarEventsContainer";
 import getSavedEvent, { Saved } from "@/server-actions/getSavedEvent";
 import getSimilarEvents from "@/server-actions/getSimilarEvents";
 import getVenues from "@/server-actions/getVenues";
 import { Event, Venue } from "@/lib/types";
+import SimilarEventsContainerWrapper from "@/components/events/SimilarEventsContainerWrapper";
 
 async function page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: eventId } = await params;
@@ -32,7 +32,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
   return (
     <>
       <EventsOverview eventId={eventId} isSaved={savedEvent} />
-      <SimilarEventsContainer events={eventsWithVenues} />
+      <SimilarEventsContainerWrapper eventsWithVenues={eventsWithVenues}/>
     </>
   );
 }

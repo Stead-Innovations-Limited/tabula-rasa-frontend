@@ -1,13 +1,15 @@
+export const dynamic = "force-dynamic";
+
 import DashboardBanner from "@/components/dashboard/DashboardBanner";
-import EventsContainer from "@/components/dashboard/EventsContainer";
-import PracticionersContainer from "@/components/dashboard/PracticionersContainer";
-import VenueContainer from "@/components/dashboard/VenueContainer";
 import getEvents from "@/server-actions/getEvents";
 import { Event, User, Venue } from "@/lib/types";
 import getVenues from "@/server-actions/getVenues";
 import getPractitioners from "@/server-actions/getPractitioners";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth/next";
+import EventsContainerWrapper from "@/components/dashboard/EventsContainerWrapper";
+import VenuesContainerWrapper from "@/components/dashboard/VenuesContainerWrapper";
+import PracticionersContainerWrapper from "@/components/dashboard/PractitionersContainerWrapper";
 
 export default async function page() {
   const events = (await getEvents()) as
@@ -48,9 +50,9 @@ export default async function page() {
   return (
     <>
       <DashboardBanner />
-      <EventsContainer events={eventsWithVenues} />
-      <VenueContainer venuesData={venues}/>
-      <PracticionersContainer practitioners={filteredUsers} />
+      <EventsContainerWrapper eventsWithVenues={eventsWithVenues} />
+      <VenuesContainerWrapper venues={venues} />
+      <PracticionersContainerWrapper filteredUsers={filteredUsers} />
     </>
   );
 }
