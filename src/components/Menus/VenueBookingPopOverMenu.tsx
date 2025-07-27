@@ -19,7 +19,7 @@ export default function VenueBookingPopOverMenu({
 }) {
   const router = useRouter();
   return (
-    <div className=''>
+    <div className='hidden md:block'>
       <Popover>
         <PopoverTrigger>
           <RxDotsVertical className='' />

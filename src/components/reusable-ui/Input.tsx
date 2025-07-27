@@ -124,16 +124,17 @@ function DashboardFilter({ className }: { className?: string }) {
 }
 
 function BookingsFilter({ className }: { className?: string }) {
+  const [statusVal, setStatusVal] = useQueryState("status");
   return (
-    <Select>
+    <Select value={statusVal || "pending"} onValueChange={setStatusVal}>
       <SelectTrigger icon="sort" className={cn("", className)}>
         <SelectValue placeholder='Filter' />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value='upcoming'>Up Coming</SelectItem>
-        <SelectItem value='done'>Pending</SelectItem>
-        <SelectItem value='approved'>Approved</SelectItem>
-        <SelectItem value='rejected'>Rejected</SelectItem>
+        {/* <SelectItem value='upcoming'>Up Coming</SelectItem> */}
+        <SelectItem value='pending'>Pending</SelectItem>
+        <SelectItem value='confirmed'>Approved</SelectItem>
+        <SelectItem value='declined'>Declined</SelectItem>
       </SelectContent>
     </Select>
   );

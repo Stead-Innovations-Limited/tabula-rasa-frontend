@@ -1,26 +1,42 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Event } from "@/lib/types";
-import {
-  AiOutlineClockCircle,
-  SlLocationPin,
-} from "@/components/icons";
+import { AiOutlineClockCircle, SlLocationPin } from "@/components/icons";
 import { format, parseISO } from "date-fns";
 import VenueBookingPopOverMenu from "../Menus/VenueBookingPopOverMenu";
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import approveBooking from "@/server-actions/approveBooking";
+import { toast } from "sonner";
 
-export default function SubBookingsCard({ eventData }: { eventData: Event }) {
+export default function SubBookingsCard({
+  eventData,
+  statusVal,
+}: {
+  eventData: Event;
+  statusVal: "pending" | "confirmed" | "declined";
+}) {
+  const router = useRouter();
   const dayAbbreviation = format(parseISO(eventData.start_date.Time), "EEE");
   const dayOfMonth = format(parseISO(eventData.start_date.Time), "d");
 
-   const startTime = format(parseISO(eventData.start_time.Time), 'h:mm a'); 
-  const endTime = format(parseISO(eventData.end_time.Time), 'h:mm a');      
-  const startDay = format(parseISO(eventData.start_date.Time), 'do');        
-  const startMonth = format(parseISO(eventData.start_date.Time), 'LLLL');     
-  const endDay = format(parseISO(eventData.end_date.Time), 'do');   
-  const endMonth = format(parseISO(eventData.end_date.Time), 'LLLL');
+  const startTime = format(parseISO(eventData.start_time.Time), "h:mm a");
+  const endTime = format(parseISO(eventData.end_time.Time), "h:mm a");
+  const startDay = format(parseISO(eventData.start_date.Time), "do");
+  const startMonth = format(parseISO(eventData.start_date.Time), "LLLL");
+  const endDay = format(parseISO(eventData.end_date.Time), "do");
+  const endMonth = format(parseISO(eventData.end_date.Time), "LLLL");
 
   const range = `${startTime} ${startDay} of ${startMonth} to ${endTime} ${endDay} of ${endMonth}`;
 
   return (
-    <div className='border-2 border-solid border-olive rounded-2xl flex flex-col gap-5 md:gap-0 md:flex-row items-center text-olive p-5 h-fit'>
+    <div
+      className={cn(
+        "border-2 border-solid border-olive rounded-2xl flex flex-col gap-5 md:gap-0 md:flex-row items-center text-olive p-5 h-fit",
+        statusVal === "declined" && "grayscale"
+      )}
+    >
       <div className='md:w-1/6 md:aspect-square flex flex-col justify-center items-center md:pr-5 font-semibold md:border-r-2 border-olive'>
         <h5 className='text-2xl'>{dayAbbreviation.toUpperCase()}</h5>
         <h6 className='text-8xl md:text-5xl'>{dayOfMonth}</h6>
@@ -44,7 +60,40 @@ export default function SubBookingsCard({ eventData }: { eventData: Event }) {
             </span>
           </p> */}
         </div>
-        <VenueBookingPopOverMenu venueId={eventData.venue_id} eventId={eventData.id} />
+        {statusVal === "pending" && (
+          <VenueBookingPopOverMenu
+            venueId={eventData.venue_id}
+            eventId={eventData.id}
+          />
+        )}
+        {statusVal === "pending" && <Button
+          onClick={async () => {
+            // Call the server action to open or close the venue based on whether it is currently open or closed
+            const bookingResp = await approveBooking(eventData.id, eventData.venue_id);
+            if (bookingResp.error) {
+              toast.error(bookingResp.message, {
+                classNames: {
+                  toast: "!text-red-500",
+                  title: "!text-red-500",
+                  description: "!text-red-500",
+                },
+              });
+              return;
+            }
+            // Refresh the page or handle the response as needed
+            toast.success(bookingResp.message, {
+              classNames: {
+                toast: "!text-green-500",
+                title: "!text-green-500",
+                description: "!text-green-500",
+              },
+            });
+            router.refresh();
+          }}
+          className='w-full py-3 text-center md:hidden bg-olive text-white transition-colors hover:bg-olive/90 rounded-sm my-3'
+        >
+          Approve Booking
+        </Button>}
       </div>
     </div>
   );

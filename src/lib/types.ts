@@ -50,7 +50,7 @@ export interface Event {
   start_date: { Time: string; Valid: boolean };
   end_date: { Time: string; Valid: boolean };
   total_particpant: NullableInt32;
-  status: "pending" | "approved" | "declined" | string;
+  status: "pending" | "confirmed" | "declined" | string;
   created_at: string;
 }
 
