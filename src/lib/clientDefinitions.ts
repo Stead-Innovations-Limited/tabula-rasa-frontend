@@ -10,10 +10,12 @@ export const listVenueSchema = z
       .string()
       .min(2, { message: "Venue name cannot be less than 2 characters" })
       .max(80, { message: "Venue name cannot be 80 characters long." }),
+
     venueType: z
       .string()
-      .min(5, { message: "Venue type cannot be less than 2 characters" })
-      .max(40, { message: "Venue type cannot be 80 characters long." }),
+      .min(5, { message: "Venue type cannot be less than 5 characters" })
+      .max(40, { message: "Venue type cannot be more than 40 characters long." }),
+
     venueDescription: z
       .string()
       .min(10, {
@@ -22,6 +24,7 @@ export const listVenueSchema = z
       .max(500, {
         message: "Venue description cannot be more than 500 characters long.",
       }),
+
     location: z
       .string()
       .min(5, {
@@ -30,6 +33,7 @@ export const listVenueSchema = z
       .max(100, {
         message: "Location cannot be more than 100 characters long.",
       }),
+
     dimensions: z
       .string()
       .min(5, {
@@ -38,6 +42,7 @@ export const listVenueSchema = z
       .max(100, {
         message: "Dimension cannot be more than 100 characters long.",
       }),
+
     maxCapacity: z
       .string()
       .min(1, {
@@ -46,6 +51,7 @@ export const listVenueSchema = z
       .max(30, {
         message: "Maximum capacity cannot be more than 30 characters long.",
       }),
+
     facilities: z
       .string()
       .min(5, {
@@ -54,66 +60,82 @@ export const listVenueSchema = z
       .max(500, {
         message: "Facilities cannot be more than 500 characters long.",
       }),
+
     onSiteAccomodation: z.enum(["yes", "no"], {
       message: "Please select a valid option for on-site accommodation",
     }),
-    roomType: z
-      .string()
-      .min(8, {
-        message: "Room type cannot be less than 8 characters",
-      })
-      .max(50, {
-        message: "Room type cannot be more than 50 characters long.",
-      }),
-    numberOfRooms: z
-      .string()
-      .min(1, {
-        message: "No of Rooms cannot be less than 1 character",
-      })
-      .max(100, {
-        message: "No of Rooms cannot be more than 100 characters long.",
-      }),
-    sleeps: z.string().min(1, {
-      message: "Please enter the number of people the venue can sleep",
-    }),
-    bedConfiguration: z
-      .string()
-      .min(5, {
-        message: "Bed configuration cannot be less than 5 characters",
-      })
-      .max(100, {
-        message: "Bed configuration cannot be more than 100 characters long.",
-      }),
-    roomAmenities: z
-      .string()
-      .min(5, {
-        message: "Room amenities cannot be less than 5 characters",
-      })
-      .max(500, {
-        message: "Room amenities cannot be more than 500 characters long.",
-      }),
-    pricePerHour: z
-      .string()
-      .min(1, {
-        message: "Price per hour cannot be less than 5 characters",
-      })
-      .max(80, {
-        message: "Price per hour cannot be more than 80 characters long.",
-      }),
+
+    roomType: z.string().optional(),
+    numberOfRooms: z.string().optional(),
+    sleeps: z.string().optional(),
+    bedConfiguration: z.string().optional(),
+    roomAmenities: z.string().optional(),
+    pricePerHour: z.string().optional(),
   })
-  // Here i do a check to ensure that the maxCapacity, numberOfRooms and pricePerHour can be a valid number
+
+  // Validation for always-required fields
   .refine((data) => !isNaN(Number(data.maxCapacity)), {
-    message: "Please enter a valid capacity(number) for the venue",
+    message: "Please enter a valid capacity (number) for the venue",
     path: ["maxCapacity"],
   })
-  .refine((data) => !isNaN(Number(data.numberOfRooms)), {
-    message: "Please enter a valid number of rooms",
-    path: ["numberOfRooms"],
-  })
-  .refine((data) => !isNaN(Number(data.pricePerHour)), {
-    message: "Please enter a valid price per hour",
-    path: ["pricePerHour"],
-  });
+
+  // Conditional validations for on-site accommodation
+  .refine(
+    (data) =>
+      data.onSiteAccomodation === "no" ||
+      (data.roomType?.trim().length ?? 0) >= 2,
+    {
+      message: "Room type is required if on-site accommodation is available",
+      path: ["roomType"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.onSiteAccomodation === "no" ||
+      (data.sleeps?.trim().length ?? 0) >= 1,
+    {
+      message: "Sleeps is required if on-site accommodation is available",
+      path: ["sleeps"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.onSiteAccomodation === "no" ||
+      (data.bedConfiguration?.trim().length ?? 0) >= 2,
+    {
+      message: "Bed configuration is required if on-site accommodation is available",
+      path: ["bedConfiguration"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.onSiteAccomodation === "no" ||
+      (data.roomAmenities?.trim().length ?? 0) >= 2,
+    {
+      message: "Room amenities are required if on-site accommodation is available",
+      path: ["roomAmenities"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.onSiteAccomodation === "no" ||
+      (!isNaN(Number(data.numberOfRooms)) &&
+        (data.numberOfRooms?.trim().length ?? 0) > 0),
+    {
+      message: "Please enter a valid number of rooms",
+      path: ["numberOfRooms"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.onSiteAccomodation === "no" ||
+      (!isNaN(Number(data.pricePerHour)) &&
+        (data.pricePerHour?.trim().length ?? 0) > 0),
+    {
+      message: "Please enter a valid price per hour",
+      path: ["pricePerHour"],
+    }
+  );
 
 export const createEventSchema = z
   .object({

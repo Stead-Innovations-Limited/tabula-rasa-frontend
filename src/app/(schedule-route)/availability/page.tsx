@@ -7,11 +7,11 @@ export default async function page() {
     | WorkingSchedule
     | { error: true; errorData: string; message: string };
 
-  if ("error" in workSchedule && workSchedule.error && workSchedule.message) {
+  if (workSchedule !== null && "error" in workSchedule && workSchedule.error && workSchedule.message) {
     return <p>Failed to fetch work schedule</p>;
   }
 
-  if (!("error" in workSchedule)) {
+  if (workSchedule === null || !("error" in workSchedule)) {
     return (
       <>
         <AvailabilityContainer workSchedule={workSchedule} />

@@ -34,34 +34,33 @@ import { listVenueSchema } from "@/lib/clientDefinitions";
 import listVenueAction from "@/server-actions/listVenueAction";
 import handleFileUploads from "@/server-actions/handleFileUploads";
 
-
 export default function ListVenueForm() {
   const router = useRouter();
   const [state, action, isPending] = useActionState(listVenueAction, undefined);
 
   useEffect(() => {
-      if (state?.error) {
-        toast.error(state.message, {
-          classNames: {
-            toast: "!text-red-500",
-            title: "!text-red-500",
-            description: "!text-red-500",
-          },
-        });
-      }
-  
-      if (state?.success) {
-        toast.success(state.message, {
-          classNames: {
-            toast: "!text-green-700",
-            title: "!text-green-700",
-            description: "!text-green-700",
-          },
-        });
-  
-        router.push("/dashboard");
-      }
-    }, [state, router])
+    if (state?.error) {
+      toast.error(state.message, {
+        classNames: {
+          toast: "!text-red-500",
+          title: "!text-red-500",
+          description: "!text-red-500",
+        },
+      });
+    }
+
+    if (state?.success) {
+      toast.success(state.message, {
+        classNames: {
+          toast: "!text-green-700",
+          title: "!text-green-700",
+          description: "!text-green-700",
+        },
+      });
+
+      router.push("/dashboard");
+    }
+  }, [state, router]);
 
   const form = useForm<z.infer<typeof listVenueSchema>>({
     resolver: zodResolver(listVenueSchema),
@@ -83,6 +82,7 @@ export default function ListVenueForm() {
       pricePerHour: "",
     },
   });
+  const onSiteAccomodation = form.watch("onSiteAccomodation");
 
   async function onSubmit(formData: z.infer<typeof listVenueSchema>) {
     // Here what i want to do is send the file i got here to get the presignedUrl and generated Url
@@ -368,139 +368,142 @@ export default function ListVenueForm() {
                   )}
                 />
               </div>
-              <div className='md:col-span-3'>
-                <FormField
-                  control={form.control}
-                  name='roomType'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>
-                        Room Type
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder='Serene Water Retreat'
-                          type='text'
-                          {...field}
-                          className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className='md:col-span-3'>
-                <FormField
-                  control={form.control}
-                  name='numberOfRooms'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>
-                        Number of Rooms available
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type='text'
-                          placeholder='e.g. 3 rooms'
-                          {...field}
-                          className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className='md:col-span-3'>
-                <FormField
-                  control={form.control}
-                  name='sleeps'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>
-                        Sleeps
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type='text'
-                          placeholder='e.g. 3 sleepers'
-                          {...field}
-                          className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className='md:col-span-3'>
-                <FormField
-                  control={form.control}
-                  name='bedConfiguration'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>
-                        Bed Configuration
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type='text'
-                          placeholder='e.g. 2 single beds, 1 double bed'
-                          {...field}
-                          className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className='md:col-span-6'>
-                <FormField
-                  control={form.control}
-                  name='roomAmenities'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>
-                        Room Amenities
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type='text'
-                          placeholder='e.g. Air conditioning, Heating, Wi-Fi, etc.'
-                          {...field}
-                          className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className='md:col-span-3'>
-                <FormField
-                  control={form.control}
-                  name='pricePerHour'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>
-                        Price Per Hour
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type='text'
-                          placeholder='e.g. $100 per hour'
-                          {...field}
-                          className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
+              {
+                onSiteAccomodation === "yes" && <>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='roomType'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Room Type
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder='Serene Water Retreat'
+                              type='text'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='numberOfRooms'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Number of Rooms available
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. 3 rooms'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='sleeps'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Sleeps
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. 3 sleepers'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='bedConfiguration'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Bed Configuration
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. 2 single beds, 1 double bed'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-6'>
+                    <FormField
+                      control={form.control}
+                      name='roomAmenities'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Room Amenities
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. Air conditioning, Heating, Wi-Fi, etc.'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='pricePerHour'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Price Per Hour
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. $100 per hour'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </>
+              }
               <div className='md:col-span-4 md:col-start-2 w-full flex items-center justify-center'>
                 <Button
                   type='submit'

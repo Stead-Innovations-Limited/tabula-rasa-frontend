@@ -95,10 +95,10 @@ export default async function listVenueAction(
           image_links: venueFiles,
           has_accomodation: onSiteAccomodation === "yes" ? true : false,
           room_type: roomType,
-          no_of_rooms: parseInt(numberOfRooms),
+          no_of_rooms: parseInt(numberOfRooms ?? "0"),
           sleeps,
           bed_type: bedConfiguration,
-          booking_price: parseInt(pricePerHour),
+          booking_price: parseInt(pricePerHour ?? "0"),
           is_available: true,
         },
         {

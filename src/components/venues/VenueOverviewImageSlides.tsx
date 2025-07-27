@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
   CarouselDots,
 } from "@/components/ui/carousel";
+import { Skeleton } from "../ui/skeleton";
 
 export default function VenueOverviewImageSlides({
   images,
@@ -19,13 +20,13 @@ export default function VenueOverviewImageSlides({
       <CarouselContent className='w-full h-full -ml-0'>
         {images.map((img, index) => (
           <CarouselItem key={index} className='w-full h-full pl-0 relative'>
-            <Image
+            {img ? <Image
               src={img}
               alt={img + index}
               fill={true}
               priority={true}
               className='absolute object-cover object-center'
-            />
+            />: <Skeleton className="absolute object-cover object-center w-full h-full"/>}
           </CarouselItem>
         ))}
       </CarouselContent>

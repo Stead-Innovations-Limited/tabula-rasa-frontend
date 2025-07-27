@@ -19,12 +19,12 @@ const useWorkDaysToggle = create(
       })),
 
     // This function will be used to initialze the work days
-    setInitWorkDays: (fetchedWorkSchedule: WorkDays) => {
+    setInitWorkDays: (fetchedWorkSchedule: WorkDays | null) => {
       // Because of the way we will be saving the data in the backend, we always have to prefill
-      const prefilledData = {
+      const prefilledData = fetchedWorkSchedule ? {
         ...workSchedule,
         ...fetchedWorkSchedule, // Merge with fetched data
-      }
+      }: workSchedule;
       set({ workDays: prefilledData as WorkDays });
     },
   }))

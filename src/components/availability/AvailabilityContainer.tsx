@@ -9,7 +9,7 @@ import { parseTime} from "@internationalized/date";
 import { WorkDays } from "@/hooks/useAvailabilityDaysToggle";
 import { useEffect } from "react";
 
-export default function AvailabilityContainer({workSchedule}:{workSchedule: WorkDays}) {
+export default function AvailabilityContainer({workSchedule}:{workSchedule: WorkDays | null}) {
   const setInitWorkDays = useWorkDaysToggle((state) => state.setInitWorkDays);
   // Initialize the work schedule when the component mounts
   useEffect(() => {

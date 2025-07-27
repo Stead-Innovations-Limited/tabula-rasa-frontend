@@ -54,7 +54,7 @@ export default function DayHourCard({
   }, [dayObj.closes_at]);
   return (
     <div className='w-full flex rounded-2xl border-2 border-olive overflow-clip'>
-      <div className='bg-olive text-white w-1/3 md:w-1/6 md:aspect-[2/1] flex items-center justify-center text-sm md:text-xl font-semibold px-3 py-5 md:p-5'>
+      <div className='bg-olive text-white w-1/3 md:w-1/6 md:aspect-[2/1] flex items-center justify-center text-xs md:text-xl font-semibold px-1 py-5 md:p-5'>
         {day.charAt(0).toUpperCase() + day.slice(1)}
       </div>
       <div className='grow flex items-center justify-center gap-1 md:gap-10 px-1'>

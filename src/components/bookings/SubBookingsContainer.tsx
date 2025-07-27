@@ -11,7 +11,6 @@ export default async function SubBookingsContainer({
   const events = (await getEventsByVenueId(venueId)) as
     | Event[]
     | { error: boolean; errorData?: string; message?: string };
-  console.log("Events fetched for venue:", venueId, events);
   if (!Array.isArray(events)) {
     return (
       <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>

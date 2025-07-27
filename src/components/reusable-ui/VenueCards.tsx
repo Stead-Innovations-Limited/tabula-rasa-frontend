@@ -8,6 +8,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { FiUsers, SlLocationPin, GoArrowUpRight } from "@/components/icons";
+import { Skeleton } from "../ui/skeleton";
 
 interface VenueProps {
   imgUrl: string;
@@ -34,12 +35,7 @@ export default function VenueCards({
         <Link href={`/venues/${venueId}`} className='relative z-5 my-5 ml-auto bg-olive size-10 rounded-xl flex items-center justify-center'>
           <GoArrowUpRight className='size-5 text-white' />
         </Link>
-        <Image
-          src={imgUrl}
-          alt={imgAlt}
-          fill={true}
-          className='absolute object-cover object-center'
-        />
+        {imgUrl ? <Image src={imgUrl} alt={imgAlt} fill={true} className='absolute object-cover object-center' /> : <Skeleton className="absolute object-cover object-center w-full h-full"/>}
         <CardTitle className='sr-only'>{venueName}</CardTitle>
         <CardDescription className='sr-only'>
           Venue card about the {venueName}.
