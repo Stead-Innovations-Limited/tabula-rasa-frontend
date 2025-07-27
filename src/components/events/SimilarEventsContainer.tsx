@@ -1,6 +1,7 @@
 "use client";
 import EventCards from "@/components/reusable-ui/EventCards";
 import { filterEvents } from "@/lib/filterFns";
+import { sortDataByCategoryAndOption, SortOption } from "@/lib/sortDataByCategoryAndOption";
 import { Event } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useQueryState } from "nuqs";
@@ -14,8 +15,10 @@ export default function SimilarEventsContainer({
   events: EventWithVenue[];
 }) {
   const [searchVal] = useQueryState("search");
+  const [sortVal] = useQueryState('sort');
 
   const filteredEvents = filterEvents(events, searchVal || "");
+  const sortedEvents = sortDataByCategoryAndOption(filteredEvents, "events", (sortVal || "latest") as SortOption) as EventWithVenue[];
   return (
     <section className='w-full my-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -29,8 +32,8 @@ export default function SimilarEventsContainer({
           )}
         >
           {/* The Event Cards */}
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event: EventWithVenue, index: number) => (
+          {sortedEvents.length > 0 ? (
+            sortedEvents.map((event: EventWithVenue, index: number) => (
               <EventCards
                 key={index}
                 eventId={event.id}

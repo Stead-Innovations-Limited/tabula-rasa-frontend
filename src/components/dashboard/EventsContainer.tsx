@@ -8,13 +8,18 @@ import { Event } from "@/lib/types";
 
 import { useQueryState } from 'nuqs';
 import { filterEvents } from "@/lib/filterFns";
+import { sortDataByCategoryAndOption, SortOption } from "@/lib/sortDataByCategoryAndOption";
+
 type EventWithVenue = Event & {
   location: string;
 };
 
 export default function EventsContainer({events}: { events: EventWithVenue[]}) {
   const [searchVal] = useQueryState('search');
+  const [sortVal] = useQueryState('sort');
+
   const filteredEvents = filterEvents(events, searchVal || "");
+  const sortedEvents = sortDataByCategoryAndOption(filteredEvents, "events", (sortVal || "latest") as SortOption) as EventWithVenue[];
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -30,8 +35,8 @@ export default function EventsContainer({events}: { events: EventWithVenue[]}) {
         </div>
         <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8', events.length === 0 && '!grid-cols-1')}>
           {/* The Event Cards */}
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event: EventWithVenue, index: number) => (
+          {sortedEvents.length > 0 ? (
+            sortedEvents.map((event: EventWithVenue, index: number) => (
               <EventCards
                 key={index}
                 eventId={event.id}

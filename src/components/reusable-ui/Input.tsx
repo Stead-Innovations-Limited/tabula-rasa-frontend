@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { BsEye, BsEyeSlash, CiSearch } from "@/components/icons";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useQueryState } from "nuqs";
 
 const PasswordInput = React.forwardRef<
   HTMLInputElement,
@@ -72,15 +74,50 @@ const ConfirmPasswordInput = React.forwardRef<
 });
 ConfirmPasswordInput.displayName = "ConfirmPasswordInput";
 
+const selectGroupings = {
+  dashboard: (
+    <>
+      <SelectItem value='latest'>Recent</SelectItem>
+      <SelectItem value='participants'>Participants</SelectItem>
+      <SelectItem value='capacity'>Capacity</SelectItem>
+      <SelectItem value='experience'>Experience</SelectItem>
+      <SelectItem value='rate'>Rate</SelectItem>
+    </>
+  ),
+  practitioners: (
+    <>
+      <SelectItem value='experience'>Experience</SelectItem>
+      <SelectItem value='rate'>Rate</SelectItem>
+    </>
+  ),
+  events: (
+    <>
+      <SelectItem value='latest'>Recent</SelectItem>
+      <SelectItem value='participants'>Participants</SelectItem>
+    </>
+  ),
+  venues: (
+    <>
+      <SelectItem value='latest'>Recent</SelectItem>
+      <SelectItem value='capacity'>Capacity</SelectItem>
+    </>
+  ),
+}
+
 function DashboardFilter({ className }: { className?: string }) {
+  const [sortVal, setSortVal] = useQueryState('sort');
+  const pathname = usePathname();
+  const pathKey = pathname.split("/").filter(Boolean)[0] as keyof typeof selectGroupings;
+
+  // Fallback to 'dashboard' if pathname doesn't match any expected group
+  const selectOptions = selectGroupings[pathKey] || selectGroupings["dashboard"];
   return (
-    <Select>
-      <SelectTrigger className={cn("", className)}>
-        <SelectValue placeholder='Filter' />
+    <Select value={sortVal || "latest"} onValueChange={setSortVal}>
+      <SelectTrigger icon="sort" className={cn("", className)}>
+        <SelectValue placeholder='Sort by' />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value='latest'>Latest</SelectItem>
-        <SelectItem value='pricing'>Pricing</SelectItem>
+        {selectOptions}
       </SelectContent>
     </Select>
   );
@@ -89,7 +126,7 @@ function DashboardFilter({ className }: { className?: string }) {
 function BookingsFilter({ className }: { className?: string }) {
   return (
     <Select>
-      <SelectTrigger className={cn("", className)}>
+      <SelectTrigger icon="sort" className={cn("", className)}>
         <SelectValue placeholder='Filter' />
       </SelectTrigger>
       <SelectContent>

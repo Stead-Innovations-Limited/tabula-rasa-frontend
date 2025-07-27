@@ -18,6 +18,7 @@ import { useSession } from "next-auth/react";
 import PopOverMenu from "../Menus/PopOverMenu";
 import SheetMenu from "../Menus/SheetMenu";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import SortMenu from "../Menus/SortMenu";
 
 export default function FullUserNavBarSearch() {
   const pathname = usePathname();
@@ -42,8 +43,9 @@ export default function FullUserNavBarSearch() {
             placeholder=''
             value={searchVal || ""}
             onChange={(e) => setSearchVal(e.target.value)}
-            className='absolute inset-0 bg-white text-olive placeholder:text-olive placeholder:font-normal font-roboto text-lg rounded-[0.625rem] md:rounded-full pl-10 pr-4 py-2 caret-olive'
+            className='absolute inset-0 bg-white text-olive placeholder:text-olive placeholder:font-normal font-roboto text-lg rounded-[0.625rem] md:rounded-full pl-10 pr-8 md:pr-6 py-2 caret-olive'
           />
+          <SortMenu className="md:hidden absolute right-2 top-1/2 -translate-y-1/2" />
         </div>
 
         <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl order-2 md:order-3'>

@@ -6,10 +6,13 @@ import Link from "next/link";
 import { Venue } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { filterVenues } from "@/lib/filterFns";
+import { sortDataByCategoryAndOption, SortOption } from '@/lib/sortDataByCategoryAndOption';
 
 export default function VenueContainer({ venuesData }: { venuesData: Venue[] }) {
   const [searchVal] = useQueryState("search");
+  const [sortVal] = useQueryState("sort");
   const venues = filterVenues(venuesData, searchVal || "");
+  const sortedVenues = sortDataByCategoryAndOption(venues, "venues", (sortVal || "capacity") as SortOption) as Venue[];
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -25,8 +28,8 @@ export default function VenueContainer({ venuesData }: { venuesData: Venue[] }) 
         </div>
         <div className={cn(`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8`, venues.length === 0 && '!grid-cols-1')}>
           {/* The Venue Cards */}
-          {venues.length > 0 ? (
-            venues.map((venue, index) => (
+          {sortedVenues.length > 0 ? (
+            sortedVenues.map((venue, index) => (
               <VenueCards
                 key={index}
                 venueId={venue.id}

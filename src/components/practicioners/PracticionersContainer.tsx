@@ -5,10 +5,14 @@ import PracticionersCards from "../reusable-ui/PracticionersCard";
 import { cn } from "@/lib/utils";
 import { useQueryState } from "nuqs";
 import { filterBusinessProfiles } from "@/lib/filterFns";
+import { sortDataByCategoryAndOption, SortOption } from "@/lib/sortDataByCategoryAndOption";
 
 export default function PracticionersContainer({practitioners}: { practitioners: User[] }) {
   const [searchVal] = useQueryState('search');
+  const [sortVal] = useQueryState('sort');
+  
   const filteredUsers = filterBusinessProfiles(practitioners, searchVal || "");
+  const sortedUsers = sortDataByCategoryAndOption(filteredUsers, "practitioners", (sortVal || "experience") as SortOption) as User[];
   return (
     <section className='w-full mb-8'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-6 p-5 lg:px-5 xl:py-0'>
@@ -22,8 +26,8 @@ export default function PracticionersContainer({practitioners}: { practitioners:
           )}
         >
           {/* The Event Cards */}
-          {filteredUsers.length > 0 ? (
-            filteredUsers.map((data, index) => (
+          {sortedUsers.length > 0 ? (
+            sortedUsers.map((data, index) => (
               <PracticionersCards
                 key={index}
                 userId={data.id}
