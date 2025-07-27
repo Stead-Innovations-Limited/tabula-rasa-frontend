@@ -81,8 +81,7 @@ export default function CreateEventForm({
     undefined
   );
 
-  // Here i filter out the unavailable venues
-  const venues = venuesData.filter((venue) => venue.is_available.Bool);
+  const venues = venuesData;
 
   useToast(state, undefined, () => router.back());
 

@@ -35,11 +35,10 @@ export default async function page() {
       </div>
     );
   }
-  // We filter the venues to only include those that are available
-  const venues = venuesData.filter((ele) => ele.is_available.Bool);
+   
   const eventsWithVenues = events.map((event) => ({
     ...event,
-    location: venues.filter((venue) => venue.id === event.venue_id)[0].location
+    location: venuesData.filter((venue) => venue.id === event.venue_id)[0].location
       .String,
   }));
 
@@ -50,7 +49,7 @@ export default async function page() {
     <>
       <DashboardBanner />
       <EventsContainerWrapper eventsWithVenues={eventsWithVenues} />
-      <VenuesContainerWrapper venues={venues} />
+      <VenuesContainerWrapper venues={venuesData} />
       <PracticionersContainerWrapper filteredUsers={filteredUsers} />
     </>
   );

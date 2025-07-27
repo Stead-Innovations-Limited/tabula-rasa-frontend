@@ -39,8 +39,8 @@ export default async function getVenues() {
           : response.errors.join(", ")
       );
     }
-
-    return response.data as Venue[];
+    // Here i filter out the unavailable venues
+    return (response.data as Venue[]).filter((venue) => venue.is_available.Bool) as Venue[];
   } catch (error) {
     return {
       error: true,

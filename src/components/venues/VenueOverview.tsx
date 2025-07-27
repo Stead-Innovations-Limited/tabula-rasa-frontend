@@ -1,4 +1,4 @@
-
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -83,8 +83,10 @@ export default async function VenueOverview({venueData, isSaved}: {venueData: Ve
                 </div>
               </CardContent>
               <CardFooter className="mb-10">
-                <Button className="font-roboto bg-olive text-white hover:bg-darkolive rounded-md w-full">
+                <Button className="font-roboto bg-olive text-white hover:bg-darkolive rounded-md w-full" asChild>
+                  <Link href={`/create-event?venue=${venueData.id}`}>
                   Book Space
+                  </Link>
                 </Button>
               </CardFooter>
             </Card>
