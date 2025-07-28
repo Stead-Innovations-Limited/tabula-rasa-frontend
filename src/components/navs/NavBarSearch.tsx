@@ -33,7 +33,7 @@ export default function FullUserNavBarSearch() {
     <div className='w-full bg-olive'>
       <header className='w-full xl:max-w-[1140px] mx-auto flex flex-row flex-wrap gap-y-3 md:gap-y-0 justify-between items-center p-5 lg:px-5 text-white'>
         <h1 className='font-alex text-3xl lg:text-5xl order-1'>
-          <Link href={"/"}>Tabula Rasa</Link>
+          <Link href={"/dashboard"}>Tabula Rasa</Link>
         </h1>
         {/* The Search Input */}
         <div className='md:flex items-center justify-center relative w-full max-w-[400px] h-8 order-3 md:order-2'>
