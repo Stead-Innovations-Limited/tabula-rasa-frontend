@@ -29,7 +29,30 @@ export default async function businessProfileAction(state: BusinessProfileState 
         errors: z.flattenError(validatedFields.error).fieldErrors,
       };
     }
-    const { phone, serviceAddress, expertiseArea, professionalExperience, businessRate, country, bio, token, userId } = validatedFields.data;
+    const { firstname, lastname, email, phone, businessName, serviceAddress, expertiseArea, professionalExperience, businessRate, country, bio, token, userId } = validatedFields.data;
+
+    // Here we update the firstname, lastname and email
+    const userResponse = await tryCatch(async () => {
+      return await axios.patch(
+        `https://tabula-rasa-backend.up.railway.app/users/${userId}`,
+        { firstname, lastname, email },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    });
+
+
+    if (userResponse.isError) {
+      throw new Error(
+        typeof userResponse.errors === "string"
+          ? userResponse.errors
+          : userResponse.errors.join(", ")
+      );
+    }
 
 
 
@@ -38,6 +61,7 @@ export default async function businessProfileAction(state: BusinessProfileState 
       return await axios.patch(
         `https://tabula-rasa-backend.up.railway.app/users/profile/${userId}`,
         {
+          business_name: businessName,
           phone_no: phone,
           address: serviceAddress,
           field: expertiseArea,
@@ -58,9 +82,7 @@ export default async function businessProfileAction(state: BusinessProfileState 
     });
     if (response.isError) {
       throw new Error(
-        typeof response.errors === "string"
-          ? response.errors
-          : response.errors.join(", ")
+      "Profile was updated partially"
       );
     }
 

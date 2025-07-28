@@ -27,6 +27,7 @@ import Link from "next/link";
 const schema = z.object({
   firstname: z.string().min(1, "First name is required"),
   lastname: z.string().min(1, "Last name is required"),
+  email: z.email({ message: "Please enter a valid email." }).trim(),
 });
 
 export default function PersonalProfileForm({
@@ -37,6 +38,7 @@ export default function PersonalProfileForm({
   const { data: session, update } = useSession();
   const [state, action, isPending] = useActionState(personalProfileAction, {
     errors: {},
+    data: undefined,
     success: undefined,
     message: undefined,
     error: undefined,
@@ -48,6 +50,7 @@ export default function PersonalProfileForm({
     defaultValues: {
       firstname: userData.firstName,
       lastname: userData.lastName,
+      email: userData.email,
     },
   });
 
@@ -59,7 +62,8 @@ export default function PersonalProfileForm({
       if (
         session &&
         state.data.firstname === session.user.firstName &&
-        state.data.lastname === session.user.lastName
+        state.data.lastname === session.user.lastName &&
+        state.data.email === session.user.email
       )
         return;
 
@@ -69,12 +73,14 @@ export default function PersonalProfileForm({
           ...session?.user,
           firstName: state.data.firstname,
           lastName: state.data.lastname,
+          email: state.data.email,
         },
       });
 
       form.reset({
         firstname: state.data.firstname,
         lastname: state.data.lastname,
+        email: state.data.email
       });
     }
   }, [form, update, state, session]);
@@ -87,7 +93,8 @@ export default function PersonalProfileForm({
     if (
       session &&
       formData.firstname === session.user.firstName &&
-      formData.lastname === session.user.lastName
+      formData.lastname === session.user.lastName &&
+      formData.email === session.user.email
     )
       return;
 
@@ -151,6 +158,26 @@ export default function PersonalProfileForm({
                         type='text'
                         {...field}
                         className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      Email Address
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type='email'
+                        placeholder='you@example.com'
+                        {...field}
+                        className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                       />
                     </FormControl>
                     <FormMessage />

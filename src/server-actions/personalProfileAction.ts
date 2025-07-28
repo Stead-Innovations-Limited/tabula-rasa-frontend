@@ -11,12 +11,14 @@ export interface PersonalProfileState {
   data?: {
     firstname: string;
     lastname: string;
+    email: string;
   };
   message?: string;
   error?: boolean;
   errors?: {
     firstname?: string[];
     lastname?: string[];
+    email?: string[];
   };
 }
 
@@ -37,12 +39,12 @@ export default async function personalProfileAction(
     }
 
 
-    const { firstname, lastname, token, userId } = validatedFields.data;
+    const { firstname, lastname, email, token, userId } = validatedFields.data;
 
     const response = await tryCatch(async () => {
       return await axios.patch(
         `https://tabula-rasa-backend.up.railway.app/users/${userId}`,
-        { firstname, lastname },
+        { firstname, lastname, email },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,7 +65,7 @@ export default async function personalProfileAction(
 
     return {
       success: true,
-      data: { firstname, lastname },
+      data: { firstname, lastname, email },
       message: "Personal profile updated successfully.",
     };
   } catch (error) {

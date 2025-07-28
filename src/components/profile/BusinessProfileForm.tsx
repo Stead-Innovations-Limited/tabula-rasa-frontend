@@ -56,6 +56,7 @@ export default function BusinessProfileForm({
       firstname: userData.firstName,
       lastname: userData.lastName,
       email: userData.email,
+      businessName: "",
       phone: "",
       serviceAddress: "",
       expertiseArea: "",
@@ -82,6 +83,7 @@ export default function BusinessProfileForm({
         firstname: state.data.firstname,
         lastname: state.data.lastname,
         email: state.data.email,
+        businessName: state.data.businessName,
         phone: state.data.phone,
         serviceAddress: state.data.serviceAddress,
         expertiseArea: state.data.expertiseArea,
@@ -146,6 +148,7 @@ export default function BusinessProfileForm({
         firstname: userData.firstName,
         lastname: userData.lastName,
         email: userData.email,
+        businessName: res.business_name,
         phone: res.phone_no,
         serviceAddress: res.address,
         expertiseArea: res.field,
@@ -159,7 +162,8 @@ export default function BusinessProfileForm({
           | "6"
           | "7"
           | "8"
-          | "9",
+          | "9"
+          | "10",
         businessRate: res.rate?.toString() ?? "",
         country: res.country,
         bio: res.bio,
@@ -214,7 +218,6 @@ export default function BusinessProfileForm({
                         placeholder='Bisi'
                         type='text'
                         {...field}
-                        disabled
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                       />
                     </FormControl>
@@ -234,7 +237,6 @@ export default function BusinessProfileForm({
                       <Input
                         placeholder='Adebayo'
                         type='text'
-                        disabled
                         {...field}
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                       />
@@ -255,7 +257,26 @@ export default function BusinessProfileForm({
                       <Input
                         type='email'
                         placeholder='you@example.com'
-                        disabled
+                        {...field}
+                        className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='businessName'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-olive !text-base !md:text-lg'>
+                      Business Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Your Business Name'
+                        type='text'
                         {...field}
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                       />
@@ -338,7 +359,7 @@ export default function BusinessProfileForm({
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger className='w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none'>

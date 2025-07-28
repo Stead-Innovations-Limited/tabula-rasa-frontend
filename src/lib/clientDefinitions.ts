@@ -209,7 +209,7 @@ export const createEventSchema = z
       }),
   })
   .refine((data) => data.endDate >= data.startDate, {
-    message: "endDate must be after startDate",
+    message: "End date must be after Start Date",
     path: ["endDate"],
   })
   // Here i do a check to ensure that the end time is after the start time
@@ -222,7 +222,7 @@ export const createEventSchema = z
         data.startDate.toISOString().split("T")[0].concat("T", data.startTime)
       ),
     {
-      message: "endTime must be later than startTime",
+      message: "End time must be later than startTime",
       path: ["endTime"],
     }
   )
@@ -235,14 +235,18 @@ export const createEventSchema = z
 export const businessProfileSchema = z.object({
   firstname: z
     .string()
-    .min(2, { message: "Fullname cannot be less than 2 characters" })
-    .max(80, { message: "Fullname cannot be 80 characters long." }),
+    .min(2, { message: "Full name cannot be less than 2 characters" })
+    .max(80, { message: "Full name cannot be 80 characters long." }),
   lastname: z
     .string()
-    .min(2, { message: "Fullname cannot be less than 2 characters" })
-    .max(80, { message: "Fullname cannot be 80 characters long." }),
+    .min(2, { message: "Full name cannot be less than 2 characters" })
+    .max(80, { message: "Full name cannot be 80 characters long." }),
   email: z.email({ message: "Please enter a valid email." }).trim(),
   phone: z.string().min(4, { message: "Please put a valid phone number" }),
+  businessName: z
+    .string()
+    .min(2, { message: "Business name cannot be less than 2 characters" })
+    .max(80, { message: "Business name cannot be 80 characters long." }),
   serviceAddress: z
     .string()
     .min(5, { message: "Service address cannot be less than 5 characters" })

@@ -27,12 +27,12 @@ export const loginSchema = z.object({
 export const signupSchema = z.object({
   firstname: z
     .string()
-    .min(2, { message: "Fullname cannot be less than 2 characters" })
-    .max(80, { message: "Fullname cannot be 80 characters long." }),
+    .min(2, { message: "Full name cannot be less than 2 characters" })
+    .max(80, { message: "Full name cannot be 80 characters long." }),
   lastname: z
     .string()
-    .min(2, { message: "Fullname cannot be less than 2 characters" })
-    .max(80, { message: "Fullname cannot be 80 characters long." }),
+    .min(2, { message: "Full name cannot be less than 2 characters" })
+    .max(80, { message: "Full name cannot be 80 characters long." }),
   email: z.email({ message: "Please enter a valid email." }).trim(),
   password: z
     .string()
@@ -49,30 +49,31 @@ export const signupSchema = z.object({
     }),
   confirmPassword: z
     .string()
-    .min(8, { message: "Confirm Password must be at least 8 characters long" })
+    .min(8, { message: "Confirm password must be at least 8 characters long" })
     .regex(/[a-z]/, {
-      message: "Confirm Password must contain at least one lowercase letter",
+      message: "Confirm password must contain at least one lowercase letter",
     })
     .regex(/[A-Z]/, {
-      message: "Confirm Password must contain at least one uppercase letter",
+      message: "Confirm password must contain at least one uppercase letter",
     })
     .regex(/\d/, {
-      message: "Confirm Password must contain at least one number",
+      message: "Confirm password must contain at least one number",
     })
     .regex(/[@$!%*?&#]/, {
-      message: "Confirm Password must contain at least one special character",
+      message: "Confirm password must contain at least one special character",
     }),
 });
 
 export const personalProfileSchema = z.object({
   firstname: z
     .string()
-    .min(2, { message: "Fullname cannot be less than 2 characters" })
-    .max(80, { message: "Fullname cannot be 80 characters long." }),
+    .min(2, { message: "Full name cannot be less than 2 characters" })
+    .max(80, { message: "Full name cannot be 80 characters long." }),
   lastname: z
     .string()
-    .min(2, { message: "Fullname cannot be less than 2 characters" })
-    .max(80, { message: "Fullname cannot be 80 characters long." }),
+    .min(2, { message: "Full name cannot be less than 2 characters" })
+    .max(80, { message: "Full name cannot be 80 characters long." }),
+  email: z.email({ message: "Please enter a valid email." }).trim(),
   token: z.string(),
   userId: z.string(),
 });
@@ -80,13 +81,17 @@ export const personalProfileSchema = z.object({
 export const businessProfileSchema = z.object({
   firstname: z
     .string()
-    .min(2, { message: "Fullname cannot be less than 2 characters" })
-    .max(80, { message: "Fullname cannot be 80 characters long." }),
+    .min(2, { message: "Full name cannot be less than 2 characters" })
+    .max(80, { message: "Full name cannot be 80 characters long." }),
   lastname: z
     .string()
-    .min(2, { message: "Fullname cannot be less than 2 characters" })
-    .max(80, { message: "Fullname cannot be 80 characters long." }),
+    .min(2, { message: "Full name cannot be less than 2 characters" })
+    .max(80, { message: "Full name cannot be 80 characters long." }),
   email: z.email({ message: "Please enter a valid email." }).trim(),
+  businessName: z
+    .string()
+    .min(2, { message: "Business name cannot be less than 2 characters" })
+    .max(80, { message: "Business name cannot be 80 characters long." }),
   phone: z.string().min(4, { message: "Please put a valid phone number" }),
   serviceAddress: z
     .string()
@@ -279,7 +284,7 @@ export const editEventSchema = z
       }),
   })
   .refine((data) => data.endDate > data.startDate, {
-    message: "endDate must be after startDate",
+    message: "End date must be after start date",
     path: ["endDate"],
   });
 
@@ -459,10 +464,10 @@ export const createEventSchema = z
       error: "End date is required",
     }),
     startTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$/, {
-      message: "Start time must be in HH:MM:SS format",
+      message: "Start time must be in Hour:Minutes:Seconds format",
     }),
     endTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$/, {
-      message: "End time must be in HH:MM:SS format",
+      message: "End time must be in Hour:Minutes:Seconds format",
     }),
     maxParticipantsNo: z.enum(
       [
@@ -489,7 +494,7 @@ export const createEventSchema = z
       }),
   })
   .refine((data) => data.endDate >= data.startDate, {
-    message: "endDate must be after startDate",
+    message: "End date must be after start date",
     path: ["endDate"],
   })
   // Here i do a check to ensure that the end time is after the start time
@@ -502,7 +507,7 @@ export const createEventSchema = z
         data.startDate.toISOString().split("T")[0].concat("T", data.startTime)
       ),
     {
-      message: "endTime must be later than startTime",
+      message: "End time must be later than start time",
       path: ["endTime"],
     }
   )
