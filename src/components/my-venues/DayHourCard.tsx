@@ -55,11 +55,14 @@ export default function DayHourCard({
   return (
     <div className='w-full flex rounded-2xl border-2 border-olive overflow-clip'>
       <div className='bg-olive text-white w-1/3 md:w-1/6 md:aspect-[2/1] flex items-center justify-center text-xs md:text-xl font-semibold px-1 py-5 md:p-5'>
-        {day.charAt(0).toUpperCase() + day.slice(1)}
+        {day.charAt(0).toUpperCase() + day.slice(1, 3)}
       </div>
       <div className='grow flex items-center justify-center gap-1 md:gap-10 px-1'>
         <div className='md:px-8 py-1 border border-solid border-olive rounded-lg flex flex-col justify-center items-center grow md:grow-0'>
           <TimeInput
+            classNames={{
+              "inputWrapper": "px-0.5 md:px-3"
+            }}
             aria-label='Start Time'
             granularity='second'
             value={openTime}
@@ -92,6 +95,9 @@ export default function DayHourCard({
         <HiOutlineArrowRight className='size-5 md:size-8 text-olive' />
         <div className='md:px-18 py-1 border border-solid border-olive rounded-lg flex flex-col justify-center items-center grow md:grow-0'>
           <TimeInput
+            classNames={{
+              "inputWrapper": "px-0.5 md:px-3"
+            }}
             aria-label='End Time'
             granularity='second'
             value={closeTime}
