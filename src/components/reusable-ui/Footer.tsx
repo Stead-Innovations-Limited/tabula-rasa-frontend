@@ -54,7 +54,7 @@ function Footer() {
                 <h4 className="font-semibold text-base md:text-2xl">Business</h4>
                 <ul className="flex flex-col gap-4 text-base md:text-xl">
                   <li className="">
-                    <Link href='/profile' className="whitespace-nowrap">Create Business Profile</Link>
+                    <Link href='/business-profile' className="whitespace-nowrap">Create Business Profile</Link>
                   </li>
                   <li>
                     <Link href='/list-venue' className="whitespace-nowrap">Create Listing</Link>
