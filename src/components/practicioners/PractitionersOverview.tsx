@@ -32,7 +32,7 @@ async function PractitionersOverview({id}: {id: string}) {
             {/* Tmage section */}
             <div className='w-full px-5 md:px-10 flex flex-col gap-5'>
               <div className='flex flex-col gap-5 md:gap-0 md:flex-row items-start md:items-center md:justify-between -mt-15 md:-mt-24'>
-                <div className='relative  size-30 md:size-48 rounded-full overflow-hidden'>
+                <div className='relative size-30 md:size-48 rounded-full overflow-hidden'>
                   <PractitionerImageFallback imgUrl={userDetails.image_link.String} imgAlt={`Profile picture for ${userDetails.business_name.String}`} />
                 </div>
 

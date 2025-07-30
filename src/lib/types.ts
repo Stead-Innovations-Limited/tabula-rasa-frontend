@@ -52,6 +52,7 @@ export interface Event {
   total_particpant: NullableInt32;
   status: "pending" | "confirmed" | "declined" | string;
   created_at: string;
+  price: number
 }
 
 // ========== VENUE INTERFACE ==========

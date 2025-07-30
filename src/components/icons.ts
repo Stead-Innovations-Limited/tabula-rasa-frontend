@@ -14,7 +14,8 @@ import { PiCurrencyDollarSimple, PiHouse, PiCurrencyCircleDollar } from "react-i
 import { GrBookmark } from "react-icons/gr";
 import { IoMail } from "react-icons/io5";
 import { RiMailCloseFill } from "react-icons/ri";
-import { IoIosCheckmarkCircle, IoIosCloseCircle } from "react-icons/io";
-import {  } from "react-icons/go";
+import { IoIosCheckmarkCircle, IoIosCloseCircle, IoMdCheckmarkCircle } from "react-icons/io";
 
-export { RxHamburgerMenu, AiOutlineLoading3Quarters, FaFacebook, BsTwitterX, SlSocialInstagram, HiOutlineLockClosed,  BsEye, BsEyeSlash, FcGoogle, FaApple, FiLogOut, HiPlus, SlHeart,LuShoppingCart, LuBell, CiSearch, FiCamera, BsChevronRight, LuCalendarDays, SlLocationPin, GoArrowUpRight, FiUsers, GoStarFill, GoPerson, PiCurrencyDollarSimple, PiHouse, FaHeart, RxPerson, GrBookmark, HiOutlineTicket, PiCurrencyCircleDollar, AiOutlineClockCircle, BsPinAngle, RxDotsVertical, HiOutlineArrowRight, IoMail, RiMailCloseFill, IoIosCheckmarkCircle, IoIosCloseCircle, BsInfoCircle, GoBellFill };
+
+
+export { RxHamburgerMenu, AiOutlineLoading3Quarters, FaFacebook, BsTwitterX, SlSocialInstagram, HiOutlineLockClosed,  BsEye, BsEyeSlash, FcGoogle, FaApple, FiLogOut, HiPlus, SlHeart,LuShoppingCart, LuBell, CiSearch, FiCamera, BsChevronRight, LuCalendarDays, SlLocationPin, GoArrowUpRight, FiUsers, GoStarFill, GoPerson, PiCurrencyDollarSimple, PiHouse, FaHeart, RxPerson, GrBookmark, HiOutlineTicket, PiCurrencyCircleDollar, AiOutlineClockCircle, BsPinAngle, RxDotsVertical, HiOutlineArrowRight, IoMail, RiMailCloseFill, IoIosCheckmarkCircle, IoIosCloseCircle, BsInfoCircle, GoBellFill, IoMdCheckmarkCircle };

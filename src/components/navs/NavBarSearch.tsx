@@ -36,7 +36,7 @@ export default function FullUserNavBarSearch() {
           <Link href={"/dashboard"}>Tabula Rasa</Link>
         </h1>
         {/* The Search Input */}
-        <div className='md:flex items-center justify-center relative w-full max-w-[400px] h-8 order-3 md:order-2'>
+        <div className='md:flex items-center justify-center relative w-full md:max-w-xs lg:max-w-sm h-8 order-3 md:order-2'>
           <CiSearch className='size-6 text-olive absolute left-2 top-1/2 -translate-y-1/2 z-2' />
           <Input
             type='text'
