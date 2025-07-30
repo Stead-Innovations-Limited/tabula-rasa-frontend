@@ -74,13 +74,12 @@ export default async function createEventAction(
       startTime,
       endTime,
       maxParticipantsNo,
-      // pricePerParticipant,
+      pricePerParticipant,
     } = validatedFields.data;
 
     if (eventFiles.length < 1) {
       throw new Error("Please upload at least one image for the event.");
     }
-
     const response = await tryCatch(async () => {
       return await axios.post(
         `https://tabula-rasa-backend.up.railway.app/events/`,
@@ -97,6 +96,7 @@ export default async function createEventAction(
           start_date: startDate.toISOString().split("T")[0],
           end_date: endDate.toISOString().split("T")[0],
           total_particpant: parseInt(maxParticipantsNo),
+          price: parseInt(pricePerParticipant)
         },
         {
           headers: {
@@ -106,7 +106,7 @@ export default async function createEventAction(
         }
       );
     });
-
+    
     if (response.isError) {
       throw new Error(
         typeof response.errors === "string"
