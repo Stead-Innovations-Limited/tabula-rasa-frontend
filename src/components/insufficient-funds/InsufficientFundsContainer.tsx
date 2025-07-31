@@ -10,7 +10,7 @@ export default function InsufficientFundsContainer() {
           <div className="w-full md:w-1/2 aspect-square relative">
             <Image src="/insufficient-funds.png" alt="Insufficient Funds" fill={true} className="w-full object-cover object-center" />
           </div>
-          <p className="font-roboto font-medium">
+          <p className="font-roboto font-medium text-center">
             It looks like your wallet balance isn&rsquo;t enough to complete this transaction. Please top up your wallet or choose another payment method to proceed.
           </p>
           <Button asChild className="w-full md:max-w-sm bg-olive hover:bg-olive/95 text-white mt-6">

@@ -1,7 +1,7 @@
 import { BsInfoCircle } from "@/components/icons";
 import { Button } from "../ui/button";
 
-function PaymentHero() {
+function PaymentHero({accountBalance}: { accountBalance: string}) {
   return (
     <div className='w-full'>
       <div className='w-full xl:max-w-[1140px] mx-auto md:p-5 pb-0 font-roboto'>
@@ -16,7 +16,7 @@ function PaymentHero() {
                   <BsInfoCircle className="text-base" />
                 </span>
               </p>
-              <p className='text-4xl font-semibold -mt-2 md:mt-0'>$ 0.00</p>
+              <p className='text-4xl font-semibold -mt-2 md:mt-0'>$ {parseInt(accountBalance).toFixed(2)}</p>
             </div>
           </div>
 
