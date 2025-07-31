@@ -42,7 +42,7 @@ export default function EventsContainer({
                 imgUrl={event.image_links[0] || "/event-pic.webp"}
                 imgAlt={event.name}
                 eventName={event.name}
-                eventPrice={"$80.00"}
+                eventPrice={"$" + event.price.toString()}
                 eventDate={event.start_date.Time}
               />
             ))

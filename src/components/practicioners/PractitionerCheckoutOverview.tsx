@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { User } from "@/lib/types";
 import PractitionerImageFallback from "./PractitionerImageFallback";
 import { SlLocationPin } from "@/components/icons";
@@ -50,18 +51,42 @@ function formatDate(date: Date): string {
 function formatSchedule(startTime: Time, endTime: Time, date: Date): string {
   return `${formatTime(startTime)} - ${formatTime(endTime)}, ${formatDate(date)}`;
 }
+
+const hourDiffFn = (startTime: Time, endTime: Time) => {
+    if(startTime.range === endTime.range){
+      // Both times are still in am or pm
+      if(startTime.hours === "12") return (parseInt(endTime.hours) + 12) - parseInt(startTime.hours);
+      else return parseInt(endTime.hours) - parseInt(startTime.hours);
+    }
+    else if(startTime.range === "AM" && endTime.range === "PM") {
+      // StartTime is in the Morning and EndTime is in the 
+      return (parseInt(endTime.hours) + 12) - parseInt(startTime.hours);
+    }
+    else {
+      // EndTime is in the evening and the startTime is in the morning
+      // Find time till midnight
+      const tillMidnight = 12 - (parseInt(endTime.hours));
+      // Add to the sum of the morning
+      const totalHours = parseInt(startTime.hours) + tillMidnight;
+      return totalHours;
+    }
+  }
 export default function PractitionerCheckoutOverview({
   userDetails,
+  bookings
 }: {
   userDetails: User;
+  bookings: string[]
 }) {
+  // Transform bookings into date objects
+  const bookedDays = bookings.map(ele => new Date(ele));
   // States needed for the checkout overview
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [startTime, setStartTime] = useState<Time>(defaultTime);
   const [endTime, setEndTime] = useState<Time>(defaultTime);
   // Do not forget to add previous days
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [bookedDates, setBookedDates] = useState<Date[]>([new Date("2025-7-31")]);
+  const [bookedDates, setBookedDates] = useState<Date[]>([...bookedDays]);
   // This component will display the overview of the practitioner's details during the checkout process.
   console.log("start", startTime)
   console.log("end", endTime)
@@ -149,7 +174,7 @@ export default function PractitionerCheckoutOverview({
               </CarouselContent>
               <div className=''>
                 {/* The Carousel Navigation component */}
-                <CarouselNavigation startTime={startTime} endTime={endTime} date={date} />
+                <CarouselNavigation startTime={startTime} endTime={endTime} date={date} pracId={userDetails.id} amount={(userDetails.rate.Int32 * hourDiffFn(startTime, endTime)).toFixed(2)}/>
               </div>
             </Carousel>
           </div>
@@ -178,10 +203,10 @@ function CalendarComp({
           defaultMonth={date}
           selected={date}
           onSelect={setDate}
-          disabled={{
-            before: new Date(), // Disable dates before today
-            dates: bookedDates
-          }}
+          disabled={[
+            { before: new Date() }, // Disable dates before today
+            ...bookedDates // The booked dates
+          ]}
           modifiers={{
             booked: bookedDates,
           }}
@@ -273,17 +298,17 @@ function SelectTime({
           <div className='flex flex-col '>
             <div className={`${time.range === "AM" ? 'text-black': 'text-[#DCDCDC]'}`} onClick={(e: React.MouseEvent<HTMLDivElement>) => {
               e.preventDefault();
-              setTime((prev: Time) => ({
-                ...prev,
+              setTime({
+                ...time,
                 range: "AM"
-              }));
+              });
             }}>AM</div>
             <p className={`${time.range === "PM" ? 'text-black': 'text-[#DCDCDC]'}`} onClick={(e: React.MouseEvent<HTMLDivElement>) => {
               e.preventDefault();
-              setTime((prev: Time) => ({
-                ...prev,
+              setTime({
+                ...time,
                 range: "PM"
-              }));
+              });
             }}>PM</p>
           </div>
         </div>
@@ -329,27 +354,8 @@ function SelectEndTime({
 }
 
 function OrderSummary({startTime, endTime, date, price }: { startTime: Time; endTime: Time; date: Date | undefined; price: number}) {
-
-  const hourDiffFn = () => {
-    if(startTime.range === endTime.range){
-      // Both times are still in am or pm
-      if(startTime.hours === "12") return (parseInt(endTime.hours) + 12) - parseInt(startTime.hours);
-      else return parseInt(endTime.hours) - parseInt(startTime.hours);
-    }
-    else if(startTime.range === "AM" && endTime.range === "PM") {
-      // StartTime is in the Morning and EndTime is in the 
-      return (parseInt(endTime.hours) + 12) - parseInt(startTime.hours);
-    }
-    else {
-      // EndTime is in the evening and the startTime is in the morning
-      // Find time till midnight
-      const tillMidnight = 12 - (parseInt(endTime.hours));
-      // Add to the sum of the morning
-      const totalHours = parseInt(startTime.hours) + tillMidnight;
-      return totalHours;
-    }
-  }
-  console.log("hourDiff", hourDiffFn());
+  const router = useRouter();
+  
   return (
     <div className='w-full flex flex-col justify-center items-center'>
       <div className='w-full p-5'>
@@ -379,11 +385,11 @@ function OrderSummary({startTime, endTime, date, price }: { startTime: Time; end
                 Price details
               </h4>
               <p className="">
-                $ {price} x {hourDiffFn()}
+                $ {price} x {hourDiffFn(startTime, endTime)}
               </p>
             </div>
             <p className="">
-              $ { price * hourDiffFn()}
+              $ { price * hourDiffFn(startTime, endTime)}
             </p>
           </div>
           {/* Total */}
@@ -392,7 +398,7 @@ function OrderSummary({startTime, endTime, date, price }: { startTime: Time; end
               Total
             </h4>
             <p className="">
-              $ { price * hourDiffFn()}
+              $ { price * hourDiffFn(startTime, endTime)}
             </p>
           </div>
         </div>
@@ -400,6 +406,7 @@ function OrderSummary({startTime, endTime, date, price }: { startTime: Time; end
           className='w-fit underline decoration-olive text-olive bg-white p-0 cursor-pointer mt-8 ml-auto'
           onClick={() => {
             // Handle cancel order
+            router.back()
           }}
         >
           Cancel Order

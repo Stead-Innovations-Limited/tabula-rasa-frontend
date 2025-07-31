@@ -101,7 +101,7 @@ async function EventsOverview({ eventId, isSaved }: { eventId: string; isSaved: 
                     <span className='inline-block font-medium'>
                       Price per Participant:
                     </span>
-                    <span className='inline-block'>$20.00</span>
+                    <span className='inline-block'>${eventData.price.toFixed(2)}</span>
                   </li>
                 </ul>
               </div>

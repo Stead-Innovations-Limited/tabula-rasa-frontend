@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { GoStarFill } from "@/components/icons";
 import EventsContainer from "./EventsContainer";
@@ -36,9 +37,11 @@ async function PractitionersOverview({id}: {id: string}) {
                   <PractitionerImageFallback imgUrl={userDetails.image_link.String} imgAlt={`Profile picture for ${userDetails.business_name.String}`} />
                 </div>
 
-                <Button className='font-roboto px-18 py-2 rounded-full text-white bg-olive hover:bg-olive md:mt-16'>
+                <Button asChild className='font-roboto px-18 py-2 rounded-full text-white bg-olive hover:bg-olive md:mt-16'>
+                  <Link href={`/practicioners/${id}/checkout`}>
                   {" "}
                   Book{" "}
+                  </Link>
                 </Button>
               </div>
               <div className='flex flex-col gap-2 font-roboto text-olive'>
@@ -66,10 +69,10 @@ async function PractitionersOverview({id}: {id: string}) {
             </div>
 
             <CardTitle className='sr-only'>
-              Autumn Equinox Guided Meditation
+              An event card
             </CardTitle>
             <CardDescription className='sr-only'>
-              Event card about a Meditation event.
+              You get to see more details about the event
             </CardDescription>
           </CardHeader>
           <CardContent className='relative flex flex-col items-center justify-center gap-5 z-2 bg-white pt-10 px-5 md:px-10 text-olive'>

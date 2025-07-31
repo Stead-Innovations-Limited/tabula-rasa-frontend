@@ -52,7 +52,7 @@ export interface Event {
   total_particpant: NullableInt32;
   status: "pending" | "confirmed" | "declined" | string;
   created_at: string;
-  price: number
+  price: number;
 }
 
 // ========== VENUE INTERFACE ==========
@@ -106,5 +106,14 @@ export interface Notification {
   user_id: string;
   message: string;
   is_read: boolean;
+  created_at: string;
+}
+
+// ========== PRACTITIONERS BOOKINGS INTERFACE ==========
+export interface PractitionersBookings {
+  id: string;
+  service_id: string;
+  booked_for: string;
+  booked_by: string;
   created_at: string;
 }

@@ -31,6 +31,7 @@ type CarouselContextProps = {
 } & CarouselProps;
 
 import { Time } from "../practicioners/PractitionerCheckoutOverview";
+import practitionersService from "@/server-actions/practitionersService";
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
 
@@ -286,7 +287,7 @@ const CarouselDots = React.forwardRef<
 CarouselDots.displayName = "CarouselDots";
 
 // This is a navigation component that can be used to navigate through the practitioner checkout steps
-const CarouselNavigation = (({ startTime, endTime, date}: {startTime: Time, endTime: Time, date: Date | undefined}) => {
+const CarouselNavigation = (({ startTime, endTime, date, pracId, amount }: {startTime: Time, endTime: Time, date: Date | undefined, pracId: string, amount: string}) => {
 
   const { api } = useCarousel();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -322,8 +323,6 @@ const CarouselNavigation = (({ startTime, endTime, date}: {startTime: Time, endT
   // console.log(startTime, endTime)
   return (
     <div className={`flex justify-center`}>
-      {/* {Array.from({ length: numberOfSlides }, (_, i) => ( */}
-
       <div className='w-full flex justify-center p-5'>
         {currentSlide === 0 ? (
           <Button
@@ -342,7 +341,12 @@ const CarouselNavigation = (({ startTime, endTime, date}: {startTime: Time, endT
             <Button className="!col-span-1 rounded-full bg-olive hover:bg-olive/90" onClick={() => api?.scrollTo(currentSlide - 1)}>
               Back
             </Button>
-            <Button className="!col-span-1 rounded-full bg-olive hover:bg-olive/90" onClick={() => api?.scrollTo(currentSlide + 1)} disabled={ currentSlide === 2 && !validHours()}>
+            <Button className="!col-span-1 rounded-full bg-olive hover:bg-olive/90" onClick={async () => {
+              if(currentSlide === 3) await practitionersService(pracId, amount)
+              else api?.scrollTo(currentSlide + 1)
+              }} 
+              disabled={ currentSlide === 2 && !validHours()}
+            >
               {currentSlide !== 3 ? "Next" : "Pay"}
             </Button>
           </div>
