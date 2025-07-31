@@ -99,11 +99,11 @@ export default function PractitionerCheckoutOverview({
           <div className='hidden md:block w-full aspect-[16/6]' />
           <hr className='hidden md:block md:border-[#DCDCDC]' />
           {/* The main details about the practitioners */}
-          <div className='pl-5 md:pl-10 md:pb-10'>
+          <div className='pl-5 md:pl-10 md:pb-10 flex flex-col gap-1 md:gap-3'>
             {/* The Container for the image, name and field */}
-            <div className=''>
+            <div className='flex flex-row md:flex-col justify-start items-center md:items-start gap-5 md:gap-3'>
               {/* The image container */}
-              <div className='size-30 md:size-48 md:-mt-24 relative rounded-full p-2 shadow-lg'>
+              <div className='size-24 md:size-48 md:-mt-24 relative rounded-full p-2 shadow-lg'>
                 <PractitionerImageFallback
                   imgUrl={userDetails.image_link.String}
                   imgAlt={userDetails.business_name.String}
@@ -111,18 +111,18 @@ export default function PractitionerCheckoutOverview({
                 />
               </div>
               {/* The name and field */}
-              <div className=''>
-                <h5 className='text-xl font-roboto font-medium text-black'>
+              <div className='flex flex-col gap-2 md:gap-0'>
+                <h5 className='text-xl md:text-2xl font-roboto font-medium text-black'>
                   {userDetails.business_name.String}
                 </h5>
-                <p className='w-fit text-base px-6 py-0.5 bg-lightgreen text-olive rounded-lg'>
+                <p className='w-fit text-sm px-5 py-0.5 bg-lightgreen text-olive rounded-lg'>
                   {userDetails.field.String}
                 </p>
               </div>
             </div>
 
             {/* The description */}
-            <div className='text-[#565656B2] font-roboto font-medium text-base'>
+            <div className='text-[#565656B2] font-roboto text-base flex flex-row md:flex-col gap-5 md:gap-0'>
               <p className=''>
                 <span className='inline-block'>
                   <SlLocationPin className='' />
@@ -138,11 +138,11 @@ export default function PractitionerCheckoutOverview({
             <div className='font-roboto text-[#898989]'>
               {/* The heading */}
               <h5 className='text-lg font-medium'>Bio</h5>
-              <p className='w-4/5 text-base'>{userDetails.bio.String}</p>
+              <p className='w-4/5 text-base font-normal'>{userDetails.bio.String}</p>
             </div>
           </div>
         </div>
-        <div className='md:w-1/2'>
+        <div className='mt-5 md:mt-0 md:w-1/2'>
           <div className='w-full h-full'>
             <Carousel className=''>
               <CarouselContent className=''>
@@ -194,9 +194,9 @@ function CalendarComp({
   bookedDates: Date[];
 }) {
   return (
-    <div className='w-full flex flex-col justify-center items-center'>
-      <h6 className='text-2xl font-roboto font-medium text-olive mb-5'>Select Date</h6>
-      <div className=''>
+    <div className='w-full flex flex-col justify-center items-center p-5'>
+      <h6 className='text-2xl font-roboto font-medium text-olive mb-5 w-full'>Select Date</h6>
+      <div className='w-full'>
         {/* The Calendar component */}
         <Calendar
           mode='single'
@@ -215,7 +215,7 @@ function CalendarComp({
               "[&>button]:bg-lightolive [&>button]:rounded-full [&>button]:line-through underline-[#dcdcdc] opacity-60 ",
             selected: "[&>button]:!bg-lightolive [&>button]:!text-olive [&>button]:!rounded-full"
           }}
-          className='rounded-lg border shadow-sm'
+          className='rounded-lg border shadow-lg w-full md:shadow-none md:border-none'
         />
       </div>
     </div>
@@ -235,8 +235,8 @@ function SelectTime({
     <div className=''>
       <div className=''>
         {/* The Select Start Time */}
-        <div className='flex flex-row items-center justify-center gap-1'>
-          <div className='w-fit aspect-square flex flex-col'>
+        <div className='flex flex-row items-end justify-center gap-1 h-fit'>
+          <div className='flex flex-col'>
             <p>Hour</p>
             <Select
               value={time.hours}
@@ -247,7 +247,7 @@ function SelectTime({
                 })
               }
             >
-              <SelectTrigger >
+              <SelectTrigger className="w-[100px] !aspect-[2/1]">
                 <SelectValue placeholder='Hour' />
               </SelectTrigger>
               <SelectContent>
@@ -264,7 +264,7 @@ function SelectTime({
             </Select>
           </div>
 
-          <span className='inline-block'>:</span>
+          <span className='inline-block h-[50px] text-2xl align-middle'>:</span>
 
           <div className='flex flex-col'>
             <p>Minute</p>
@@ -278,7 +278,7 @@ function SelectTime({
               }
             
             >
-              <SelectTrigger className='w-[5.625rem] h-[3.375rem] md:w-[12.5rem] md:h-[7.5rem]'>
+              <SelectTrigger className='w-[100px] !aspect-[2/1]'>
                 <SelectValue placeholder='Hour' />
               </SelectTrigger>
               <SelectContent>
@@ -295,15 +295,15 @@ function SelectTime({
             </Select>
           </div>
 
-          <div className='flex flex-col '>
-            <div className={`${time.range === "AM" ? 'text-black': 'text-[#DCDCDC]'}`} onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+          <div className='h-[50px] flex flex-col border-[#DCDCDC] border rounded-md text-sm divide-y divide-[#dcdcdc] cursor-pointer'>
+            <div className={`${time.range === "AM" ? 'text-black': 'text-[#DCDCDC]'} px-2`} onClick={(e: React.MouseEvent<HTMLDivElement>) => {
               e.preventDefault();
               setTime({
                 ...time,
                 range: "AM"
               });
             }}>AM</div>
-            <p className={`${time.range === "PM" ? 'text-black': 'text-[#DCDCDC]'}`} onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+            <p className={`${time.range === "PM" ? 'text-black': 'text-[#DCDCDC]'} px-2`} onClick={(e: React.MouseEvent<HTMLDivElement>) => {
               e.preventDefault();
               setTime({
                 ...time,
@@ -325,8 +325,8 @@ function SelectStartTime({
   setStartTime: (time: Time) => void;
 }) {
   return (
-    <div className='w-full flex flex-col justify-center items-center'>
-      <h6 className=''>Select Start Time</h6>
+    <div className='w-full flex flex-col justify-center items-center gap-5'>
+      <h6 className='font-roboto font-semibold text-2xl md:text-3xl text-olive'>Select Start Time</h6>
       {/* The Select Start Time */}
       <div className=''>
         <SelectTime time={startTime} setTime={setStartTime} />
@@ -343,8 +343,8 @@ function SelectEndTime({
   setEndTime: (time: Time) => void;
 }) {
   return (
-    <div className='w-full flex flex-col justify-center items-center'>
-      <h6 className=''>Select End Time</h6>
+    <div className='w-full flex flex-col justify-center items-center gap-5'>
+      <h6 className='font-roboto font-semibold text-2xl md:text-3xl text-olive'>Select End Time</h6>
       {/* The Select End Time */}
       <div className=''>
         <SelectTime time={endTime} setTime={setEndTime} />
@@ -357,7 +357,7 @@ function OrderSummary({startTime, endTime, date, price }: { startTime: Time; end
   const router = useRouter();
   
   return (
-    <div className='w-full flex flex-col justify-center items-center'>
+    <div className='w-full flex flex-col justify-center items-center font-roboto'>
       <div className='w-full p-5'>
         <h2 className='text-2xl font-semibold text-left md:text-center'>
           Order Summary

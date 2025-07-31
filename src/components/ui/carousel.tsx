@@ -327,7 +327,7 @@ const CarouselNavigation = (({ startTime, endTime, date, pracId, amount }: {star
         {currentSlide === 0 ? (
           <Button
             key={currentSlide}
-            className={`rounded-full w-[200px] md:w-[400px] p-4 !bg-olive mt-5`}
+            className={`rounded-full w-[200px] md:w-full p-4 !bg-olive mt-5`}
             // aria-label={`Go to slide ${currentSlide}`}
             onClick={() => {
               api?.scrollTo(currentSlide + 1);
@@ -379,9 +379,9 @@ function ChangeSchedule() {
   }, [api, toggleUpdateState]);
 
   return (
-    <Button className="!text-olive !bg-lightolive px-7 !py-0.5 rounded-sm" onClick={() => api?.scrollTo(0)}>
+    <p className="!text-olive !bg-lightolive px-4 !py-0.5 rounded-sm text-xs" onClick={() => api?.scrollTo(0)}>
       Change
-    </Button>
+    </p>
   )
 }
 

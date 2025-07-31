@@ -9,7 +9,7 @@ export default function DashboardNav() {
   const pathname = path.split("/")[1] || "";
 
   return (
-    <section className='w-full md:bg-linear-to-r md:from-olivewhite md:to-olive font-roboto font-medium text-olive'>
+    <section className={cn('w-full md:bg-linear-to-r md:from-olivewhite md:to-olive font-roboto font-medium text-olive', {"hidden":(path.includes("checkout") || path.includes("payment-successful"))})}>
       <div className='w-full xl:max-w-[1140px] mx-auto px-1 md:px-5'>
         <ul className="flex gap-4 text-sm md:text-xl overflow-x-auto scrollbar-hide py-5 md:py-0 md:overflow-clip">
           <li className=''>
