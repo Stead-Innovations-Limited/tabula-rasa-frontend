@@ -6,14 +6,11 @@ import { tryCatch } from "@/utils/tryCatch";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
-import { redirect } from "next/navigation";
-
-export default async function practitionersService(
-  pracId: string,
+export default async function eventService(
+  eventId: string,
   amount: string
 ) {
   try {
-    console.log(pracId, amount, "Paryuadf");
     const session = await getServerSession(authOptions);
 
     if (
@@ -29,7 +26,7 @@ export default async function practitionersService(
       return await axios.post(
         `https://tabula-rasa-backend.up.railway.app/purchases`,
         {
-          service_id: pracId,
+          event_id: eventId,
           amount: amount,
         },
         {
@@ -51,18 +48,14 @@ export default async function practitionersService(
     }
     
     // From here payment request was successful, so we simply redirect to the /payment-successful page
-    redirect(`/practitioners/${pracId}/payment-successful`);
+    return {
+      error: false,
+    };
   } catch (error) {
-    if (
-    error instanceof Error &&
-    error.message.toLowerCase().includes("insufficient funds")
-    ) {
-      redirect("/insufficient-funds");
-    }
     return {
       error: true,
       errorData: error,
-      message: "Payment failed.",
+      message: "Payment failed",
     };
   }
 }

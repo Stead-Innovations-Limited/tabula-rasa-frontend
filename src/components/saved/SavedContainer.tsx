@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+import Link from "next/link";
 import {
   SlLocationPin,
   GoPerson,
@@ -37,7 +38,6 @@ export default function SavedContainer({
   const totalSavedEvents = eventData.length;
   const totalSavedVenues = venueData.length;
   const totalSaved = totalSavedEvents + totalSavedVenues;
-
 
   return (
     <section className='w-full'>
@@ -80,12 +80,12 @@ export async function VenueCards({ venueId }: { venueId: string }) {
           className='absolute object-cover object-center'
         />
         <CardTitle className='sr-only'>This is a venue card</CardTitle>
-        <CardDescription className='sr-only'>It shows the most important info about the venue.</CardDescription>
+        <CardDescription className='sr-only'>
+          It shows the most important info about the venue.
+        </CardDescription>
       </CardHeader>
       <CardContent className='grow relative flex flex-col items-start justify-center gap-2 md:gap-4 z-2 py-4 px-0 md:px-5 text-olive font-roboto'>
-        <h5 className='flex gap-2 text-2xl font-medium'>
-          {venueData.name}
-        </h5>
+        <h5 className='flex gap-2 text-2xl font-medium'>{venueData.name}</h5>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 w-full'>
           <p className='flex items-start gap-1 text-xl'>
             <PiHouse className='size-6 text-olive' />
@@ -100,11 +100,12 @@ export async function VenueCards({ venueId }: { venueId: string }) {
             {venueData.location.String}
           </p>
           <p className='flex items-start gap-1 text-xl'>
-            <GoPerson className='size-6 text-olive' /> {venueData.capacity.Int32}
+            <GoPerson className='size-6 text-olive' />{" "}
+            {venueData.capacity.Int32}
           </p>
         </div>
-        <Button className='w-full px-6 py-2 bg-olive text-white rounded-md hover:bg-olive'>
-          Get Ticket
+        <Button asChild className='w-full px-6 py-2 bg-olive text-white rounded-md hover:bg-olive'>
+          <Link href={`/create-event?venue=${venueId}`}>Book Space</Link>
         </Button>
       </CardContent>
     </Card>
@@ -168,8 +169,11 @@ export async function EventCards({ eventId }: { eventId: string }) {
             {eventData.audience.String}
           </p>
         </div>
-        <Button className='w-full px-6 py-2 bg-olive text-white rounded-md hover:bg-olive'>
-          Get Ticket
+        <Button
+          asChild
+          className='w-full px-6 py-2 bg-olive text-white rounded-md hover:bg-olive'
+        >
+          <Link href={`/events/${eventId}/checkout`}>Get Ticket</Link>
         </Button>
       </CardContent>
     </Card>

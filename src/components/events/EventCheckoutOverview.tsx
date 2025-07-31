@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
+import eventService from "@/server-actions/eventService";
+import { toast } from "sonner";
 
 function EventCheckoutOverview({ eventData }: { eventData: Event }) {
   const router = useRouter();
@@ -30,7 +32,7 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
                 <IoMdCheckmarkCircle className='size-4 text-olive' />{" "}
                 <span className='inline-block text-xs'>Tickets</span>
               </p>
-              <hr className="grow"/>
+              <hr className='grow' />
               <p className='flex gap-0.5 justify-center items-center'>
                 <span className='inline-block size-3 border-[#DCDCDC] border rounded-full' />{" "}
                 <span className='inline-block text-xs'>Order Summary</span>
@@ -45,8 +47,6 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
                     src={eventData.image_links[0]}
                     alt={eventData.name}
                     fill={true}
-                    // width={500}
-                    // height={300}
                     className='object-cover rounded-2xl md:rounded-none'
                   />
                 ) : (
@@ -68,7 +68,7 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
                 </h3>
                 <div className='md:divide-y md:divide-[#DCDCDC]'>
                   <div className='flex justify-between items-center py-2'>
-                    <label htmlFor='ticket-quantity' className="text-olive/70">
+                    <label htmlFor='ticket-quantity' className='text-olive/70'>
                       Number Of Tickets
                     </label>
                     <Select
@@ -92,7 +92,9 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
                   </div>
                   <div className='flex justify-between items-center py-2 text-olive/70'>
                     <p className=''>Ticket no:</p>
-                    <p className='font-roboto font-semibold text-[#898989]'>LID000M0</p>
+                    <p className='font-roboto font-semibold text-[#898989]'>
+                      LID000M0
+                    </p>
                   </div>
                 </div>
               </div>
@@ -106,7 +108,7 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
                 <IoMdCheckmarkCircle className='size-4 text-olive' />
                 <span className='inline-block text-xs'>Tickets</span>
               </p>
-              <hr className='grow' />              
+              <hr className='grow' />
               <p className='flex gap-0.5'>
                 <IoMdCheckmarkCircle className='size-4 text-olive' />
                 <span className='inline-block text-xs'>Order Summary</span>
@@ -118,7 +120,7 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
               <h2 className='text-2xl font-semibold text-left md:text-center'>
                 Order Summary
               </h2>
-              <div className='max-w-sm ml-auto md:w-full md:divide-y md:divide-[#DCDCDC]'>
+              <div className='max-w-sm md:max-w-full ml-auto md:mx-auto md:w-full md:divide-y md:divide-[#DCDCDC]'>
                 <div className='flex justify-between items-center py-2 text-olive/70'>
                   <p className='text-lg'>Ticket Price</p>
                   <p className='text-lg'>${price}</p>
@@ -145,7 +147,35 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
               </p>
 
               <div className='w-full flex justify-center mt-10'>
-                <Button className='w-full md:w-3/4 py-4 bg-olive text-white rounded-xl mx-auto hover:bg-olive/80'>
+                <Button
+                  className='w-full md:w-3/4 py-4 bg-olive text-white rounded-xl mx-auto hover:bg-olive/80'
+                  onClick={async () => {
+                    const response = await eventService(
+                      eventData.id,
+                      (price * parseInt(quantity)).toString()
+                    );
+                    if (response.error) {
+                      if (
+                        response.errorData instanceof Error &&
+                        response.errorData.message
+                          .toLowerCase()
+                          .includes("insufficient funds")
+                      ) {
+                        router.push("/insufficient-funds");
+                      } else {
+                        toast.error(response.message, {
+                          classNames: {
+                            toast: "!text-red-500",
+                            title: "!text-red-500",
+                            description: "!text-red-500",
+                          },
+                        });
+                      }
+                    } else {
+                      router.push(`/events/${eventData.id}/payment-successful`);
+                    }
+                  }}
+                >
                   Pay
                 </Button>
               </div>

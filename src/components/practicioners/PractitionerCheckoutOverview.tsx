@@ -174,7 +174,7 @@ export default function PractitionerCheckoutOverview({
               </CarouselContent>
               <div className=''>
                 {/* The Carousel Navigation component */}
-                <CarouselNavigation startTime={startTime} endTime={endTime} date={date} pracId={userDetails.id} amount={(userDetails.rate.Int32 * hourDiffFn(startTime, endTime)).toFixed(2)}/>
+                <CarouselNavigation startTime={startTime} endTime={endTime} date={date} pracId={userDetails.id} amount={(userDetails.rate.Int32 * hourDiffFn(startTime, endTime) * 100).toString()}/>
               </div>
             </Carousel>
           </div>

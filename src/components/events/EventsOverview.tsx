@@ -1,7 +1,7 @@
 import { format, parseISO } from "date-fns";
 
 import Image from "next/image";
-
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -108,8 +108,10 @@ async function EventsOverview({ eventId, isSaved }: { eventId: string; isSaved: 
             </div>
           </CardContent>
           <CardFooter className='mb-10'>
-            <Button className='font-roboto bg-olive text-white hover:bg-darkolive rounded-md w-full'>
+            <Button asChild className='font-roboto bg-olive text-white hover:bg-darkolive rounded-md w-full'>
+              <Link href={`/events/${eventId}/checkout`}>
               Get Tickets
+              </Link>
             </Button>
           </CardFooter>
         </Card>

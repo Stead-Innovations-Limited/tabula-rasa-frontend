@@ -85,7 +85,7 @@ export default async function VenueOverview({venueData, isSaved}: {venueData: Ve
               <CardFooter className="mb-10">
                 <Button className="font-roboto bg-olive text-white hover:bg-darkolive rounded-md w-full" asChild>
                   <Link href={`/create-event?venue=${venueData.id}`}>
-                  Book Space
+                    Book Space
                   </Link>
                 </Button>
               </CardFooter>
