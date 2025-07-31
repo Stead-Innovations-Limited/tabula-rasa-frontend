@@ -424,6 +424,7 @@ export const listVenueSchema = z
 
 export const createEventSchema = z
   .object({
+    eventId: z.string().optional(),
     eventFiles: z.any(),
     eventTitle: z
       .string()
@@ -499,13 +500,14 @@ export const createEventSchema = z
   })
   // Here i do a check to ensure that the end time is after the start time
   .refine(
-    (data) =>
-      parseDateTime(
+    (data) => {
+      return (parseDateTime(
         data.endDate.toISOString().split("T")[0].concat("T", data.endTime)
       ) >
       parseDateTime(
         data.startDate.toISOString().split("T")[0].concat("T", data.startTime)
-      ),
+      ))
+    },
     {
       message: "End time must be later than start time",
       path: ["endTime"],

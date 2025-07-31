@@ -57,6 +57,16 @@ function getMaxFromRange(range: string) {
   return parseInt(parts[1]) || 0;
 }
 
+function mapParticipantCountToRange(count: number): "10-50" | "50-100" | "100-200" | "200-500" | "500-1000" | "1000-2000" | "2000+" {
+  if (count >= 10 && count <= 50) return "10-50";
+  if (count >= 51 && count <= 100) return "50-100";
+  if (count >= 101 && count <= 200) return "100-200";
+  if (count >= 201 && count <= 500) return "200-500";
+  if (count >= 501 && count <= 1000) return "500-1000";
+  if (count >= 1001 && count <= 2000) return "1000-2000";
+  return "2000+";
+}
+
 // This function safely parses a time string, returning a default time if the input is invalid
 // This is useful to ensure that the time input is always valid, even if the user does
 // not provide a valid time or if the input is null/undefined.
@@ -72,10 +82,10 @@ function safeParseTime(value: string | null | undefined): Time {
 
 export default function EditEventForm({
   venues,
-  event
+  event,
 }: {
   venues: Venue[];
-  event: Event[]
+  event: Event;
 }) {
   const router = useRouter();
   const [state, action, isPending] = useActionState(editEventAction, undefined);
@@ -83,17 +93,18 @@ export default function EditEventForm({
   const form = useForm<z.infer<typeof createEventSchema>>({
     resolver: zodResolver(createEventSchema),
     defaultValues: {
+      eventFiles: [],
       eventTitle: event.name,
       eventTheme: event.theme.String,
       eventDescription: event.description.String,
       keyActivities: event.activities[0],
       targetAudience: event.audience.String,
-      location: event.venueId,
-      startDate: event.start_date.Time,
-      endDate: event.end_date.Time,
-      startTime: event.start_time.Time,
-      endTime: event.end_time.Time,
-      maxParticipantsNo: event.total_participant.Int32,
+      location: event.venue_id,
+      startDate: new Date(event.start_date.Time),
+      endDate: new Date(event.end_date.Time),
+      startTime: event.start_time.Time.split("T")[1].replace("Z", ""),
+      endTime: event.end_time.Time.split("T")[1].replace("Z", ""),
+      maxParticipantsNo: mapParticipantCountToRange(event.total_particpant.Int32),
       pricePerParticipant: event.price.toString(),
     },
   });
@@ -101,123 +112,123 @@ export default function EditEventForm({
   useToast(state, undefined, () => router.back());
 
   // Here i use the watch function to get the current value of the location and maxParticipantsNo fields
-    // This allows me to react to changes in these fields and perform validations or updates accordingly
-    const selectedLocationId = form.watch("location");
-    const selectedParticipantsRange = form.watch("maxParticipantsNo");
+  // This allows me to react to changes in these fields and perform validations or updates accordingly
+  const selectedLocationId = form.watch("location");
+  const selectedParticipantsRange = form.watch("maxParticipantsNo");
 
   // This useEffect hook is used to check if the selected venue's capacity is sufficient for the selected participants range
-    // If the selected venue's capacity is less than the maximum number of participants, it shows
-    // a warning toast to inform the user
-    // It runs whenever the selectedLocationId or selectedParticipantsRange changes
-    useEffect(() => {
-      if (!selectedLocationId || !selectedParticipantsRange) return;
-  
-      const selectedVenue = venues.find((v) => v.id === selectedLocationId);
-      const maxParticipants = getMaxFromRange(selectedParticipantsRange);
-  
-      if (selectedVenue && maxParticipants > selectedVenue.capacity.Int32) {
-        toast.warning(
-          `Max participants (${maxParticipants}) exceed venue capacity (${selectedVenue.capacity.Int32})`,
-          {
-            classNames: {
-              toast: "!text-orange-500",
-              title: "!text-orange-500",
-              description: "!text-orange-500",
-            },
-            duration: 8000,
-          }
-        );
-      }
-    }, [selectedLocationId, selectedParticipantsRange, venues]);
-  
+  // If the selected venue's capacity is less than the maximum number of participants, it shows
+  // a warning toast to inform the user
+  // It runs whenever the selectedLocationId or selectedParticipantsRange changes
+  useEffect(() => {
+    if (!selectedLocationId || !selectedParticipantsRange) return;
+
+    const selectedVenue = venues.find((v) => v.id === selectedLocationId);
+    const maxParticipants = getMaxFromRange(selectedParticipantsRange);
+
+    if (selectedVenue && maxParticipants > selectedVenue.capacity.Int32) {
+      toast.warning(
+        `Max participants (${maxParticipants}) exceed venue capacity (${selectedVenue.capacity.Int32})`,
+        {
+          classNames: {
+            toast: "!text-orange-500",
+            title: "!text-orange-500",
+            description: "!text-orange-500",
+          },
+          duration: 8000,
+        }
+      );
+    }
+  }, [selectedLocationId, selectedParticipantsRange, venues]);
 
   async function onSubmit(formData: z.infer<typeof createEventSchema>) {
-      const selectedVenue = venues.find((v) => v.id === formData.location);
-      const maxParticipants = getMaxFromRange(formData.maxParticipantsNo);
-  
-      if (selectedVenue && maxParticipants > selectedVenue.capacity.Int32) {
-        toast.error(
-          `Too many participants for selected venue (max: ${selectedVenue.capacity.Int32})`,
-          {
-            classNames: {
-              toast: "!text-red-500",
-              title: "!text-red-500",
-              description: "!text-red-500",
-            },
-            duration: 7000,
-          }
-        );
-        return;
-      }
-      // Here what i want to do is send the file i got here to get the presignedUrl and generated Url
-      const files = formData.eventFiles;
-      // If no files are uploaded, we show a toast and return early
-      // This is to ensure that the user uploads at least one image for the event
-      if (files.length === 0) {
-        toast.error("Please upload at least an image of the event", {
+    const selectedVenue = venues.find((v) => v.id === formData.location);
+    const maxParticipants = getMaxFromRange(formData.maxParticipantsNo);
+
+    if (selectedVenue && maxParticipants > selectedVenue.capacity.Int32) {
+      toast.error(
+        `Too many participants for selected venue (max: ${selectedVenue.capacity.Int32})`,
+        {
           classNames: {
             toast: "!text-red-500",
             title: "!text-red-500",
             description: "!text-red-500",
           },
-        });
-        return;
-      }
-  
-      // Upload images to R2 and get URLs
-      // I use Promise.all to upload all files concurrently
-      // This will return an array of URLs for the uploaded files
-      const uploadedUrls = await Promise.all(
-        files.map(async (file: File) => {
-          const res = await handleFileUploads(file.name, file.size, file.type);
-          // If there's an error, we show a toast
-          if (res.error) {
-            toast.error(res.error, {
-              classNames: {
-                toast: "!text-red-500",
-                title: "!text-red-500",
-                description: "!text-red-500",
-              },
-            });
-            return false;
-          }
-  
-          // If there is an error, or if the presigned URL or file name is not returned, we return early
-          // This is to ensure that we do not try to upload the file if the presigned URL is not valid
-          if (res.error || !res.presignedUrl || !res.fileName) return false;
-  
-          // Destructure the presignedUrl and fileName from the response
-          const { presignedUrl, fileName } = res;
-  
-          // Upload the file to the presigned URL
-          // This will return a response from the server, but we do not need to use it
-          await fetch(presignedUrl, {
-            method: "PUT",
-            body: file,
-            headers: {
-              "Content-Type": file.type,
+          duration: 7000,
+        }
+      );
+      return;
+    }
+    // Here what i want to do is send the file i got here to get the presignedUrl and generated Url
+    const files = formData.eventFiles;
+    // If no files are uploaded, we show a toast and return early
+    // This is to ensure that the user uploads at least one image for the event
+    if (files.length === 0) {
+      toast.error("Please upload at least an image of the event", {
+        classNames: {
+          toast: "!text-red-500",
+          title: "!text-red-500",
+          description: "!text-red-500",
+        },
+      });
+      return;
+    }
+
+    // Upload images to R2 and get URLs
+    // I use Promise.all to upload all files concurrently
+    // This will return an array of URLs for the uploaded files
+    const uploadedUrls = await Promise.all(
+      files.map(async (file: File) => {
+        const res = await handleFileUploads(file.name, file.size, file.type);
+        // If there's an error, we show a toast
+        if (res.error) {
+          toast.error(res.error, {
+            classNames: {
+              toast: "!text-red-500",
+              title: "!text-red-500",
+              description: "!text-red-500",
             },
           });
-  
-          // Return the file name, which is the URL of the uploaded file
-          return fileName; // Save only the final URL
-        })
-      );
-  
-      // We remove all instances of failed uploads
-      const parsedUploads = uploadedUrls.filter(ele => ele !== false);
-      if(parsedUploads.length < 1) return;
-  
-      // Replace the files in formData with URLs
-      const payload = {
-        ...formData,
-        eventFiles: uploadedUrls,
-      };
-  
-      startTransition(() => {
-        action(payload);
-      });
-    }
+          return false;
+        }
+
+        // If there is an error, or if the presigned URL or file name is not returned, we return early
+        // This is to ensure that we do not try to upload the file if the presigned URL is not valid
+        if (res.error || !res.presignedUrl || !res.fileName) return false;
+
+        // Destructure the presignedUrl and fileName from the response
+        const { presignedUrl, fileName } = res;
+
+        // Upload the file to the presigned URL
+        // This will return a response from the server, but we do not need to use it
+        await fetch(presignedUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+
+        // Return the file name, which is the URL of the uploaded file
+        return fileName; // Save only the final URL
+      })
+    );
+
+    // We remove all instances of failed uploads
+    const parsedUploads = uploadedUrls.filter((ele) => ele !== false);
+    if (parsedUploads.length < 1) return;
+
+    // Replace the files in formData with URLs
+    const payload = {
+      ...formData,
+      eventFiles: uploadedUrls,
+      eventId: event.id,
+    };
+
+    startTransition(() => {
+      action(payload);
+    });
+  }
 
   return (
     <>

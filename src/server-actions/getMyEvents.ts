@@ -25,7 +25,7 @@ export default async function getMyEvents() {
 
     const response = await tryCatch(async () => {
       return await axios.get(
-        `https://tabula-rasa-backend.up.railway.app/events/user/${userId}/`,
+        `https://tabula-rasa-backend.up.railway.app/events/owner/${userId}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

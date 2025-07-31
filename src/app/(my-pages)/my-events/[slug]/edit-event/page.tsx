@@ -1,6 +1,8 @@
 import EditEventBar from "@/components/my-events/EditEventBar";
 import EditEventForm from "@/components/my-events/EditEventForm";
 import { Event, Venue } from "@/lib/types";
+import getEvent from "@/server-actions/getEvent";
+import getVenues from "@/server-actions/getVenues";
 
 export default async function page({
   params,
@@ -15,10 +17,11 @@ export default async function page({
   if ("error" in eventData || !Array.isArray(fetchedVenues)) {
     return <p>Error loading event data.</p>;
   }
+  console.log(eventData);
   return (
     <>
       <EditEventBar />
-      <EditEventForm event={eventData} venues={venues} />
+      <EditEventForm event={eventData} venues={fetchedVenues} />
     </>
   );
 }

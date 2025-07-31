@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { RxDotsVertical } from "@/components/icons";
 
-export default function EventCardPopOverMenu() {
+export default function EventCardPopOverMenu({eventId}: {eventId: string}) {
   return (
     <div className=''>
       <Popover>
@@ -16,15 +16,12 @@ export default function EventCardPopOverMenu() {
         </PopoverTrigger>
         <PopoverContent className="p-0 rounded-2xl">
           <div className="flex flex-col divide-y divide-olive divide-solid font-roboto text-olive">
-            <Link href="/my-events/1/edit-event" className="w-full py-3 text-center">
+            <Link href={`/my-events/${eventId}/edit-event`} className="w-full py-3 text-center">
               Edit Event
             </Link>
-            <Link href="/my-events/1/view-registration" className="w-full py-3 text-center">
+            <Link href={`/my-events/${eventId}/view-registration`} className="w-full py-3 text-center">
               View Registration
             </Link>
-            <div className="w-full py-3 text-destructive text-center">
-              Close Event
-            </div>
           </div>
         </PopoverContent>
       </Popover>
