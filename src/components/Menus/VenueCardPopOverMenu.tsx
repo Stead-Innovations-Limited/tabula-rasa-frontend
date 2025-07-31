@@ -20,14 +20,11 @@ export default function VenueCardPopOverMenu({venueId, state}: {venueId: string,
         </PopoverTrigger>
         <PopoverContent className="p-0 rounded-2xl cursor-pointer">
           <div className="flex flex-col divide-y divide-olive divide-solid font-roboto text-olive">
-            {/* <Link href={`/my-venues/${venueId}/edit-venue`} className="w-full py-3 text-center">
+            <Link href={`/my-venues/${venueId}/edit-venue`} className="w-full py-3 text-center">
               Edit Venue
-            </Link> */}
+            </Link>
             <Link href={`/my-venues/${venueId}/view-bookings`} className="w-full py-3 text-center">
               View Bookings
-            </Link>
-            <Link href={`/my-venues/${venueId}/view-availability`} className="w-full py-3 text-center">
-              View Availability
             </Link>
             <div onClick={() => {
               // Call the server action to open or close the venue based on whether it is currently open or closed

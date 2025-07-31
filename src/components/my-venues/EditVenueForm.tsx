@@ -1,9 +1,10 @@
 "use client";
-import { startTransition, useActionState } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { startTransition, useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Form,
@@ -13,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -21,54 +21,157 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { AiOutlineLoading3Quarters } from "@/components/icons";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner";
 
-import { venueSchema } from "@/lib/definitions";
+import MyDropzone from "@/components/reusable-ui/MyDropzone";
+import { AiOutlineLoading3Quarters } from "@/components/icons";
+
+import { listVenueSchema } from "@/lib/clientDefinitions";
+import handleFileUploads from "@/server-actions/handleFileUploads";
+import { Venue } from "@/lib/types";
 import editVenueAction from "@/server-actions/editVenueAction";
 
-
-export default function EditVenueForm() {
+export default function EditVenueForm({ venueData }: { venueData: Venue }) {
+  const router = useRouter();
   const [state, action, isPending] = useActionState(editVenueAction, undefined);
 
-  const form = useForm<z.infer<typeof venueSchema>>({
-    resolver: zodResolver(venueSchema),
+  useEffect(() => {
+    if (state?.error) {
+      toast.error(state.message, {
+        classNames: {
+          toast: "!text-red-500",
+          title: "!text-red-500",
+          description: "!text-red-500",
+        },
+      });
+    }
+
+    if (state?.success) {
+      toast.success(state.message, {
+        classNames: {
+          toast: "!text-green-700",
+          title: "!text-green-700",
+          description: "!text-green-700",
+        },
+      });
+
+      router.back();
+    }
+  }, [state, router]);
+
+  const form = useForm<z.infer<typeof listVenueSchema>>({
+    resolver: zodResolver(listVenueSchema),
     defaultValues: {
-      venueName: "",
-      venueType: "Yoga Studio",
-      venueDescription: "",
-      location: "",
-      dimensions: "",
-      maxCapacity: "",
-      facilities: "",
-      onSiteAccomodation: "yes",
-      roomType: "",
-      numberOfRooms: "",
-      sleeps: "",
-      bedConfiguration: "",
+      venueFiles: [] as File[],
+      venueName: venueData.name,
+      venueType: venueData.type.String,
+      venueDescription: venueData.description.String,
+      location: venueData.location.String,
+      dimensions: venueData.dimension.String,
+      maxCapacity: venueData.capacity.Int32.toString(),
+      facilities: venueData.facilities[0],
+      onSiteAccomodation: venueData.has_accomodation.Bool ? "yes" : "no",
+      roomType: venueData.room_type.String,
+      numberOfRooms: venueData.no_of_rooms.Int32.toString(),
+      sleeps: venueData.sleeps.String,
+      bedConfiguration: venueData.bed_type.String,
       roomAmenities: "",
-      pricePerHour: "",
+      pricePerHour: venueData.rent.Int64.toString(),
     },
   });
+  const onSiteAccomodation = form.watch("onSiteAccomodation");
 
-  useToast(state);
+  async function onSubmit(formData: z.infer<typeof listVenueSchema>) {
+    // Here what i want to do is send the file i got here to get the presignedUrl and generated Url
+    const files = formData.venueFiles;
+    if (files.length === 0) {
+      toast.error("Please upload at least an image of the venue", {
+        classNames: {
+          toast: "!text-red-500",
+          title: "!text-red-500",
+          description: "!text-red-500",
+        },
+      });
+      return;
+    }
 
-  function onSubmit(formData: z.infer<typeof venueSchema>) {
-    form.reset();
+    // Upload images to R2 and get URLs
+    const uploadedUrls = await Promise.all(
+      files.map(async (file: File) => {
+        const res = await handleFileUploads(file.name, file.size, file.type);
+        // If there's an error, we show a toast
+        if (res.error) {
+          toast.error(res.message, {
+            classNames: {
+              toast: "!text-red-500",
+              title: "!text-red-500",
+              description: "!text-red-500",
+            },
+          });
+          return false;
+        }
+        if (res.error || !res.presignedUrl || !res.fileName) return false;
+        const { presignedUrl, fileName } = res;
 
+        await fetch(presignedUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+
+        return fileName; // Save only the final URL
+      })
+    );
+
+    // We remove all instances of failed uploads
+    const parsedUploads = uploadedUrls.filter(ele => ele !== false);
+    if(parsedUploads.length < 1) return;
+
+    // Replace the files in formData with URLs
+    const payload = {
+      ...formData,
+      venueFiles: parsedUploads,
+      venueId: venueData.id,
+    };
+    // Then i make the request normally to my server action with my data
     startTransition(() => {
-      action(formData);
+      action(payload);
     });
   }
+
   return (
     <section className='w-full'>
       <div className='w-full xl:max-w-[1140px] mx-auto px-5 py-8 md:pt-14 md:pb-20'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-10'>
             <div className='grid grid-cols-1 md:grid-cols-6 gap-5'>
+              <div className='md:col-span-6'>
+                <FormField
+                  control={form.control}
+                  name='venueFiles'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-olive !text-base !md:text-lg'>
+                        Upload Compelling Images & Videos
+                      </FormLabel>
+
+                      <MyDropzone
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <div className='md:col-span-4'>
                 <FormField
                   control={form.control}
@@ -267,139 +370,142 @@ export default function EditVenueForm() {
                   )}
                 />
               </div>
-              <div className='md:col-span-3'>
-                <FormField
-                  control={form.control}
-                  name='roomType'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-olive !text-base !md:text-lg'>
-                        Room Type
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder='Serene Water Retreat'
-                          type='text'
-                          {...field}
-                          className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className='md:col-span-3'> 
-              <FormField
-                control={form.control}
-                name='numberOfRooms'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>
-                      Number of Rooms available
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type='text'
-                        placeholder='e.g. 3 rooms'
-                        {...field}
-                        className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              </div>
-              <div className='md:col-span-3'> 
-              <FormField
-                control={form.control}
-                name='sleeps'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>
-                      Sleeps
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type='text'
-                        placeholder='e.g. 3 sleepers'
-                        {...field}
-                        className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              </div>
-              <div className='md:col-span-3'> 
-              <FormField
-                control={form.control}
-                name='bedConfiguration'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>
-                      Bed Configuration
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type='text'
-                        placeholder='e.g. 2 single beds, 1 double bed'
-                        {...field}
-                        className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              </div>
-              <div className='md:col-span-6'> 
-              <FormField
-                control={form.control}
-                name='roomAmenities'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>
-                      Room Amenities
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type='text'
-                        placeholder='e.g. Air conditioning, Heating, Wi-Fi, etc.'
-                        {...field}
-                        className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              </div>
-              <div className='md:col-span-3'>
-              <FormField
-                control={form.control}
-                name='pricePerHour'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-olive !text-base !md:text-lg'>
-                      Price Per Hour
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type='text'
-                        placeholder='e.g. $100 per hour'
-                        {...field}
-                        className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              </div>
-
+              {
+                onSiteAccomodation === "yes" && <>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='roomType'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Room Type
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder='Serene Water Retreat'
+                              type='text'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='numberOfRooms'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Number of Rooms available
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. 3 rooms'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='sleeps'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Sleeps
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. 3 sleepers'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='bedConfiguration'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Bed Configuration
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. 2 single beds, 1 double bed'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-6'>
+                    <FormField
+                      control={form.control}
+                      name='roomAmenities'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Room Amenities
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. Air conditioning, Heating, Wi-Fi, etc.'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className='md:col-span-3'>
+                    <FormField
+                      control={form.control}
+                      name='pricePerHour'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className='text-olive !text-base !md:text-lg'>
+                            Price Per Hour
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type='text'
+                              placeholder='e.g. $100 per hour'
+                              {...field}
+                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </>
+              }
               <div className='md:col-span-4 md:col-start-2 w-full flex items-center justify-center'>
                 <Button
                   type='submit'

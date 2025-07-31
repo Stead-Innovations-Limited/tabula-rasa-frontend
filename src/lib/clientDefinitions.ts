@@ -5,6 +5,7 @@ import { parseDateTime } from "@internationalized/date";
 
 export const listVenueSchema = z
   .object({
+    venueId: z.string().optional(),
     venueFiles: z.any(),
     venueName: z
       .string()
