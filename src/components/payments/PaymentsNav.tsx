@@ -19,7 +19,7 @@ export default function PaymentsNav() {
           Account
         </Link>
       </li>
-      <li className=''>
+      {/* <li className=''>
         <Link
           href='/bank-details'
           className={cn("inline-block px-2 py-4", {
@@ -28,7 +28,7 @@ export default function PaymentsNav() {
         >
           Bank Details
         </Link>
-      </li>
+      </li> */}
     </ul>
   );
 }

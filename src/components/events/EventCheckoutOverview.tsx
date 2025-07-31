@@ -152,7 +152,7 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
                   onClick={async () => {
                     const response = await eventService(
                       eventData.id,
-                      (price * parseInt(quantity)).toString()
+                      (price * parseInt(quantity) * 100).toString()
                     );
                     if (response.error) {
                       if (

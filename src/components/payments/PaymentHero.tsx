@@ -1,5 +1,6 @@
 import { BsInfoCircle } from "@/components/icons";
 import { Button } from "../ui/button";
+import FundAccountDialog from "../Menus/FundAccountDialog";
 
 function PaymentHero({accountBalance}: { accountBalance: string}) {
   return (
@@ -21,7 +22,8 @@ function PaymentHero({accountBalance}: { accountBalance: string}) {
           </div>
 
           <div className='flex flex-row items-center justify-center md:justify-start md:items-left gap-4 mt-2 md:mt-4'>
-            <Button className="bg-lightolive text-olive px-6 py-2">Add Money</Button>
+            {/* <Button className="bg-lightolive text-olive px-6 py-2">Add Money</Button> */}
+            <FundAccountDialog />
             <Button className="bg-lightolive text-olive px-6 py-2">Request Withdrawal</Button>
           </div>
         </div>
