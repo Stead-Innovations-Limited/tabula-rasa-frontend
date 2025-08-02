@@ -305,7 +305,7 @@ const CarouselNavigation = ({
   endTime: Time;
   date: Date | undefined;
   pracId: string;
-  amount: string;
+  amount: number;
 }) => {
   const router = useRouter()
   const { api } = useCarousel();
@@ -400,7 +400,7 @@ const CarouselNavigation = ({
                     }
                   // If the payment was successful, redirect to the payment successful page
                   } else {
-                    router.push(`/practitioners/${pracId}/payment-successful`);
+                    router.push(`/practicioners/${pracId}/payment-successful`);
                   }
                 } else api?.scrollTo(currentSlide + 1);
               }}

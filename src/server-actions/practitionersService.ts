@@ -11,7 +11,7 @@ export default async function practitionersService(
   endTime: string,
   date: string,
   pracId: string,
-  amount: string
+  amount: number
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -44,7 +44,7 @@ export default async function practitionersService(
         }
       );
     });
-
+    console.log(response)
     if (response.isError) {
 
       throw new Error(
