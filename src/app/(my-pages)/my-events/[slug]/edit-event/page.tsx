@@ -17,7 +17,6 @@ export default async function page({
   if ("error" in eventData || !Array.isArray(fetchedVenues)) {
     return <p>Error loading event data.</p>;
   }
-  console.log(eventData);
   return (
     <>
       <EditEventBar />

@@ -52,8 +52,8 @@ export default async function saveEvent(eventId: string) {
     revalidatePath('/(saved)/saved', 'page')
 
     return { success: true, message: "Event saved successfully!" };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error("Error saving event:", error);
     return { error: true, message: "Failed to save an event." };
   }
 }

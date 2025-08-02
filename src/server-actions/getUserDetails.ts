@@ -48,7 +48,6 @@ export async function getUserDetails(token: string | undefined) {
     }
     
     const data = response.data as User;
-    console.log(data, "me on fire")
     const responseBody = {
       id: data.id,
       bio: data.bio.String,

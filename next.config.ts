@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         hostname: 'lh3.googleusercontent.com',
         pathname: '/**', // This is where Google profile pictures are typically hosted
       },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+        pathname: '/**', // This is where Google profile pictures are typically hosted
+      },
     ],
   },
 };

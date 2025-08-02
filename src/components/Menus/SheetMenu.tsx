@@ -104,8 +104,8 @@ export default function SheetMenu({
               <BsChevronRight className='text-xs' />
             </Link>
             <Link
-              href='/saved'
-              className={cn('flex items-center justify-between gap-2 hover:bg-lightgreen px-4 py-2', pathname === '/saved' ? 'bg-lightgreen' : '')}
+              href='/bookings'
+              className={cn('flex items-center justify-between gap-2 hover:bg-lightgreen px-4 py-2', pathname === '/bookings' ? 'bg-lightgreen' : '')}
               onClick={() => close()}
             >
               <GrBookmark className='size-5' />

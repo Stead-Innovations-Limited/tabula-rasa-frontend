@@ -122,8 +122,8 @@ export default async function listVenueAction(
     revalidatePath('/(dashboard)/dashboard', 'page')
 
     return { success: true, message: "Venue listed successfully!" };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error("Error listing venue:", error);
     return { error: true, message: "Failed to list venue." };
   }
 }

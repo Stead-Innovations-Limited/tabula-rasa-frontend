@@ -34,7 +34,7 @@ function Hero() {
             <Button
               asChild
               className='w-full lg:w-fit h-10 bg-white lg:bg-olive hover:bg-white lg:hover:bg-olive text-olive lg:text-white rounded-xl px-14 
-            py-5 lg:py-6 text-xl font-medium'
+            py-5 lg:py-6 text-xl font-medium relative z-5'
             >
               <Link href='/dashboard'>Explore Now</Link>
             </Button>

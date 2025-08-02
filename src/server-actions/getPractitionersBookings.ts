@@ -10,7 +10,7 @@ import { authOptions } from "@/lib/auth";
 import { PractitionersBookings } from "@/lib/types";
 
 
-export default async function getPractitionersBookings() {
+export default async function getPractitionersBookings(practitionerId: string) {
   try {
       const session = await getServerSession(authOptions);
   
@@ -21,19 +21,11 @@ export default async function getPractitionersBookings() {
         throw new Error("Token is required to fetch practitioners bookings.");
       }
   
-      if (
-        !session ||
-        !(session as Session & { id?: string }).user.id
-      ) {
-        throw new Error("UserId is required to fetch practitioners bookings.");
-      }
-  
       const token = session.sessionToken;
-      const userId = session.user.id;
-  
+    
       const response = await tryCatch(async () => {
         return await axios.get(
-          `https://tabula-rasa-backend.up.railway.app/bookings/user/${userId}`,
+          `https://tabula-rasa-backend.up.railway.app/bookings/user/${practitionerId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

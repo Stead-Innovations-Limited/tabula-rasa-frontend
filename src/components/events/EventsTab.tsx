@@ -36,7 +36,7 @@ export default async function EventsTab() {
       </div>
     );
   }
-  console.log(events, "May");
+
   const openEvents = events.filter(ele => ele.status !== "declined");
   const closedEvents = events.filter(ele => ele.status === "declined");
   return (

@@ -53,7 +53,7 @@ export default function BusinessDashboardMenu({
           My Profile
         </Link>
         <Link
-          href='/saved'
+          href='/bookings'
           className='flex items-center gap-2 hover:bg-lightgreen px-4 py-1 rounded-md'
           onClick={close}
         >

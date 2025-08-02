@@ -6,31 +6,35 @@ import { tryCatch } from "@/utils/tryCatch";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
-import { redirect } from "next/navigation";
-
 export default async function practitionersService(
+  startTime: string,
+  endTime: string,
+  date: string,
   pracId: string,
   amount: string
 ) {
   try {
-    console.log(pracId, amount, "Paryuadf");
     const session = await getServerSession(authOptions);
 
     if (
       !session ||
       !(session as Session & { sessionToken?: string }).sessionToken
     ) {
-      throw new Error("Token is required to make payments.");
+      throw new Error("Token is required to book practitioner.");
     }
 
     const token = session.sessionToken;
 
+
     const response = await tryCatch(async () => {
       return await axios.post(
-        `https://tabula-rasa-backend.up.railway.app/purchases`,
+        `https://tabula-rasa-backend.up.railway.app/services`,
         {
-          service_id: pracId,
-          amount: amount,
+          user_id: pracId,
+          start_time: startTime,
+          end_time: endTime,
+          date: date,
+          price: amount,
         },
         {
           headers: {
@@ -50,15 +54,10 @@ export default async function practitionersService(
       );
     }
     
-    // From here payment request was successful, so we simply redirect to the /payment-successful page
-    redirect(`/practitioners/${pracId}/payment-successful`);
+    return {
+      error: false,
+    };
   } catch (error) {
-    if (
-    error instanceof Error &&
-    error.message.toLowerCase().includes("insufficient funds")
-    ) {
-      redirect("/insufficient-funds");
-    }
     return {
       error: true,
       errorData: error,

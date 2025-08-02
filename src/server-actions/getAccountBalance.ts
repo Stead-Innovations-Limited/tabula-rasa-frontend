@@ -27,7 +27,7 @@ export default async function getAccountBalance() {
     }
 
     const token = session.sessionToken;
-
+    
     const response = await tryCatch(async () => {
       return await axios.get(
         `https://tabula-rasa-backend.up.railway.app/wallet`,

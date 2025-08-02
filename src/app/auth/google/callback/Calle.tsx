@@ -6,7 +6,6 @@ import { useEffect } from "react";
 function Calle() {
   const pathname = usePathname();
      const searchParams = useSearchParams();
-    console.log("Pathname:", pathname, "Search Params:", searchParams.toString());
     useEffect(()=> {
       if (pathname.startsWith("/auth/google/callback")) {
       signIn("auth_google", {

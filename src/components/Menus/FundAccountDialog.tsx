@@ -67,7 +67,6 @@ export default function FundAccountDialog() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData, "Lfg");
     await submitFn(formData);
   };
 
@@ -98,7 +97,7 @@ export default function FundAccountDialog() {
             <Button
               type='submit'
               variant='outline'
-              className='font-roboto text-olive'
+              className='font-roboto text-olive mt-5 hover:bg-olive hover:text-white transition-colors delay-150'
               onClick={() => {
                 openChange(false);
               }}

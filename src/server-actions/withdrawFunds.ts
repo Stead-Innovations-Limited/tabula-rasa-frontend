@@ -6,19 +6,8 @@ import { tryCatch } from "@/utils/tryCatch";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
-interface ServerTransactions {
-  id: string,
-  wallet_id: string,
-  amount: string,
-  type: string,
-  description: {
-    String: string;
-    Valid: boolean;
-  },
-  created_at: string
-}
 
-export default async function getAccountTransactions() {
+export default async function withdrawFunds(amount: number, accNo: string, accName: string, bankName: string) {
   try {
       const session = await getServerSession(authOptions);
   
@@ -26,14 +15,20 @@ export default async function getAccountTransactions() {
         !session ||
         !(session as Session & { sessionToken?: string }).sessionToken
       ) {
-        throw new Error("Token is required to fetch wallet transactions.");
+        throw new Error("Token is required to withdraw funds");
       }
   
       const token = session.sessionToken;
   
       const response = await tryCatch(async () => {
-        return await axios.get(
-          `https://tabula-rasa-backend.up.railway.app/wallet/transactions`,
+        return await axios.post(
+          `https://tabula-rasa-backend.up.railway.app/wallet/withdraw`,{
+            amount: amount,
+            account_number: accNo,
+            routing_number: "110000000",
+            account_holder_name: accName,
+            bank_name: bankName
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -50,24 +45,12 @@ export default async function getAccountTransactions() {
             : response.errors.join(", ")
         );
       }
-  
-      const data = response.data as ServerTransactions[];
-      // We transform the data
-      const mapping = data.map(ele => {
-        return {
-          description: ele.description.String,
-          date: ele.created_at.split("T")[0],
-          amount: "$" + Number(ele.amount).toFixed(2),
-          status: ele.type.charAt(0).toUpperCase() + ele.type.slice(1)
-        }
-      })
-
-      return mapping;
+      return response.data;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return {
         error: true,
-        errorData: error,
-        message: "Failed to fetch wallet transactions",
-      };
+        message: "Failed to withdraw funds.",
+      }
     }
 }

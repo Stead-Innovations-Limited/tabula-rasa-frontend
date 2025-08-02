@@ -117,3 +117,17 @@ export interface PractitionersBookings {
   booked_by: string;
   created_at: string;
 }
+
+export interface ServiceBooking       {
+          id: string,
+          user_id: string,
+          start_time: string,
+          end_time: string,
+          date: string,
+          price: number,
+          created_by: string,
+          status: "pending" | "declined" | "confirmed",
+          created_at: string
+          location?: string
+          field?: string
+      }

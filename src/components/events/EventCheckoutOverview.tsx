@@ -132,7 +132,7 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
                 <div className='flex justify-between items-center py-2'>
                   <p className='text-lg'>Total</p>
                   <p className='text-lg font-semibold'>
-                    ${(price * parseInt(quantity)).toFixed(2)}
+                    ${(price * Number(quantity)).toFixed(2)}
                   </p>
                 </div>
               </div>

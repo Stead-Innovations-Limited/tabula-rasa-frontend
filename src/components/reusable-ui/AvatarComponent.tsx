@@ -15,7 +15,7 @@ export default function AvatarComponent({
   const name = firstname.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase()
   return (
     <Avatar
-      className='cursor-pointer'
+      className='cursor-pointer size-6 md:size-8'
     >
       <AvatarImage src={imgUrl} alt={`Profile picture for ${name}`} />
       <AvatarFallback>

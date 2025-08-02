@@ -1,37 +1,30 @@
 "use server";
 
-import { revalidatePath } from 'next/cache'
 import { Session } from "next-auth";
 import axios from "axios";
 import { tryCatch } from "@/utils/tryCatch";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
-
-export default async function saveVenue(venueId: string) {
+export default async function acceptBooking(serviceId: string) {
   try {
-    if(!venueId) throw new Error("Venue ID is required to save a venue.");
-
     const session = await getServerSession(authOptions);
 
     if (
       !session ||
       !(session as Session & { sessionToken?: string }).sessionToken
     ) {
-      throw new Error("Token is required to save a venue.");
-    }
-    if (
-      !session ||
-      !(session as Session & { id?: string }).user.id
-    ) {
-      throw new Error("User Id is needed to save a venue.");
+      throw new Error("Token is required to accept this booking.");
     }
 
     const token = session.sessionToken;
 
     const response = await tryCatch(async () => {
-      return await axios.post(
-        `https://tabula-rasa-backend.up.railway.app/venues/${venueId}/save`,{},
+      return await axios.patch(
+        `https://tabula-rasa-backend.up.railway.app/services/${serviceId}/accept`,{
+          status: "confirmed",
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,12 +41,17 @@ export default async function saveVenue(venueId: string) {
           : response.errors.join(", ")
       );
     }
-
-    revalidatePath('/(saved)/saved', 'page')
-
-    return { success: true, message: "Venue saved successfully!" };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // Revalidate the path to ensure the latest data is fetched
+    revalidatePath(`/bookings/`);
+    return {
+      error: false,
+      message: "Booking confirmed successfully.",
+    };
   } catch (error) {
-    return { error: true, message: "Failed to save a venue." };
+    return {
+      error: true,
+      errorData: error,
+      message: "Failed to confirm booking.",
+    };
   }
 }

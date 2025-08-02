@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
@@ -32,8 +33,14 @@ type CarouselContextProps = {
 
 import { Time } from "../practicioners/PractitionerCheckoutOverview";
 import practitionersService from "@/server-actions/practitionersService";
+import { toast } from "sonner";
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
+
+const parseTime = (obj: Time) => {
+  if (obj.range === "PM") return `${parseInt(obj.hours) + 12}:00:00`;
+  else return `${parseInt(obj.hours)}:00:00`;
+};
 
 function useCarousel() {
   const context = React.useContext(CarouselContext);
@@ -287,8 +294,20 @@ const CarouselDots = React.forwardRef<
 CarouselDots.displayName = "CarouselDots";
 
 // This is a navigation component that can be used to navigate through the practitioner checkout steps
-const CarouselNavigation = (({ startTime, endTime, date, pracId, amount }: {startTime: Time, endTime: Time, date: Date | undefined, pracId: string, amount: string}) => {
-
+const CarouselNavigation = ({
+  startTime,
+  endTime,
+  date,
+  pracId,
+  amount,
+}: {
+  startTime: Time;
+  endTime: Time;
+  date: Date | undefined;
+  pracId: string;
+  amount: string;
+}) => {
+  const router = useRouter()
   const { api } = useCarousel();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [updateState, setUpdateState] = React.useState(false);
@@ -313,14 +332,17 @@ const CarouselNavigation = (({ startTime, endTime, date, pracId, amount }: {star
   // const numberOfSlides = api?.scrollSnapList().length || 0;
   const currentSlide = api?.selectedScrollSnap() || 0;
   const validHours = () => {
-    
-    if(!startTime.hours || !endTime.hours) return false;
+    if (!startTime.hours || !endTime.hours) return false;
 
-    if(startTime.range === "AM" && endTime.range === "PM") return true;
-    else if(startTime.range === endTime.range && startTime.hours < endTime.hours) return true;
+    if (startTime.range === "AM" && endTime.range === "PM") return true;
+    else if (
+      startTime.range === endTime.range &&
+      startTime.hours < endTime.hours
+    )
+      return true;
     else return false;
-  }
-  // console.log(startTime, endTime)
+  };
+
   return (
     <div className={`flex justify-center`}>
       <div className='w-full flex justify-center p-5'>
@@ -338,14 +360,51 @@ const CarouselNavigation = (({ startTime, endTime, date, pracId, amount }: {star
           </Button>
         ) : (
           <div className='w-full grid grid-cols-2 gap-5 p-5'>
-            <Button className="!col-span-1 rounded-full bg-olive hover:bg-olive/90" onClick={() => api?.scrollTo(currentSlide - 1)}>
+            <Button
+              className='!col-span-1 rounded-full bg-olive hover:bg-olive/90'
+              onClick={() => api?.scrollTo(currentSlide - 1)}
+            >
               Back
             </Button>
-            <Button className="!col-span-1 rounded-full bg-olive hover:bg-olive/90" onClick={async () => {
-              if(currentSlide === 3) await practitionersService(pracId, amount)
-              else api?.scrollTo(currentSlide + 1)
-              }} 
-              disabled={ currentSlide === 2 && !validHours()}
+            <Button
+              className='!col-span-1 rounded-full bg-olive hover:bg-olive/90'
+              onClick={async () => {
+                if (currentSlide === 3) {
+                  // Make payment booking
+                  const response = await practitionersService(
+                    parseTime(startTime),
+                    parseTime(endTime),
+                    date!.toISOString().split("T")[0],
+                    pracId,
+                    amount
+                  );
+                  
+                  if (response.error) {
+                    // If the error is insufficient funds, redirect to the insufficient funds page
+                    if (
+                      response.errorData instanceof Error &&
+                      response.errorData.message
+                        .toLowerCase()
+                        .includes("insufficient funds")
+                    ) {
+                      router.push("/insufficient-funds");
+                    // Otherwise, show the error message
+                    } else {
+                      toast.error(response.message, {
+                        classNames: {
+                          toast: "!text-red-500",
+                          title: "!text-red-500",
+                          description: "!text-red-500",
+                        },
+                      });
+                    }
+                  // If the payment was successful, redirect to the payment successful page
+                  } else {
+                    router.push(`/practitioners/${pracId}/payment-successful`);
+                  }
+                } else api?.scrollTo(currentSlide + 1);
+              }}
+              disabled={currentSlide === 2 && !validHours()}
             >
               {currentSlide !== 3 ? "Next" : "Pay"}
             </Button>
@@ -354,7 +413,7 @@ const CarouselNavigation = (({ startTime, endTime, date, pracId, amount }: {star
       </div>
     </div>
   );
-});
+};
 
 function ChangeSchedule() {
   const { api } = useCarousel();
@@ -379,10 +438,13 @@ function ChangeSchedule() {
   }, [api, toggleUpdateState]);
 
   return (
-    <p className="!text-olive !bg-lightolive px-4 !py-0.5 rounded-sm text-xs" onClick={() => api?.scrollTo(0)}>
+    <span
+      className='inline-block !text-olive !bg-lightolive px-4 !py-0.5 rounded-sm text-xs'
+      onClick={() => api?.scrollTo(0)}
+    >
       Change
-    </p>
-  )
+    </span>
+  );
 }
 
 export {
@@ -394,5 +456,5 @@ export {
   CarouselNext,
   CarouselDots,
   CarouselNavigation,
-  ChangeSchedule
+  ChangeSchedule,
 };

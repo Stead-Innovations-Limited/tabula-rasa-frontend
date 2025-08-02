@@ -41,8 +41,8 @@ export default async function submitContactAction(
       data: {name, email, message},
       message: "Message was submitted successfully"
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.log(error);
     return { error: true,  message: "Failed to submit message." };
   }
 }

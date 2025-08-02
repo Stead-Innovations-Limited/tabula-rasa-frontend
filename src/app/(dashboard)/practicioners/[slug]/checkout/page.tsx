@@ -9,7 +9,7 @@ export default async function page({ params }: { params: Promise<{ slug: string 
   const { slug: practitionerId } = await params;
   // Here we typically fetch the practitioner's data using the practitionerId.
   const userDetails = await getUserById(practitionerId) as User;
-  const bookings = await getPractitionersBookings() as string[]
+  const bookings = await getPractitionersBookings(practitionerId) as string[];
 
   return (
     <>

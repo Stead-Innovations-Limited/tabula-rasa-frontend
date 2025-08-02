@@ -84,13 +84,11 @@ export default function PractitionerCheckoutOverview({
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [startTime, setStartTime] = useState<Time>(defaultTime);
   const [endTime, setEndTime] = useState<Time>(defaultTime);
-  // Do not forget to add previous days
+  // Do not forget to add previous days and today too(so we do not book today when booked time may have past)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [bookedDates, setBookedDates] = useState<Date[]>([...bookedDays]);
+  const [bookedDates, setBookedDates] = useState<Date[]>([new Date(), ...bookedDays]);
   // This component will display the overview of the practitioner's details during the checkout process.
-  console.log("start", startTime)
-  console.log("end", endTime)
-
+  
   return (
     <section className='w-full my-5 md:my-16 p-5'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col md:flex-row md:divide-[#DCDCDC] md:divide-x overflow-clip  rounded-2xl shadow-lg'>

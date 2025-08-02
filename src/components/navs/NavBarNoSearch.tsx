@@ -31,7 +31,7 @@ export default function FullBusinessNavBarSearch() {
   return (
     <div className='w-full bg-olive'>
       <header className='w-full xl:max-w-[1140px] mx-auto flex flex-row justify-between items-center p-5 lg:px-5 text-white'>
-        <h1 className='font-alex text-3xl lg:text-5xl'>
+        <h1 className='font-alex text-2xl sm:text-3xl lg:text-5xl'>
           <Link href={"/dashboard"}>Tabula Rasa</Link>
         </h1>
         <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl'>
@@ -47,11 +47,11 @@ export default function FullBusinessNavBarSearch() {
               </Popover>
             </div>
           )}
-          <Link href='/saved' className={cn("hidden md:block")}>
+          <Link href='/saved' className={cn("block")}>
             {pathname === "/saved" ? (
-              <FaHeart className='size-6' />
+              <FaHeart className='size-5 md:size-6' />
             ) : (
-              <SlHeart className='size-6' />
+              <SlHeart className='size-5 md:size-6' />
             )}
           </Link>
           <Link href='notifications' className=''>

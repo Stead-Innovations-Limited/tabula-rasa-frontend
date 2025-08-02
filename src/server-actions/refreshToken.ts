@@ -24,8 +24,8 @@ export default async function refreshToken(refresh_token: string) {
       accessToken: data.access_token,
       tokenExpiration: new Date(decoded.expired_at).getTime(),
     };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error("Failed to refresh access token", error);
     return {
       error: "RefreshAccessTokenError",
     };

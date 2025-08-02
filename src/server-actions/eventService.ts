@@ -47,7 +47,6 @@ export default async function eventService(
       );
     }
     
-    // From here payment request was successful, so we simply redirect to the /payment-successful page
     return {
       error: false,
     };

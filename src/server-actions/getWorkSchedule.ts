@@ -40,7 +40,6 @@ export default async function getWorkSchedule() {
       );
     }
     const user = response.data as User;
-    console.log(user, "user data in getWorkSchedule");
     return user.working_schedule.RawMessage;
   } catch (error) {
     return {

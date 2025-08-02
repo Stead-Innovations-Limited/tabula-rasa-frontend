@@ -25,7 +25,6 @@ export async function tryCatch(
       result.errors = "unexpected error";
     }
   } catch (error) {
-    console.log(error)
     result.isError = true;
 
 

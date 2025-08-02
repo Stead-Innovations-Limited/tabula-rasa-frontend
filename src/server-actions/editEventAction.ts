@@ -122,8 +122,8 @@ export default async function editEventAction(
     revalidatePath("/(dashboard)/dashboard", "page");
 
     return { success: true, message: "Event updated successfully!" };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error("Error updating event:", error);
     return { error: true, message: "Failed to update event." };
   }
 }
