@@ -68,7 +68,7 @@ export default function FullUserNavBarSearch() {
               <SlHeart className='size-5 md:size-6' />
             )}
           </Link>
-          <Link href='notifications' className=''>
+          <Link href='/notifications' className=''>
             {pathname === "/notifications" ? (
               <GoBellFill className='size-5 md:size-6' />
             ) : (
