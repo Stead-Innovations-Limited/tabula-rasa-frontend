@@ -98,7 +98,7 @@ export default async function listVenueAction(
           no_of_rooms: parseInt(numberOfRooms ?? "0"),
           sleeps,
           bed_type: bedConfiguration,
-          booking_price: parseInt(pricePerHour ?? "0"),
+          booking_price: Number(pricePerHour ?? "0"),
           is_available: true,
         },
         {

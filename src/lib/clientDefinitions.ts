@@ -71,13 +71,24 @@ export const listVenueSchema = z
     sleeps: z.string().optional(),
     bedConfiguration: z.string().optional(),
     roomAmenities: z.string().optional(),
-    pricePerHour: z.string().optional(),
+    pricePerHour: z
+      .string()
+      .min(1, {
+        message: "Price per hour cannot be less than 5 characters",
+      })
+      .max(80, {
+        message: "Price per hour cannot be more than 80 characters long.",
+      }),
   })
 
   // Validation for always-required fields
   .refine((data) => !isNaN(Number(data.maxCapacity)), {
     message: "Please enter a valid capacity (number) for the venue",
     path: ["maxCapacity"],
+  })
+  .refine((data) => !isNaN(Number(data.pricePerHour)), {
+    message: "Please enter a valid price per hour",
+    path: ["pricePerHour"],
   })
 
   // Conditional validations for on-site accommodation
@@ -126,16 +137,6 @@ export const listVenueSchema = z
       message: "Please enter a valid number of rooms",
       path: ["numberOfRooms"],
     }
-  )
-  .refine(
-    (data) =>
-      data.onSiteAccomodation === "no" ||
-      (!isNaN(Number(data.pricePerHour)) &&
-        (data.pricePerHour?.trim().length ?? 0) > 0),
-    {
-      message: "Please enter a valid price per hour",
-      path: ["pricePerHour"],
-    }
   );
 
 export const createEventSchema = z
@@ -166,14 +167,13 @@ export const createEventSchema = z
       .string()
       .min(2, { message: "Target Audience cannot be less than 2 characters" })
       .max(80, { message: "Target Audience cannot be 80 characters long." }),
-    location: z
-      .string()
-      .min(5, {
-        message: "Location cannot be less than 5 characters",
-      })
-      .max(100, {
-        message: "Location cannot be more than 100 characters long.",
-      }),
+
+    useOurVenue: z.enum(["yes", "no"], {
+      message: "Please select a valid option to use one of our listed venues or not.",
+    }),
+    venueName: z.string().optional(),
+    venueLocation: z.string().optional(),
+    location: z.string().optional(),
     startDate: z.date({
       error: "Start date is required",
     }),
@@ -186,20 +186,11 @@ export const createEventSchema = z
     endTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$/, {
       message: "End time must be in HH:MM:SS format",
     }),
-    maxParticipantsNo: z.enum(
-      [
-        "10-50",
-        "50-100",
-        "100-200",
-        "200-500",
-        "500-1000",
-        "1000-2000",
-        "2000+",
-      ],
-      {
-        message: "Please select a valid number of participants",
-      }
-    ),
+    maxParticipantsNo: z.string().min(1, {
+      message: "Please select a valid number of participants",})
+      .max(80, {
+        message: "Maximum participants cannot be more than 80 characters long.",
+      }),
     pricePerParticipant: z
       .string()
       .min(1, {
@@ -232,7 +223,39 @@ export const createEventSchema = z
   .refine((data) => !isNaN(Number(data.pricePerParticipant)), {
     message: "Please enter a valid price per participant",
     path: ["pricePerParticipant"],
-  });
+  })
+  // Here i do a check to ensure that the max participants can be a valid number
+  .refine((data) => !isNaN(Number(data.maxParticipantsNo)), {
+    message: "Please enter a valid number of participants",
+    path: ["maxParticipantsNo"],
+  })
+  .refine(
+    (data) =>
+      data.useOurVenue === "no" ||
+      (data.location?.trim().length ?? 0) >= 2,
+    {
+      message: "Please select a venue if you want to use one of our listed venues",
+      path: ["location"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.useOurVenue === "yes" ||
+      (data.venueName?.trim().length ?? 0) >= 2,
+    {
+      message: "Venue name is required if not using our venue",
+      path: ["venueName"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.useOurVenue === "yes" ||
+      (data.venueLocation?.trim().length ?? 0) >= 2,
+    {
+      message: "Venue location is required if not using our venue",
+      path: ["venueLocation"],
+    }
+  )
 
 export const businessProfileSchema = z.object({
   firstname: z

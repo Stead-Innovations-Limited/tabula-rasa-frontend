@@ -15,6 +15,7 @@ import {
   PiHouse,
   // PiCurrencyDollarSimple,
   LuCalendarDays,
+  PiCurrencyDollarSimple,
 } from "@/components/icons";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
@@ -119,10 +120,8 @@ export async function EventCards({ eventId }: { eventId: string }) {
   if ("error" in eventData) {
     return <p>Error loading event data.</p>;
   }
-  const venueData = (await getVenue(eventData.venue_id)) as Venue;
-  if ("error" in venueData) {
-    return <p>Error loading event data.</p>;
-  }
+  const location = eventData.venue_is_listed ? (await getVenue(eventData.venue_id!) as Venue).location.String : `${eventData.venue_name.String}, ${eventData.venue_location.String}`;
+
 
   return (
     <Card
@@ -156,13 +155,13 @@ export async function EventCards({ eventId }: { eventId: string }) {
             <LuCalendarDays className='size-6 text-olive' />{" "}
             {format(new Date("7-19-2025"), "PPPP")}
           </p>
-          {/* <p className='flex items-start gap-1 text-xl'>
+          <p className='flex items-start gap-1 text-xl'>
             <PiCurrencyDollarSimple className='size-6 text-olive' />
-            80.00
-          </p> */}
+            {eventData.price.toFixed(2)}
+          </p>
           <p className='flex items-start gap-1 text-xl'>
             <SlLocationPin className='size-6 text-olive' />
-            {venueData.location.String}
+            {location}
           </p>
           <p className='flex items-start gap-1 text-xl'>
             <GoPerson className='size-6 text-olive' />{" "}

@@ -35,11 +35,9 @@ export default async function page() {
       </div>
     );
   }
-   
   const eventsWithVenues = events.map((event) => ({
     ...event,
-    location: venuesData.filter((venue) => venue.id === event.venue_id)[0].location
-      .String,
+    location: event.venue_is_listed ? venuesData.filter((venue) => venue.id === event.venue_id)[0].location.String : `${event.venue_name.String}, ${event.venue_location.String}`,
   }));
 
   const sessionId = session.user.id;

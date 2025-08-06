@@ -71,6 +71,9 @@ export default async function editEventAction(
       eventDescription,
       keyActivities,
       targetAudience,
+      useOurVenue,
+      venueName,
+      venueLocation,
       location,
       startDate,
       endDate,
@@ -87,7 +90,11 @@ export default async function editEventAction(
       return await axios.patch(
         `https://tabula-rasa-backend.up.railway.app/events/${eventId}`,
         {
-          venue_id: location,
+          ...(useOurVenue === "yes" ? { venue_id: location } : {
+            venue_name: venueName,
+            venue_location: venueLocation,
+          }),
+          venue_is_listed: useOurVenue === "yes" ? true : false,
           image_links: eventFiles,
           name: eventTitle,
           theme: eventTheme,
@@ -99,7 +106,7 @@ export default async function editEventAction(
           start_date: startDate.toISOString().split("T")[0],
           end_date: endDate.toISOString().split("T")[0],
           total_particpant: parseInt(maxParticipantsNo),
-          price: parseInt(pricePerParticipant),
+          price: Number(pricePerParticipant) * 100  || 0, // Convert to cents
         },
         {
           headers: {
@@ -111,6 +118,7 @@ export default async function editEventAction(
     });
 
     if (response.isError) {
+      console.log(response.errors, data);
       throw new Error(
         typeof response.errors === "string"
           ? response.errors

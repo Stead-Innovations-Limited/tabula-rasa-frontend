@@ -14,7 +14,7 @@ export default function VenueBookingPopOverMenu({
   venueId,
   eventId,
 }: {
-  venueId: string;
+  venueId: string | null;
   eventId: string;
 }) {
   const router = useRouter();

@@ -19,13 +19,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -35,6 +28,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 import MyDropzone from "@/components/reusable-ui/MyDropzone";
 import { AiOutlineLoading3Quarters } from "@/components/icons";
@@ -48,14 +49,8 @@ import { Venue } from "@/lib/types";
 import { toast } from "sonner";
 import handleFileUploads from "@/server-actions/handleFileUploads";
 import { useRouter } from "next/navigation";
-
-// I use this function to get the maximum number from a range string like "100-200" or "2000+"
-// It returns the maximum number in the range, or Infinity if the range is open-ended (
-function getMaxFromRange(range: string) {
-  if (range.includes("+")) return Infinity;
-  const parts = range.split("-");
-  return parseInt(parts[1]) || 0;
-}
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 // This function safely parses a time string, returning a default time if the input is invalid
 // This is useful to ensure that the time input is always valid, even if the user does
@@ -68,6 +63,10 @@ function safeParseTime(value: string | null | undefined): Time {
   } catch {
     return parseTime("00:00");
   }
+}
+
+function titleCase(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 export default function CreateEventForm({
@@ -97,7 +96,10 @@ export default function CreateEventForm({
       eventDescription: "",
       keyActivities: "",
       targetAudience: "",
-      location: venues.length ? venues[0].id : "",
+      useOurVenue: "no",
+      venueName: "",
+      venueLocation: "",
+      location: "",
       startDate: undefined,
       endDate: undefined,
       startTime: "00:00:00",
@@ -107,20 +109,36 @@ export default function CreateEventForm({
     },
   });
 
-  // Here i use the watch function to get the current value of the location and maxParticipantsNo fields
+  // Here i use the watch function to get the current value of whether one of our venue is being used, the location and maxParticipantsNo fields
   // This allows me to react to changes in these fields and perform validations or updates accordingly
   const selectedLocationId = form.watch("location");
   const selectedParticipantsRange = form.watch("maxParticipantsNo");
+  const useOurVenue = form.watch("useOurVenue");
 
+  // This useEffect hook is used to reset the venue fields when the useOurVenue field changes
+  useEffect(() => {
+  if (useOurVenue === "yes") {
+    form.setValue("location", "");
+  } else {
+    form.setValue("venueName", "");
+    form.setValue("venueLocation", "");
+  }
+}, [useOurVenue, form]);
   // This useEffect hook is used to check if the selected venue's capacity is sufficient for the selected participants range
   // If the selected venue's capacity is less than the maximum number of participants, it shows
   // a warning toast to inform the user
   // It runs whenever the selectedLocationId or selectedParticipantsRange changes
   useEffect(() => {
-    if (!selectedLocationId || !selectedParticipantsRange) return;
+    // If none of our venue is being used or no participants range is selected, we do not perform any checks
+    if (
+      useOurVenue === "no" ||
+      !selectedLocationId ||
+      !selectedParticipantsRange
+    )
+      return;
 
-    const selectedVenue = venues.find((v) => v.id === selectedLocationId);
-    const maxParticipants = getMaxFromRange(selectedParticipantsRange);
+    const selectedVenue = venues.find((v) => v.name === selectedLocationId);
+    const maxParticipants = Number(selectedParticipantsRange);
 
     if (selectedVenue && maxParticipants > selectedVenue.capacity.Int32) {
       toast.warning(
@@ -135,13 +153,18 @@ export default function CreateEventForm({
         }
       );
     }
-  }, [selectedLocationId, selectedParticipantsRange, venues]);
+  }, [selectedLocationId, selectedParticipantsRange, venues, useOurVenue]);
 
   async function onSubmit(formData: z.infer<typeof createEventSchema>) {
-    const selectedVenue = venues.find((v) => v.id === formData.location);
-    const maxParticipants = getMaxFromRange(formData.maxParticipantsNo);
+    // If one of our listed venue is being used, we need to check its capacity
+    const selectedVenue = venues.find((v) => v.name === formData.location);
+    const maxParticipants = Number(formData.maxParticipantsNo);
 
-    if (selectedVenue && maxParticipants > selectedVenue.capacity.Int32) {
+    if (
+      useOurVenue === "yes" &&
+      selectedVenue &&
+      maxParticipants > selectedVenue.capacity.Int32
+    ) {
       toast.error(
         `Too many participants for selected venue (max: ${selectedVenue.capacity.Int32})`,
         {
@@ -211,20 +234,20 @@ export default function CreateEventForm({
     );
 
     // We remove all instances of failed uploads
-    const parsedUploads = uploadedUrls.filter(ele => ele !== false);
-    if(parsedUploads.length < 1) return;
+    // const parsedUploads = uploadedUrls.filter((ele) => ele !== false);
+    // if (parsedUploads.length < 1) return;
 
     // Replace the files in formData with URLs
     const payload = {
       ...formData,
+      ...(useOurVenue === "yes" && { location: selectedVenue?.id }),
       eventFiles: uploadedUrls,
     };
-
     startTransition(() => {
       action(payload);
     });
   }
-
+  
   return (
     <>
       <section className='w-full'>
@@ -364,40 +387,162 @@ export default function CreateEventForm({
                     )}
                   />
                 </div>
-                {/* Location */}
-                <div className='md:col-span-3'>
+                <div className='md:col-span-6'>
                   <FormField
                     control={form.control}
-                    name='location'
+                    name='useOurVenue'
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-olive !text-base !md:text-lg'>
-                          Location
+                      <FormItem className='space-y-3'>
+                        <FormLabel>
+                          Do you want to use one of our listed venues?
                         </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className='w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none'>
-                              <SelectValue placeholder='Select a location' />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {venues.length > 0 &&
-                              venues.map((venue) => (
-                                <SelectItem key={venue.id} value={venue.id}>
-                                  {venue.name[0].toUpperCase() +
-                                    venue.name.slice(1).toLowerCase()}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className='flex gap-5'
+                          >
+                            <FormItem className='flex items-center gap-3'>
+                              <FormControl>
+                                <RadioGroupItem value='yes' />
+                              </FormControl>
+                              <FormLabel className='font-normal'>Yes</FormLabel>
+                            </FormItem>
+                            <FormItem className='flex items-center gap-3'>
+                              <FormControl>
+                                <RadioGroupItem value='no' />
+                              </FormControl>
+                              <FormLabel className='font-normal'>No</FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+                {useOurVenue === "no" ? (
+                  <>
+                    {/* Venue Name */}
+                    <div className='md:col-span-3'>
+                      <FormField
+                        control={form.control}
+                        name='venueName'
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className='text-olive !text-base !md:text-lg'>
+                              What is the name of your venue?
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder='Enter the venue name'
+                                type='text'
+                                {...field}
+                                className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    {/* Venue Location */}
+                    <div className='md:col-span-3'>
+                      <FormField
+                        control={form.control}
+                        name='venueLocation'
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className='text-olive !text-base !md:text-lg'>
+                              Venue Location
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder='Enter the address of the venue location'
+                                type='text'
+                                {...field}
+                                className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Location */}
+                    <div className='md:col-span-3'>
+                      <FormField
+                        control={form.control}
+                        name='location'
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className='text-olive !text-base !md:text-lg'>
+                              Location
+                            </FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant='outline'
+                                    role='combobox'
+                                    className={cn(
+                                      "w-full justify-between !h-10 md:!h-12",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    {field.value?.trim()
+                                      ? titleCase(field.value || "")
+                                      : "Select venue"}
+                                    <ChevronsUpDown className='opacity-50' />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className='w-[200px] p-0'>
+                                <Command onValueChange={field.onChange}>
+                                  <CommandInput
+                                    placeholder='Search venue...'
+                                    className='h-9'
+                                  />
+                                  <CommandList>
+                                    <CommandEmpty>No Venue found.</CommandEmpty>
+                                    <CommandGroup>
+                                      {venues.map((venue) => (
+                                        <CommandItem
+                                          value={venue.name}
+                                          key={venue.id}
+                                          onSelect={() => {
+                                            form.setValue(
+                                              "location",
+                                              venue.name
+                                            );
+                                          }}
+                                        >
+                                          {titleCase(venue.name)}
+                                          <Check
+                                            className={cn(
+                                              "ml-auto",
+                                              venue.name === field.value
+                                                ? "opacity-100"
+                                                : "opacity-0"
+                                            )}
+                                          />
+                                        </CommandItem>
+                                      ))}
+                                    </CommandGroup>
+                                  </CommandList>
+                                </Command>
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </>
+                )}
                 {/* Start Date */}
                 <div className='md:col-span-3'>
                   <FormField
@@ -491,7 +636,7 @@ export default function CreateEventForm({
                         <FormLabel>Start time</FormLabel>
                         <TimeInput
                           aria-label='Start Time'
-                          granularity="second"
+                          granularity='second'
                           value={safeParseTime(field.value)}
                           onChange={(val) => {
                             if (!val) return field.onChange("");
@@ -516,7 +661,7 @@ export default function CreateEventForm({
                         <FormLabel>End time</FormLabel>
                         <TimeInput
                           aria-label='End Time'
-                          granularity="second"
+                          granularity='second'
                           value={safeParseTime(field.value)}
                           onChange={(val) => {
                             if (!val) return field.onChange("");
@@ -541,25 +686,14 @@ export default function CreateEventForm({
                         <FormLabel className='text-olive !text-base !md:text-lg'>
                           Max Number of Participants
                         </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
                           <FormControl>
-                            <SelectTrigger className='w-full !h-10 md:!h-12 !text-base !md:text-lg border-lightolive focus:outline-none'>
-                              <SelectValue placeholder='Select max number of participants' />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value='10-50'>10-50</SelectItem>
-                            <SelectItem value='50-100'>50-100</SelectItem>
-                            <SelectItem value='100-200'>100-200</SelectItem>
-                            <SelectItem value='200-500'>200-500</SelectItem>
-                            <SelectItem value='500-1000'>500-1000</SelectItem>
-                            <SelectItem value='1000-2000'>1000-2000</SelectItem>
-                            <SelectItem value='2000+'>2000+</SelectItem>
-                          </SelectContent>
-                        </Select>
+                            <Input
+                            placeholder='Enter the maximum number of participants you want at your event'
+                            type='text'
+                            {...field}
+                            className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                          />
+                          </FormControl>  
                         <FormMessage />
                       </FormItem>
                     )}

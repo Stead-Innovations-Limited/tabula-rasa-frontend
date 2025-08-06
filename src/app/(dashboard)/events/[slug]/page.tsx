@@ -26,8 +26,7 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
   const venues = venuesData.filter(ele => ele.is_available.Bool);
   const eventsWithVenues = events.map((event) => ({
     ...event,
-    location: venues.filter((venue) => venue.id === event.venue_id)[0]
-      .location.String,
+    location: event.venue_is_listed ? venues.filter((venue) => venue.id === event.venue_id)[0].location.String : `${event.venue_name.String}, ${event.venue_location.String}`,
   }));
   return (
     <>

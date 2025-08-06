@@ -23,6 +23,8 @@ export interface createEventState {
     keyActivities?: string[];
     targetAudience?: string[];
     location?: string[];
+    venueName?: string[];
+    venueLocation?: string[];
     startDate?: string[];
     endDate?: string[];
     maxParticipantsNo?: string[];
@@ -68,6 +70,9 @@ export default async function createEventAction(
       eventDescription,
       keyActivities,
       targetAudience,
+      useOurVenue,
+      venueName,
+      venueLocation,
       location,
       startDate,
       endDate,
@@ -84,7 +89,11 @@ export default async function createEventAction(
       return await axios.post(
         `https://tabula-rasa-backend.up.railway.app/events/`,
         {
-          venue_id: location,
+          ...(useOurVenue === "yes" ? { venue_id: location } : {
+            venue_name: venueName,
+            venue_location: venueLocation,
+          }),
+          venue_is_listed: useOurVenue === "yes" ? true : false,
           image_links: eventFiles,
           name: eventTitle,
           theme: eventTheme,
@@ -96,7 +105,7 @@ export default async function createEventAction(
           start_date: startDate.toISOString().split("T")[0],
           end_date: endDate.toISOString().split("T")[0],
           total_particpant: parseInt(maxParticipantsNo),
-          price: parseInt(pricePerParticipant)
+          price: Number(pricePerParticipant) * 100 || 0, // Convert to cents
         },
         {
           headers: {
@@ -118,9 +127,9 @@ export default async function createEventAction(
     revalidatePath('/(dashboard)/events', 'page')
     revalidatePath('/(dashboard)/dashboard', 'page')
 
-    return { success: true, message: "Event updated successfully!" };
+    return { success: true, message: "Event created successfully!" };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    return { error: true, message: "Failed to update event." };
+    return { error: true, message: "Failed to create event." };
   }
 }

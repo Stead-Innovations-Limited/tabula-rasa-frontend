@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
-export default async function approveBooking(eventId: string, venueId: string) {
+export default async function approveBooking(eventId: string, venueId: string | null) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -39,8 +39,7 @@ export default async function approveBooking(eventId: string, venueId: string) {
           : response.errors.join(", ")
       );
     }
-
-    revalidatePath(`/my-venues/${venueId}/view-bookings`);
+    if (venueId) revalidatePath(`/my-venues/${venueId}/view-bookings`);
     return {
       error: false,
       data: response.data,

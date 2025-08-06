@@ -19,7 +19,7 @@ import { Skeleton } from "../ui/skeleton";
 
 async function EventsOverview({ eventId, isSaved }: { eventId: string; isSaved: boolean }) {
   const eventData = await getEvent(eventId) as Event;
-  const venueData = await getVenue(eventData.venue_id) as Venue;
+  const location = eventData.venue_is_listed ? (await getVenue(eventData.venue_id!) as Venue).location.String : `${eventData.venue_name.String}, ${eventData.venue_location.String}`;
   return (
     <section className='w-full'>
       <div className='w-full p-5 lg:px-10 xl:max-w-[1140px] mx-auto font-nunito'>
@@ -75,7 +75,7 @@ async function EventsOverview({ eventId, isSaved }: { eventId: string; isSaved: 
                   </li>
                   <li className='flex gap-2 items-center'>
                     <span className='inline-block font-medium'>Location:</span>
-                    <span className='inline-block'>{venueData.location.String}</span>
+                    <span className='inline-block'>{location}</span>
                   </li>
                   <li className='flex gap-2 items-center'>
                     <span className='inline-block font-medium'>

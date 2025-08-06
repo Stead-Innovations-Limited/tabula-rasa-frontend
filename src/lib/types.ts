@@ -37,7 +37,10 @@ export interface WorkingSchedule {
 
 export interface Event {
   id: string;
-  venue_id: string;
+  venue_is_listed: boolean;
+  venue_name: NullableString;
+  venue_location: NullableString;
+  venue_id: string | null;
   image_links: string[];
   name: string;
   theme: NullableString;

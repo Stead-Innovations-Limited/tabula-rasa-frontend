@@ -130,8 +130,8 @@ export default function EditVenueForm({ venueData }: { venueData: Venue }) {
     );
 
     // We remove all instances of failed uploads
-    const parsedUploads = uploadedUrls.filter(ele => ele !== false);
-    if(parsedUploads.length < 1) return;
+    const parsedUploads = uploadedUrls.filter((ele) => ele !== false);
+    if (parsedUploads.length < 1) return;
 
     // Replace the files in formData with URLs
     const payload = {
@@ -370,8 +370,8 @@ export default function EditVenueForm({ venueData }: { venueData: Venue }) {
                   )}
                 />
               </div>
-              {
-                onSiteAccomodation === "yes" && <>
+              {onSiteAccomodation === "yes" && (
+                <>
                   <div className='md:col-span-3'>
                     <FormField
                       control={form.control}
@@ -482,30 +482,30 @@ export default function EditVenueForm({ venueData }: { venueData: Venue }) {
                       )}
                     />
                   </div>
-                  <div className='md:col-span-3'>
-                    <FormField
-                      control={form.control}
-                      name='pricePerHour'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className='text-olive !text-base !md:text-lg'>
-                            Price Per Hour
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              type='text'
-                              placeholder='e.g. $100 per hour'
-                              {...field}
-                              className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                 </>
-              }
+              )}
+              <div className='md:col-span-3'>
+                <FormField
+                  control={form.control}
+                  name='pricePerHour'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-olive !text-base !md:text-lg'>
+                        Price Per Hour
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type='text'
+                          placeholder='e.g. $100 per hour'
+                          {...field}
+                          className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className='md:col-span-4 md:col-start-2 w-full flex items-center justify-center'>
                 <Button
                   type='submit'
