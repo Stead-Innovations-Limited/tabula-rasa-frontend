@@ -104,7 +104,7 @@ export default function CreateEventForm({
       endDate: undefined,
       startTime: "00:00:00",
       endTime: "00:00:00",
-      maxParticipantsNo: "100-200",
+      maxParticipantsNo: "",
       pricePerParticipant: "",
     },
   });
