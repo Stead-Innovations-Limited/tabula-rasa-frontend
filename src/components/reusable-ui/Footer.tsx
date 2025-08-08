@@ -71,7 +71,7 @@ function Footer() {
             </div>
         </div>
         <Separator orientation='horizontal' className='bg-white' />
-        <div className='w-full flex justify-between text-sm md:text-xl py-4 text-olive'>
+        <div className='w-full flex flex-col gap-4 md:gap-0 md:flex-row justify-between items-center text-sm md:text-xl py-4 text-olive'>
           <div className=''>Copyright 2025, All Rights Reserved</div>
           <div className=''>Privacy Policy</div>
         </div>

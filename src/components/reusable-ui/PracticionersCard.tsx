@@ -25,11 +25,11 @@ interface EventProps {
 export default function PracticionersCards({
   userId,
   imgUrl,
-  imgAlt = "A serene saturday event image",
-  name = "Micheal Stewart",
-  specialty = "Vinyasa Yoga",
+  imgAlt,
+  name,
+  specialty,
   stars = 4,
-  address = "Wellness Center, Lagos",
+  address,
 }: EventProps) {
 
   const fallbackImgUrl = "/avatar.jpg"
