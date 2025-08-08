@@ -14,6 +14,7 @@ export interface UserData {
   lastName: string,
   profileImage: string,
   roles: string,
+  field: string,
   token?: string,
 }
 

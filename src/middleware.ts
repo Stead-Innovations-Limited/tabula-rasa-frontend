@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const publicRoutes = ["/", "/about"];
+const publicRoutes = ["/", "/about", "/contact", "/dashboard", "/events", "/practicioners", "/venues"];
 const authRoutes = ["/login", "/signup", "/verify-email", "/pick-account", "/auth/google/callback"];
 
 // export default withAuth(
@@ -47,13 +47,15 @@ export async function middleware(req: NextRequest) {
     req.cookies.get("__Secure-next-auth.session-token")?.value;
 
   const path = req.nextUrl.pathname;
-
+  console.log("Middleware triggered for path:", path);
   const isAuthRoute = authRoutes.some(
     (route) => path === route || path.startsWith(`${route}/`)
   );
 
   const isPublicRoute = publicRoutes.some(
-    (route) => path === route || path.startsWith(`${route}/`)
+    // We need to ensure that the public routes do not include payment-related paths
+    // This is to prevent access to payment-related pages without authentication which is normally accessible from an authenticated user's dashboard
+    (route) => path === route || (path.startsWith(`${route}/`) && !path.includes("payment-successful") && !path.includes("checkout"))
   );
 
   // Implement business protected routes logic

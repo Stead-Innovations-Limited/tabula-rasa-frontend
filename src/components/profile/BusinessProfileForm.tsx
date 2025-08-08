@@ -120,11 +120,15 @@ export default function BusinessProfileForm({
 
   useEffect(() => {
     if (state?.success && stopperRef.current) {
-      // There were edits, update data
+      // There were edits, update session with new user data
       update({
         user: {
           ...session?.user,
-          roles: "Business Account"
+          firstName: state.data.firstname,
+          lastName: state.data.lastname,
+          roles: "Business Account",
+          field: state.data.expertiseArea,
+          email: state.data.email,
         },
       });
 

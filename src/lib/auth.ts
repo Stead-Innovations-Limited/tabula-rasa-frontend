@@ -37,6 +37,7 @@ export interface User {
   lastName: string;
   profileImage: string
   roles: string;
+  field?: string;
   token?: string;
   refreshToken?: string;
   tokenExpiration?: number;
@@ -93,7 +94,7 @@ export const authOptions: NextAuthOptions = {
           lastName: data.user.lastname,
           profileImage: data.profile.image_link.String || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
           roles: data.profile.roles,
-          // roles: "Business Account",
+          field: data.profile.field.String || "",
           token: data.access_token,
           refreshToken: data.refresh_token,
           tokenExpiration: new Date(decoded.expired_at).getTime(),
@@ -141,7 +142,7 @@ export const authOptions: NextAuthOptions = {
           lastName: data.user.lastname,
           profileImage: data.profile.image_link.String || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
           roles: data.profile.roles,
-          // roles: "Business Account",
+          field: data.profile.field.String || "",
           token: data.access_token,
           refreshToken: data.refresh_token,
           tokenExpiration: new Date(decoded.expired_at).getTime(),
@@ -168,6 +169,7 @@ export const authOptions: NextAuthOptions = {
           lastName: u.lastName,
           profileImage: u.profileImage,
           roles: u.roles,
+          field: u.field,
         };
       }
 

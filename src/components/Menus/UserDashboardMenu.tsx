@@ -31,11 +31,7 @@ export default function UserDashboardMenu({
         <h5 className='text-xl font-medium text-black text-center'>
           {userData?.firstName} {userData?.lastName}
         </h5>
-        {userData?.roles !== "Personal Account" && (
-          <p className='text-base px-6 py-0.5 bg-lightgreen text-olive rounded-lg'>
-            Vinyasa Yoga
-          </p>
-        )}
+         
       </div>
       <div className='flex flex-col gap-2 text-olive'>
         <Link

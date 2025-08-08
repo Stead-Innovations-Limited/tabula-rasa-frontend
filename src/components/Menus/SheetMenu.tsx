@@ -78,9 +78,9 @@ export default function SheetMenu({
             <h5 className='text-xl font-medium text-black text-center'>
               {userData?.firstName} {userData?.lastName}
             </h5>
-            {userData?.roles !== "Personal Account" && (
+            {userData?.roles !== "Personal Account" && userData?.field && (
               <p className='text-base px-6 py-0.5 bg-lightgreen text-olive rounded-lg'>
-                Vinyasa Yoga
+                {userData?.field}
               </p>
             )}
           </div>

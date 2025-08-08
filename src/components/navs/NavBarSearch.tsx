@@ -20,6 +20,13 @@ import SheetMenu from "../Menus/SheetMenu";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import SortMenu from "../Menus/SortMenu";
 
+
+
+// NOTE!!
+// This component is only used on the dashboard page.
+// It is not used on the home page or any other page.
+// It is a full-width navbar that contains the search input, user menu, and other navigation elements.
+// It is designed to be responsive and adapt to different screen sizes.
 export default function FullUserNavBarSearch() {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -48,7 +55,7 @@ export default function FullUserNavBarSearch() {
           <SortMenu className="md:hidden absolute right-2 top-1/2 -translate-y-1/2" />
         </div>
 
-        <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl order-2 md:order-3'>
+        {userData && <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl order-2 md:order-3'>
           {userData && userData.roles !== "Personal Account" && (
             <div className=''>
               <Popover>
@@ -76,7 +83,7 @@ export default function FullUserNavBarSearch() {
             )}
           </Link>
           {isMobile ? <SheetMenu userData={userData} />:<PopOverMenu userData={userData} />}
-        </nav>
+        </nav>}
       </header>
     </div>
   );

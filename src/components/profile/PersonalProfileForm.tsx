@@ -67,7 +67,7 @@ export default function PersonalProfileForm({
       )
         return;
 
-      // There were edits, update data
+      // There were edits, update form and session with new user data
       update({
         user: {
           ...session?.user,
