@@ -20,14 +20,20 @@ export default async function getSavedVenue() {
       !session ||
       !(session as Session & { sessionToken?: string }).sessionToken
     ) {
-      throw new Error("Token is required to fetch saved details.");
+      return {
+      error: false,
+      data: []
+    };
     }
 
     if (
       !session ||
       !(session as Session & { id?: string }).user.id
     ) {
-      throw new Error("UserId is required to fetch saved details.");
+      return {
+      error: false,
+      data: []
+    };
     }
 
     const token = session.sessionToken;
@@ -54,8 +60,12 @@ export default async function getSavedVenue() {
     }
     const data = response.data as Saved[];
     const venueData = data.filter((ele: Saved) => ele.user_id === userId);
+
     if (!venueData) {
-      throw new Error("Venue not found.");
+      return {
+      error: false,
+      data: data
+    };
     }
 
     return {

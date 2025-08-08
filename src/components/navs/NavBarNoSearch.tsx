@@ -34,7 +34,7 @@ export default function FullBusinessNavBarSearch() {
         <h1 className='font-alex text-2xl sm:text-3xl lg:text-5xl'>
           <Link href={"/dashboard"}>Tabula Rasa</Link>
         </h1>
-        <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl'>
+        {userData && <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl'>
           {userData && userData.roles !== "Personal Account" && (
             <div className=''>
               <Popover>
@@ -62,7 +62,7 @@ export default function FullBusinessNavBarSearch() {
             )}
           </Link>
           {isMobile ? <SheetMenu userData={userData} />:<PopOverMenu userData={userData} />}
-        </nav>
+        </nav>}
       </header>
     </div>
   );

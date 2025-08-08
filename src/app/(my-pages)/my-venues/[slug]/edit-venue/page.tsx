@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import EditVenueBar from "@/components/my-venues/EditVenueBar";
 import EditVenueForm from "@/components/my-venues/EditVenueForm";
 import getVenue from "@/server-actions/getVenue";
@@ -13,7 +15,7 @@ export default async function page({
       | Venue
       | { error: boolean; errorData?: string; message?: string };
     if ("error" in venueData) {
-      return <p>Error loading event data.</p>;
+      throw new Error("Error loading page")
     }
   return (
     <>

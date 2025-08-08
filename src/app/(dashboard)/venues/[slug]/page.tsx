@@ -1,4 +1,4 @@
-
+export const dynamic = "force-dynamic";
 import VenueOverview from "@/components/venues/VenueOverview";
 import getSavedVenue from "@/server-actions/getSavedVenue";
 import { Saved } from "@/server-actions/getSavedVenue";
@@ -14,22 +14,22 @@ export default async function page({
 }) {
   const { slug: venueId } = await params;
 
-  const venuesData = (await getSimilarVenues()) as Venue[]
+  const venuesData = (await getSimilarVenues(venueId)) as Venue[]
       | { error: boolean; errorData?: string; message?: string };
   // This fetches all the saved venues that belongs to the user;
   const mySavedVenues = await getSavedVenue();
   const venueData = await getVenue(venueId) as Venue | {error: true, errorData: string, message: string};
 
   // If there is an error in fetching the saved venues or the venue data, we return an error message.
-  if (mySavedVenues?.error || "error" in venueData || !venueData.id || !Array.isArray(venuesData)) {
-    return <p>Error</p>;
+  if ("error" in venueData || !venueData.id || !Array.isArray(venuesData)) {
+    throw new Error("There was an error loading this page.")
   }
 
-  const data = mySavedVenues.data as Saved[];
+  const data = (mySavedVenues?.data || [] ) as Saved[];
   // We filter through the saved venues to see if this venue is saved already.
   const savedVenue = data.some((ele: Saved) => ele.venue_id === venueId);
   // We filter the venues to only include those that are available
-  const venues = venuesData.filter(ele => ele.is_available.Bool);
+  const venues = venuesData.filter(ele => Object.hasOwn(ele, "is_available.Bool") && ele.is_available.Bool);
   return (
     <>
       {/* I do a type conversion, if savedVenue is an empty array, it will be falsy, else it will be truthy  */}

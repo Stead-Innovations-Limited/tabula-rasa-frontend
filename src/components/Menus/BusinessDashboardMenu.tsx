@@ -20,7 +20,7 @@ export default function BusinessDashboardMenu({
   userData,
   close,
 }: {
-  userData: UserData;
+  userData?: UserData;
   close: () => void;
 }) {
   return (

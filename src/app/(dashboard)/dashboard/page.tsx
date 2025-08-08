@@ -21,26 +21,22 @@ export default async function page() {
   const userProfiles = (await getPractitioners()) as
     | User[]
     | { error: boolean; errorData?: string; message?: string };
+    
   const session = await getServerSession(authOptions);
 
   if (
     !Array.isArray(events) ||
     !Array.isArray(venuesData) ||
-    !Array.isArray(userProfiles) ||
-    !session
+    !Array.isArray(userProfiles)
   ) {
-    return (
-      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
-        {"Failed to fetch events or venues or practitioners."}
-      </div>
-    );
+    throw new Error("Failed to fetch events or venues or practitioners.")
   }
   const eventsWithVenues = events.map((event) => ({
     ...event,
     location: event.venue_is_listed ? venuesData.filter((venue) => venue.id === event.venue_id)[0].location.String : `${event.venue_name.String}, ${event.venue_location.String}`,
   }));
 
-  const sessionId = session.user.id;
+  const sessionId = session?.user?.id || "";
 
   const filteredUsers = userProfiles.filter((ele) => ele.id !== sessionId);
   return (

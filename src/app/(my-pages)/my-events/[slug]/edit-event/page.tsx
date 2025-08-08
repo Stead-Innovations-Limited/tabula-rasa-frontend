@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import EditEventBar from "@/components/my-events/EditEventBar";
 import EditEventForm from "@/components/my-events/EditEventForm";
 import { Event, Venue } from "@/lib/types";
@@ -15,7 +16,7 @@ export default async function page({
     | { error: boolean; errorData?: string; message?: string };
   const fetchedVenues = await getVenues() as Venue [];
   if ("error" in eventData || !Array.isArray(fetchedVenues)) {
-    return <p>Error loading event data.</p>;
+    throw new Error("There was an error viewing the page.")
   }
   return (
     <>

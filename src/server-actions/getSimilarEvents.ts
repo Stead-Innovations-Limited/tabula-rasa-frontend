@@ -1,38 +1,16 @@
 "use server";
 
-import { Session } from "next-auth";
 import axios from "axios";
-import { tryCatch } from "@/utils/tryCatch";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
+import { tryCatch } from "@/utils/tryCatch"; 
 
-export default async function getEvents() {
+export default async function getEvents(eventId: string) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (
-      !session ||
-      !(session as Session & { sessionToken?: string }).sessionToken
-    ) {
-      throw new Error("Token is required to fetch similar event details.");
-    }
-
-    if (
-      !session ||
-      !(session as Session & { id?: string }).user.id
-    ) {
-      throw new Error("User has to be authenticated to fetch similar event details.");
-    }
-
-    const token = session.sessionToken;
-    const userId = session.user.id;
 
     const response = await tryCatch(async () => {
       return await axios.get(
-        `https://tabula-rasa-backend.up.railway.app/events/similar/${userId}`,
+        `https://tabula-rasa-backend.up.railway.app/events/similar/${eventId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }

@@ -7,11 +7,7 @@ export default async function page() {
    
   const pract = (await getPractServices()) as | ServiceBooking[] | { error: boolean; errorData?: string; message?: string };
   if (!Array.isArray(pract)) {
-    return (
-      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
-        {"Failed to fetch bookings"}
-      </div>
-    );
+    throw new Error("Error fetching data")
   }
 
   return (

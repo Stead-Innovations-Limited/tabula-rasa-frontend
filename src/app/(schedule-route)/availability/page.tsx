@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import AvailabilityContainer from "@/components/availability/AvailabilityContainer";
 import getWorkSchedule from "@/server-actions/getWorkSchedule";
 import { WorkingSchedule } from "@/lib/types";
@@ -8,7 +10,7 @@ export default async function page() {
     | { error: true; errorData: string; message: string };
 
   if (workSchedule !== null && "error" in workSchedule && workSchedule.error && workSchedule.message) {
-    return <p>Failed to fetch work schedule</p>;
+    throw new Error("Error fetching data")
   }
 
   if (workSchedule === null || !("error" in workSchedule)) {
@@ -18,8 +20,6 @@ export default async function page() {
       </>
     );
   }else {
-    return (
-      <p>{"An error occurred while fetching the work schedule."}</p>
-    );
+    throw new Error("Error fetching data")
   }
 }

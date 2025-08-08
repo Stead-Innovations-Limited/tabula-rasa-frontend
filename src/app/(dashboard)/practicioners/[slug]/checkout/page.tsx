@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import CheckoutBar from "@/components/navs/CheckoutBar"
 import PractitionerCheckoutOverview from "@/components/practicioners/PractitionerCheckoutOverview";
 import { User } from "@/lib/types";
@@ -10,7 +11,9 @@ export default async function page({ params }: { params: Promise<{ slug: string 
   // Here we typically fetch the practitioner's data using the practitionerId.
   const userDetails = await getUserById(practitionerId) as User;
   const bookings = await getPractitionersBookings(practitionerId) as string[];
-
+  if("error" in userDetails || "error" in bookings) {
+    throw new Error("Error")
+  }
   return (
     <>
       <CheckoutBar />

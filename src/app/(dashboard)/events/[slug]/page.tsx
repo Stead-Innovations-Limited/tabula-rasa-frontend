@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import EventsOverview from "@/components/events/EventsOverview";
 import getSavedEvent, { Saved } from "@/server-actions/getSavedEvent";
 import getSimilarEvents from "@/server-actions/getSimilarEvents";
@@ -7,7 +8,7 @@ import SimilarEventsContainerWrapper from "@/components/events/SimilarEventsCont
 
 async function page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: eventId } = await params;
-  const events = (await getSimilarEvents()) as Event[]
+  const events = (await getSimilarEvents(eventId)) as Event[]
       | { error: boolean; errorData?: string; message?: string };
     const venuesData = (await getVenues()) as
       | Venue[]
@@ -15,8 +16,8 @@ async function page({ params }: { params: Promise<{ slug: string }> }) {
 
   const mySavedEvent = await getSavedEvent();
   // If there is an error in fetching the saved events or the event data, we return an error message.
-  if (mySavedEvent?.error || !Array.isArray(events) || !Array.isArray(venuesData)) {
-    return <p>Error</p>;
+  if (!Array.isArray(events) || !Array.isArray(venuesData)) {
+    throw new Error("An error occured while displaying the event details.");
   }
   const data = mySavedEvent.data as Saved[];
   // We filter through the saved events to see if this event is saved already.

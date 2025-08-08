@@ -9,22 +9,12 @@ import PracticionersContainerWrapper from "@/components/practicioners/Practition
 
 export default async function page() {
   const userProfiles = (await getPractitioners()) as User[] | { error: boolean; errorData?: string; message?: string };
+  const session = await getServerSession(authOptions);
+
     if(!Array.isArray(userProfiles)) {
-      return (
-        <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
-          {userProfiles.message || "Failed to fetch Practitioners."}
-        </div>
-      );
+      throw new Error("Error displaying page")
     }
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return (
-        <div className='flex justify-center items-center my-10 text-center'>
-          No Practicioner data available.
-        </div>
-      );
-    }
-    const sessionId = session.user.id;
+    const sessionId = session?.user.id || "";
   
     const filteredUsers = userProfiles.filter((ele) => ele.id !== sessionId);
   

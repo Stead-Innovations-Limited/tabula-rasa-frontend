@@ -73,7 +73,7 @@ function Footer() {
         <Separator orientation='horizontal' className='bg-white' />
         <div className='w-full flex justify-between text-sm md:text-xl py-4 text-olive'>
           <div className=''>Copyright 2025, All Rights Reserved</div>
-          <div className=''>Privacy &nbsp; Policy</div>
+          <div className=''>Privacy Policy</div>
         </div>
       </footer>
     </section>

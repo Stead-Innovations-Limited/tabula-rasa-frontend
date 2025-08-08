@@ -20,18 +20,21 @@ export default async function getSavedEvent() {
       !session ||
       !(session as Session & { sessionToken?: string }).sessionToken
     ) {
-      throw new Error("Token is required to fetch saved details.");
+      return {
+        error: false,
+        data: [],
+      };
     }
 
-    if (
-      !session ||
-      !(session as Session & { id?: string }).user.id
-    ) {
-      throw new Error("UserId is required to fetch saved details.");
+    if (!session || !(session as Session & { id?: string }).user.id) {
+      return {
+        error: false,
+        data: [],
+      };
     }
 
     const token = session.sessionToken;
-    const userId = session.user.id;
+    const userId = session?.user.id || "";
 
     const response = await tryCatch(async () => {
       return await axios.get(
@@ -55,12 +58,15 @@ export default async function getSavedEvent() {
     const data = response.data as Saved[];
     const eventData = data.filter((ele: Saved) => ele.user_id === userId);
     if (!eventData) {
-      throw new Error("Event not found.");
+      return {
+        error: false,
+        data: [],
+      };
     }
 
     return {
       error: false,
-      data: eventData
+      data: eventData,
     };
   } catch (error) {
     return {

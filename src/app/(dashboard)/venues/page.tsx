@@ -11,11 +11,7 @@ export default async function page() {
     | { error: boolean; errorData?: string; message?: string };
 
   if (!Array.isArray(venuesData)) {
-    return (
-      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
-        {venuesData.message || "Failed to fetch venues."}
-      </div>
-    );
+  throw new Error("There was an error loading the page.")
   }
   // We filter the venues to only include those that are available
   const venues = venuesData.filter((ele) => ele.is_available.Bool);

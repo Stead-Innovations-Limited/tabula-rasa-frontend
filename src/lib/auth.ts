@@ -37,7 +37,7 @@ export interface User {
   lastName: string;
   profileImage: string
   roles: string;
-  field?: string;
+  field: string;
   token?: string;
   refreshToken?: string;
   tokenExpiration?: number;

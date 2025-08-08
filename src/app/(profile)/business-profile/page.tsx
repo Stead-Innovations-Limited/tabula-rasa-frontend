@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import BusinessBar from "@/components/profile/BusinessBar";
 import Footer from "@/components/reusable-ui/Footer";
 import BusinessProfileForm from "@/components/profile/BusinessProfileForm";
@@ -9,7 +11,7 @@ import { authOptions } from "@/lib/auth";
 async function page() {
   const session = await getServerSession(authOptions);
   if (!session) {
-    return <p>Data fetch failed.</p>;
+    throw new Error("Failed to fetch user details")
   }
   const userData = {
     email: session?.user?.email,
@@ -19,6 +21,7 @@ async function page() {
       session?.user?.profileImage ||
       "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
     roles: session?.user?.roles,
+    field: session?.user?.field || "",
     token: session.sessionToken,
   };
 

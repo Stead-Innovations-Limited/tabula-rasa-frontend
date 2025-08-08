@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import CreateEventBar from "@/components/my-events/CreateEventBar";
 import CreateEventForm from "@/components/my-events/CreateEventForm";
 import { Venue } from "@/lib/types";
@@ -14,21 +15,13 @@ export default async function page({
   if (venueId && venueId !== "undefined") {
     const fetchedVenue = await getVenue(venueId);
     if ("error" in fetchedVenue) {
-      return (
-        <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
-          {fetchedVenue.message || "Failed to fetch venue."}
-        </div>
-      );
+      throw new Error("There was an error viewing the page.")
     }
     venues = [fetchedVenue] as Venue[];
   }else {
     const fetchedVenues = await getVenues();
     if (!Array.isArray(fetchedVenues)) {
-      return (
-        <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
-          {"Failed to fetch venues."}
-        </div>
-      );
+      throw new Error("There was an error viewing this page.")
     }
     venues = fetchedVenues as Venue[];
   }

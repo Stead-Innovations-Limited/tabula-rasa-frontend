@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { columns, Transaction } from '@/components/payments/Columns'
 import PaymentHero from '@/components/payments/PaymentHero'
 import PaymentsTable from '@/components/payments/PaymentsTable'
@@ -6,14 +8,10 @@ import getAccountBalance from '@/server-actions/getAccountBalance'
 import React from 'react'
 
 export default async function page() {
-  const data = await getAccountTransactions() as  Transaction[]
+  const data = await getAccountTransactions() as Transaction[]
   const accountBal = await getAccountBalance() as string;
   if(!Array.isArray(data)){
-    return(
-      <p className="">
-        Error
-      </p>
-    )
+    throw new Error("Error loading page")
   }
 
   return (

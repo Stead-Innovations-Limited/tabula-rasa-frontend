@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Footer from "@/components/reusable-ui/Footer";
 import PersonalBar from "@/components/profile/PersonalBar";
 import PersonalProfileForm from "@/components/profile/PersonalProfileForm";
@@ -10,7 +12,7 @@ import { redirect } from "next/navigation";
 async function page() {
   const session = await getServerSession(authOptions);
   if (!session) {
-    return <p>Data fetch failed.</p>;
+    throw new Error("Failed to fetch page")
   }
   const userData = {
     email: session?.user?.email,
@@ -20,6 +22,7 @@ async function page() {
       session?.user?.profileImage ||
       "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
     roles: session?.user?.roles,
+    field: session?.user?.field || "",
     token: session.sessionToken,
   };
   if (userData.roles !== "Personal Account") redirect("/business-profile");

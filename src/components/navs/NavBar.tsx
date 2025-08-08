@@ -17,6 +17,7 @@ async function NavBar() {
     lastName: session?.user?.lastName,
     profileImage: session?.user?.profileImage || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp",
     roles: session?.user?.roles,
+    field: session?.user?.field || "",
     token: session.sessionToken,
   }: undefined;
 

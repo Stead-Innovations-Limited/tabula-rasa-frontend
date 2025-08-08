@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import SubBookingsBar from "@/components/bookings/SubBookingsBar";
 import AvailabilityContainer from "@/components/my-venues/AvailabilityContainer";
 import { Venue } from "@/lib/types";
@@ -15,7 +16,7 @@ export default async function page({
 
   // If there is an error in fetching the saved venues or the venue data, we return an error message.
   if ("error" in venueData || !venueData.id) {
-    return <p>Error</p>;
+    throw new Error("Error fetching data!")
   }
   const venueSchedule = venueData.working_schedule.RawMessage;
   return (

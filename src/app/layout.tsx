@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import SessionProviders from "@/app/SessionProviders";
 import { HeroUIProviders } from "./HeroUIProviders";
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import ErrorBound from "@/components/error/ErrorBound";
 
 export const metadata: Metadata = {
   title: "Tabula Rasa",
@@ -21,12 +22,14 @@ export default function RootLayout({
       <body
         className={`${alex.variable} ${nunito.variable} ${roboto.variable} antialiased`}
       >
+        <ErrorBound>
         <SessionProviders>
           <HeroUIProviders>
             <NuqsAdapter>{children}</NuqsAdapter>
           </HeroUIProviders>
         </SessionProviders>
         <Toaster />
+        </ErrorBound>
       </body>
     </html>
   );
