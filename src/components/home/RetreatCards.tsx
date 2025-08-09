@@ -7,31 +7,32 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Event } from "@/lib/types";
 
-function RetreatCards() {
+function RetreatCards({ data }: {data: Event}) {
   return (
-    <Card className="pt-0 overflow-clip border-none ">
+    <Card className="pt-0 overflow-clip border-none h-full">
       <CardContent className='relative aspect-[296/327.61] md:aspect-[412/456]'>
         <Image
-          src='/morning-exercise.jpg'
-          alt='A lady performing yoga'
+          src={data.image_links[0]}
+          alt={data.theme.String}
           fill={true}
           className="object-cover object-center"
         />
       </CardContent>
       <CardHeader className="font-nunito">
-        <CardTitle className="text-2xl">Autumn Reflection Retreat</CardTitle>
-        <CardDescription className="text-base">
-          Join the Autumn Reflection Retreat, a nourishing wellness escape
-          designed for women. Embrace the season of change to pause, reflect,
-          and release what no longer serves you, finding sanctuary to quiet your
-          mind and gain clarity.
+        <CardTitle className="text-2xl">{data.name}</CardTitle>
+        <CardDescription className="text-base line-clamp-1">
+          {data.description.String}
         </CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button className="ml-auto bg-olive hover:bg-olive text-white font-roboto text-xl px-12 py-4">
+        <Button asChild className="ml-auto bg-olive hover:bg-olive text-white font-roboto text-xl px-12 py-4">
+          <Link href={`/events/${data.id}`}>
             View
+          </Link>
         </Button>
       </CardFooter>
     </Card>

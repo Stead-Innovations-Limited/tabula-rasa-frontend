@@ -4,8 +4,9 @@ import {
   CarouselContent,
   CarouselItem
 } from "@/components/ui/carousel";
+import { Event } from "@/lib/types";
 
-function RetreatSection() {
+function RetreatSection({ events }: { events: Event[]}) {
   return (
     <section id={"offerings"} className='lg:-mt-[31rem] w-full z-3 relative'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex flex-col gap-8 py-10 md:py-5'>
@@ -15,17 +16,15 @@ function RetreatSection() {
       
         <Carousel className="w-full" opts={{ startIndex: 1 }}>
           <CarouselContent className='-ml-3 md:-ml-5'>
-            {Array.from({ length: 3 }).map((_, index) => (
+            {events.map((event) => (
               <CarouselItem
-                key={index}
+                key={event.id}
                 className='basis-9/10 md:basis-1/2 lg:basis-1/3 pl-3 md:pl-5'
               >
-                <RetreatCards />
+                <RetreatCards data={event} />
               </CarouselItem>
             ))}
           </CarouselContent>
-          {/* <CarouselPrevious /> */}
-          {/* <CarouselNext /> */}
         </Carousel>
       </div>
     </section>

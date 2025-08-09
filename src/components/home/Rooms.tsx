@@ -9,44 +9,21 @@ import {
   CarouselDots,
 } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
+import { Venue } from "@/lib/types";
 
 
-const roomData = [
-  {
-    roomName: "Room 1",
-    location: "Tabula Rasa Resort",
-    image: "/room1.webp",
-  },
-  {
-    roomName: "Room 2",
-    location: "Tabula Rasa Resort",
-    image: "/room2.webp",
-  },
-  {
-    roomName: "Room 3",
-    location: "Tabula Rasa Resort",
-    image: "/room1.webp",
-  },
-];
-
-interface RoomData {
-  roomName: string;
-  location: string;
-  image: string;
-}
-
-function Rooms() {
+ 
+function Rooms({venues}: {venues: Venue[]}) {
   return (
     <section className='w-full'>
       <div className='w-full '>
         <Carousel className='w-full h-full'>
-          <CarouselContent className="w-full h-full aspect-[390/424] lg:aspect-[1512/774] -ml-0">
-            {roomData.map((ele, index) => (
-              <CarouselItem key={index} className="w-full pl-0">
+          {/* lg:aspect-[1512/774] */}
+          <CarouselContent className="w-full h-full aspect-[390/424] lg:aspect-[16/7] -ml-0">
+            {venues.map((venue) => (
+              <CarouselItem key={venue.id} className="w-full pl-0">
                 <RoomSlide
-                  roomName={ele.roomName}
-                  location={ele.location}
-                  image={ele.image}
+                  venue={venue}
                 />
               </CarouselItem>
             ))}
@@ -104,18 +81,18 @@ function Rooms() {
   );
 }
 
-function RoomSlide(props: RoomData) {
+function RoomSlide({ venue}: {venue: Venue}) {
   return (
     <div className='w-full h-full relative'>
       <div className='absolute inset-0 z-1'>
-        <Image src={props.image} alt={props.roomName} fill={true} className="object-cover object-center"/>
+        <Image src={venue.image_links[0]} alt={venue.name} fill={true} className="object-cover object-center"/>
       </div>
-      <div className='relative z-2 w-full p-5 xl:max-w-[1140px] mx-auto'>
+      <div className='relative z-2 w-fit p-5 bg-black/70 backdrop-opacity-80'>
         <div className='flex gap-2'>
-          <Separator orientation='vertical' className="bg-black !h-16 !w-1" />
-          <div className='flex flex-col gap-2 font-roboto'>
-            <h5 className='text-3xl font-medium'>{props.roomName}</h5>
-            <p className='text-base'>{props.location}</p>
+          <Separator orientation='vertical' className="bg-white/80 !h-16 !w-1" />
+          <div className='flex flex-col gap-2 font-roboto text-white/80'>
+            <h5 className='text-3xl font-medium'>{venue.name}</h5>
+            <p className='text-base'>{venue.location.String}</p>
           </div>
         </div>
       </div>
