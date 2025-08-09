@@ -18,9 +18,9 @@ import {
 
 import { cn } from "@/lib/utils";
 
-function HomeMenu({userData}: {userData: boolean}) {
+function HomeMenu({ userData }: { userData: boolean }) {
   const [open, setOpen] = useState<boolean>(false);
-  
+
   return (
     <>
       <Sheet open={open} onOpenChange={setOpen}>
@@ -34,51 +34,55 @@ function HomeMenu({userData}: {userData: boolean}) {
             <RxHamburgerMenu className='text-2xl !size-6' />
           </Button>
         </SheetTrigger>
-        <SheetContent className="flex flex-col justify-between">
+        <SheetContent className='flex flex-col justify-between'>
           <SheetHeader className='sr-only'>
             <SheetTitle>Mobile Sidebar</SheetTitle>
             <SheetDescription>
               Mobile Sidebar for on page links
             </SheetDescription>
           </SheetHeader>
-          <nav className='mt-20 flex flex-col gap-y-2 text-[#333] font-worksans font-medium text-base'>
-            <Link
-              href={"/#about"}
-              className={cn(
-                "px-6 py-3"
-              )}
-              onClick={() => setOpen(false)}
-            >
-              About
-            </Link>
-            <Link
-              href={"/#offerings"}
-              className={cn(
-                "px-6 py-3"
-              )}
-              onClick={() => setOpen(false)}
-            >
-              Offerings
-            </Link>
-            <Link
-              href={"/contact"}
-              className={cn(
-                "px-6 py-3"
-              )}
-              onClick={() => setOpen(false)}
-            >
-              Contact
-            </Link>
+          <nav className='mt-20 flex flex-col gap-y-2'>
+            <p className='px-6 py-3' onClick={() => setOpen(false)}>
+              <Link
+                href={"/#about"}
+                className={cn(
+                  "text-[#333] font-worksans font-medium text-base"
+                )}
+              >
+                About
+              </Link>
+            </p>
+            <p className='px-6 py-3' onClick={() => setOpen(false)}>
+              <Link
+                href={"/#offerings"}
+                className={cn(
+                  "text-[#333] font-worksans font-medium text-base"
+                )}
+              >
+                Offerings
+              </Link>
+            </p>
+            <p className='px-6 py-3' onClick={() => setOpen(false)}>
+              <Link
+                href={"/contact"}
+                className={cn(
+                  "text-[#333] font-worksans font-medium text-base"
+                )}
+              >
+                Contact
+              </Link>
+            </p>
           </nav>
           <div className=''>
             <div className='p-6'>
               {userData ? (
-                <Button className='w-full bg-red-500/20 hover:bg-red-500/30'
-                onClick={async () => {
-                  setOpen(false)
-                  // Handle logout logic here
-                  await signOut({ callbackUrl: "/" }); 
-                }}
+                <Button
+                  className='w-full bg-red-500/20 hover:bg-red-500/30'
+                  onClick={async () => {
+                    setOpen(false);
+                    // Handle logout logic here
+                    await signOut({ callbackUrl: "/" });
+                  }}
                 >
                   <FiLogOut className='text-red-500' />
                   <span className='font-dm_sans font-normal text-base text-red-500'>
@@ -86,7 +90,13 @@ function HomeMenu({userData}: {userData: boolean}) {
                   </span>
                 </Button>
               ) : (
-                <Link href="/login" className={cn("w-full block !bg-olive !hover:bg-olive text-xl text-white py-4 px-10", buttonVariants())}>
+                <Link
+                  href='/login'
+                  className={cn(
+                    "w-full block !bg-olive !hover:bg-olive text-xl text-white py-4 px-10",
+                    buttonVariants()
+                  )}
+                >
                   Log In
                 </Link>
               )}
