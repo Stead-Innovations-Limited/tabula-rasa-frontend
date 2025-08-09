@@ -34,35 +34,40 @@ export default function FullBusinessNavBarSearch() {
         <h1 className='font-alex text-2xl sm:text-3xl lg:text-5xl'>
           <Link href={"/dashboard"}>Tabula Rasa</Link>
         </h1>
-        {userData && <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl'>
-          {userData && userData.roles !== "Personal Account" && (
-            <div className=''>
-              <Popover>
+        <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl'>
+          {userData && (
+            <div className='contents'>
+              {userData.roles !== "Personal Account" && <Popover>
                 <PopoverTrigger asChild>
                   <HiPlus className='size-5 md:size-6' />
                 </PopoverTrigger>
                 <PopoverContent>
                   <MyPagesDropMenu />
                 </PopoverContent>
-              </Popover>
+              </Popover>}
+
+              <Link href='/saved' className={cn("block")}>
+                {pathname === "/saved" ? (
+                  <FaHeart className='size-5 md:size-6' />
+                ) : (
+                  <SlHeart className='size-5 md:size-6' />
+                )}
+              </Link>
+              <Link href='notifications' className=''>
+                {pathname === "/notifications" ? (
+                  <GoBellFill className='size-5 md:size-6' />
+                ) : (
+                  <LuBell className='size-5 md:size-6' />
+                )}
+              </Link>
             </div>
           )}
-          <Link href='/saved' className={cn("block")}>
-            {pathname === "/saved" ? (
-              <FaHeart className='size-5 md:size-6' />
-            ) : (
-              <SlHeart className='size-5 md:size-6' />
-            )}
-          </Link>
-          <Link href='notifications' className=''>
-            {pathname === "/notifications" ? (
-              <GoBellFill className='size-5 md:size-6' />
-            ) : (
-              <LuBell className='size-5 md:size-6' />
-            )}
-          </Link>
-          {isMobile ? <SheetMenu userData={userData} />:<PopOverMenu userData={userData} />}
-        </nav>}
+          {isMobile ? (
+            <SheetMenu userData={userData} />
+          ) : (
+            <PopOverMenu userData={userData} />
+          )}
+        </nav>
       </header>
     </div>
   );

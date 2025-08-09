@@ -27,7 +27,10 @@ const data: Registrations[] = [
   },
 ];
 
-export default function page() {
+export default async function page({ params }: { params: Promise<{ slug: string }> }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { slug: eventId } = await params;
+  
   return (
     <>
       <RegistrationsBar />

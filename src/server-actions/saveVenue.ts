@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation';
 import { Session } from "next-auth";
 import axios from "axios";
 import { tryCatch } from "@/utils/tryCatch";
@@ -14,17 +15,18 @@ export default async function saveVenue(venueId: string) {
 
     const session = await getServerSession(authOptions);
 
+    // We detect if the request is an authenticated request, if it is not, we redirect to "/login"
     if (
       !session ||
       !(session as Session & { sessionToken?: string }).sessionToken
     ) {
-      throw new Error("Token is required to save a venue.");
+      redirect("/login");
     }
     if (
       !session ||
       !(session as Session & { id?: string }).user.id
     ) {
-      throw new Error("User Id is needed to save a venue.");
+      redirect("/login");
     }
 
     const token = session.sessionToken;

@@ -1,5 +1,7 @@
 "use client";
 import { startTransition, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FaHeart, SlHeart } from "@/components/icons";
 import saveVenue from "@/server-actions/saveVenue";
@@ -29,6 +31,9 @@ export default function SavedVenueBtn({
   venueId: string;
   isSaved: boolean;
 }) {
+  const router = useRouter()
+  const { data: session } = useSession();
+  const userData = session?.user;
   // Using useRef to prevent multiple clicks while loading
   const loadingRef = useRef(false);
   const [saved, setSaved] = useState(isSaved);
@@ -56,7 +61,11 @@ export default function SavedVenueBtn({
         // Save venue
         const res = await saveVenue(venueId);
         if (res.error) {
-          toast.error(res.message, errorClass);
+          // We check if the user is logged in
+          // if not login, we redirect to the login page
+          if (!userData) {
+            router.push("/login")
+          }else toast.error(res.message, errorClass);
         } else {
           toast.success(res.message, successClass);
           // Toggle setSaved State

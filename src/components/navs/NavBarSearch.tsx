@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useQueryState } from 'nuqs';
+import { useQueryState } from "nuqs";
 import {
   CiSearch,
   SlHeart,
@@ -20,8 +20,6 @@ import SheetMenu from "../Menus/SheetMenu";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import SortMenu from "../Menus/SortMenu";
 
-
-
 // NOTE!!
 // This component is only used on the dashboard page.
 // It is not used on the home page or any other page.
@@ -33,8 +31,7 @@ export default function FullUserNavBarSearch() {
   const userData = session?.user;
   const isMobile = useIsMobile();
 
-  const [searchVal, setSearchVal] = useQueryState('search');
-
+  const [searchVal, setSearchVal] = useQueryState("search");
 
   return (
     <div className='w-full bg-olive'>
@@ -52,38 +49,44 @@ export default function FullUserNavBarSearch() {
             onChange={(e) => setSearchVal(e.target.value)}
             className='absolute inset-0 bg-white text-olive placeholder:text-olive placeholder:font-normal font-roboto text-lg rounded-[0.625rem] md:rounded-full pl-10 pr-8 md:pr-6 py-2 caret-olive'
           />
-          <SortMenu className="md:hidden absolute right-2 top-1/2 -translate-y-1/2" />
+          <SortMenu className='md:hidden absolute right-2 top-1/2 -translate-y-1/2' />
         </div>
 
-        {userData && <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl order-2 md:order-3'>
-          {userData && userData.roles !== "Personal Account" && (
-            <div className=''>
-              <Popover>
+        <nav className='flex items-center gap-3 md:gap-8 font-roboto font-normal text-2xl order-2 md:order-3'>
+          {userData && (
+            <div className='contents'>
+              {userData.roles !== "Personal Account" && <Popover>
                 <PopoverTrigger asChild>
                   <HiPlus className='size-5 md:size-6' />
                 </PopoverTrigger>
                 <PopoverContent>
                   <MyPagesDropMenu />
                 </PopoverContent>
-              </Popover>
+              </Popover>}
+
+              <Link href='/saved' className={cn("block")}>
+                {pathname === "/saved" ? (
+                  <FaHeart className='size-5 md:size-6' />
+                ) : (
+                  <SlHeart className='size-5 md:size-6' />
+                )}
+              </Link>
+              <Link href='/notifications' className=''>
+                {pathname === "/notifications" ? (
+                  <GoBellFill className='size-5 md:size-6' />
+                ) : (
+                  <LuBell className='size-5 md:size-6' />
+                )}
+              </Link>
             </div>
           )}
-          <Link href='/saved' className={cn("block")}>
-            {pathname === "/saved" ? (
-              <FaHeart className='size-5 md:size-6' />
-            ) : (
-              <SlHeart className='size-5 md:size-6' />
-            )}
-          </Link>
-          <Link href='/notifications' className=''>
-            {pathname === "/notifications" ? (
-              <GoBellFill className='size-5 md:size-6' />
-            ) : (
-              <LuBell className='size-5 md:size-6' />
-            )}
-          </Link>
-          {isMobile ? <SheetMenu userData={userData} />:<PopOverMenu userData={userData} />}
-        </nav>}
+          {/* Based on user role, show appropriate dashboard menu, even for the unauthenticated */}
+          {isMobile ? (
+            <SheetMenu userData={userData} />
+          ) : (
+            <PopOverMenu userData={userData} />
+          )}
+        </nav>
       </header>
     </div>
   );

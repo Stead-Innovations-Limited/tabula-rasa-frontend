@@ -13,14 +13,15 @@ function PopOverMenu({userData}: { userData: User | undefined }) {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger>
         <AvatarComponent
-          imgUrl={userData?.profileImage || undefined}
+          imgUrl={userData?.profileImage || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp"}
           firstname={userData?.firstName || ""}
           lastname={userData?.lastName || ""}
         />
       </PopoverTrigger>
       <PopoverContent>
-        {userData &&
-          (userData.roles === "Personal Account" ? (
+        {/* Based on user role, show appropriate dashboard menu, even for the unauthenticated */}
+        {
+          ( !userData || userData?.roles === "Personal Account" ? (
             <UserDashboardMenu userData={userData} close={() => setIsOpen(false)} />
           ) : (
             <BusinessDashboardMenu userData={userData} close={() => setIsOpen(false)} />
