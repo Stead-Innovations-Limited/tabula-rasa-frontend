@@ -47,6 +47,7 @@ function HomeMenu({userData}: {userData: boolean}) {
               className={cn(
                 "px-6 py-3"
               )}
+              onClick={() => setOpen(false)}
             >
               About
             </Link>
@@ -55,14 +56,16 @@ function HomeMenu({userData}: {userData: boolean}) {
               className={cn(
                 "px-6 py-3"
               )}
+              onClick={() => setOpen(false)}
             >
               Offerings
             </Link>
             <Link
-              href={"/"}
+              href={"/contact"}
               className={cn(
                 "px-6 py-3"
               )}
+              onClick={() => setOpen(false)}
             >
               Contact
             </Link>
@@ -72,6 +75,7 @@ function HomeMenu({userData}: {userData: boolean}) {
               {userData ? (
                 <Button className='w-full bg-red-500/20 hover:bg-red-500/30'
                 onClick={async () => {
+                  setOpen(false)
                   // Handle logout logic here
                   await signOut({ callbackUrl: "/" }); 
                 }}
