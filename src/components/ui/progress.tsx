@@ -5,11 +5,16 @@ import * as ProgressPrimitive from "@radix-ui/react-progress"
 
 import { cn } from "@/lib/utils"
 
+interface ProgressProps extends React.ComponentProps<typeof ProgressPrimitive.Root> {
+  base?: number; // or whatever type base should be
+}
+
 function Progress({
   className,
   value,
+  base,
   ...props
-}: React.ComponentProps<typeof ProgressPrimitive.Root>) {
+}: ProgressProps) {
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
@@ -22,10 +27,10 @@ function Progress({
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
         className="bg-lightgreen h-full w-full flex-1 transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        style={{ transform: `translateX(-${100 - ((value! * 100)/base! || 0)}%)` }}
       />
       <div className="absolute inset-0 flex items-center justify-center text-xs text-olive">
-        {value!/2}/50
+        {value!}/{base!}
       </div>
     </ProgressPrimitive.Root>
   )

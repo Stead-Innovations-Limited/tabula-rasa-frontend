@@ -16,7 +16,7 @@ import { Button } from "../ui/button";
 import eventService from "@/server-actions/eventService";
 import { toast } from "sonner";
 
-function EventCheckoutOverview({ eventData }: { eventData: Event }) {
+function EventCheckoutOverview({ eventData, ticketsLeft }: { eventData: Event, ticketsLeft: number   }) {
   const router = useRouter();
   const price = eventData.price;
   const [quantity, setQuantity] = useState<string>("1");
@@ -80,7 +80,7 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
                       </SelectTrigger>
                       <SelectContent>
                         {Array.from(
-                          { length: eventData.total_particpant.Int32 },
+                          { length: ticketsLeft },
                           (_, i) => (
                             <SelectItem key={i} value={`${i + 1}`}>
                               {i + 1}
@@ -148,6 +148,7 @@ function EventCheckoutOverview({ eventData }: { eventData: Event }) {
 
               <div className='w-full flex justify-center mt-10'>
                 <Button
+                  disabled={ticketsLeft <= 0}
                   className='w-full md:w-3/4 py-4 bg-olive text-white rounded-xl mx-auto hover:bg-olive/80'
                   onClick={async () => {
                     const response = await eventService(
