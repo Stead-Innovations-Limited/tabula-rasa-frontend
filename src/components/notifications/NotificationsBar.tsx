@@ -1,4 +1,18 @@
+"use client";
+
+import useNotificationStatus from "@/hooks/useNotificationStatus";
+import { useEffect } from "react";
+
 export default function NotificationsBar() {
+  const notificationStatus = useNotificationStatus((state) => state.notificationStatus);
+  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
+
+  useEffect(() => {
+    if(notificationStatus) {
+      updateNotificationStatus(false);
+    }
+  }, [notificationStatus, updateNotificationStatus])
+
   return (
     <section className='w-full bg-linear-to-r from-olivewhite to-olive'>
       <div className='w-full xl:max-w-[1140px] mx-auto p-5'>

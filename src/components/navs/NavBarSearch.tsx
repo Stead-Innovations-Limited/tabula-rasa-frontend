@@ -19,6 +19,7 @@ import PopOverMenu from "../Menus/PopOverMenu";
 import SheetMenu from "../Menus/SheetMenu";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import SortMenu from "../Menus/SortMenu";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 // NOTE!!
 // This component is only used on the dashboard page.
@@ -30,6 +31,7 @@ export default function FullUserNavBarSearch() {
   const { data: session } = useSession();
   const userData = session?.user;
   const isMobile = useIsMobile();
+  const notificationStatus = useNotificationStatus((state) => state.notificationStatus);
 
   const [searchVal, setSearchVal] = useQueryState("search");
 
@@ -71,12 +73,13 @@ export default function FullUserNavBarSearch() {
                   <SlHeart className='size-5 md:size-6' />
                 )}
               </Link>
-              <Link href='/notifications' className=''>
+              <Link href='/notifications' className='relative'>
                 {pathname === "/notifications" ? (
                   <GoBellFill className='size-5 md:size-6' />
                 ) : (
                   <LuBell className='size-5 md:size-6' />
                 )}
+                {notificationStatus && <span className="bg-red-700 inline-block size-2 md:size-2.5 absolute top-0 right-0 rounded-full"/>}
               </Link>
             </div>
           )}

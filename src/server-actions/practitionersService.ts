@@ -44,7 +44,6 @@ export default async function practitionersService(
         }
       );
     });
-    console.log(response)
     if (response.isError) {
 
       throw new Error(

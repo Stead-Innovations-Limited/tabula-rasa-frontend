@@ -33,9 +33,11 @@ import { AiOutlineLoading3Quarters } from "@/components/icons";
 import { listVenueSchema } from "@/lib/clientDefinitions";
 import listVenueAction from "@/server-actions/listVenueAction";
 import handleFileUploads from "@/server-actions/handleFileUploads";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 export default function ListVenueForm() {
   const router = useRouter();
+  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
   const [state, action, isPending] = useActionState(listVenueAction, undefined);
 
   useEffect(() => {
@@ -58,9 +60,10 @@ export default function ListVenueForm() {
         },
       });
 
+       updateNotificationStatus(true);
       router.push("/dashboard");
     }
-  }, [state, router]);
+  }, [state, router, updateNotificationStatus]);
 
   const form = useForm<z.infer<typeof listVenueSchema>>({
     resolver: zodResolver(listVenueSchema),

@@ -51,6 +51,7 @@ import handleFileUploads from "@/server-actions/handleFileUploads";
 import { useRouter } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Check, ChevronsUpDown } from "lucide-react";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 // This function safely parses a time string, returning a default time if the input is invalid
 // This is useful to ensure that the time input is always valid, even if the user does
@@ -75,6 +76,7 @@ export default function CreateEventForm({
   venues: Venue[];
 }) {
   const router = useRouter();
+  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
   const [state, action, isPending] = useActionState(
     createEventAction,
     undefined
@@ -82,7 +84,10 @@ export default function CreateEventForm({
 
   const venues = venuesData;
 
-  useToast(state, undefined, () => router.back());
+  useToast(state, undefined, () => {
+    router.back()
+    updateNotificationStatus(true);
+  });
 
   // Here i use the useForm hook to create a form with the createEventSchema
   // This schema defines the structure and validation rules for the form data

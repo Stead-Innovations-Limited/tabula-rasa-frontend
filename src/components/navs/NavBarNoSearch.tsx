@@ -21,12 +21,14 @@ import { useSession } from "next-auth/react";
 import PopOverMenu from "../Menus/PopOverMenu";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import SheetMenu from "../Menus/SheetMenu";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 export default function FullBusinessNavBarSearch() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const userData = session?.user;
   const isMobile = useIsMobile();
+  const notificationStatus = useNotificationStatus((state) => state.notificationStatus);
 
   return (
     <div className='w-full bg-olive'>
@@ -53,12 +55,13 @@ export default function FullBusinessNavBarSearch() {
                   <SlHeart className='size-5 md:size-6' />
                 )}
               </Link>
-              <Link href='notifications' className=''>
+              <Link href='notifications' className='relative'>
                 {pathname === "/notifications" ? (
                   <GoBellFill className='size-5 md:size-6' />
                 ) : (
                   <LuBell className='size-5 md:size-6' />
                 )}
+                {notificationStatus && <span className="bg-red-700 inline-block size-2 md:size-2.5 absolute top-0 right-0 rounded-full"/>}
               </Link>
             </div>
           )}

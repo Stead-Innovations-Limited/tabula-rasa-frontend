@@ -118,7 +118,6 @@ export default async function editEventAction(
     });
 
     if (response.isError) {
-      console.log(response.errors, data);
       throw new Error(
         typeof response.errors === "string"
           ? response.errors

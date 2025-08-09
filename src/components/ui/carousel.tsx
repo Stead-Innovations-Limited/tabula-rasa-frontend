@@ -9,6 +9,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -307,6 +308,7 @@ const CarouselNavigation = ({
   pracId: string;
   amount: number;
 }) => {
+  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
   const router = useRouter()
   const { api } = useCarousel();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -400,6 +402,7 @@ const CarouselNavigation = ({
                     }
                   // If the payment was successful, redirect to the payment successful page
                   } else {
+                    updateNotificationStatus(true);
                     router.push(`/practicioners/${pracId}/payment-successful`);
                   }
                 } else api?.scrollTo(currentSlide + 1);

@@ -51,6 +51,7 @@ import handleFileUploads from "@/server-actions/handleFileUploads";
 import { useRouter } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Check, ChevronsUpDown } from "lucide-react";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 // This function safely parses a time string, returning a default time if the input is invalid
 // This is useful to ensure that the time input is always valid, even if the user does
@@ -73,9 +74,11 @@ export default function EditEventForm({
   event: Event;
 }) {
   const router = useRouter();
+  const updateNotificationStatus = useNotificationStatus(
+    (state) => state.updateNotificationStatus
+  );
   const [state, action, isPending] = useActionState(editEventAction, undefined);
-  console.log(event, "event in edit event form", venues, "venues in edit event form");
-  console.log( venues.find((v) => v.id === event.venue_id!, "Hungry i am, but make it for the right thing o lord"))
+  
   const form = useForm<z.infer<typeof createEventSchema>>({
     resolver: zodResolver(createEventSchema),
     defaultValues: {
@@ -88,7 +91,9 @@ export default function EditEventForm({
       useOurVenue: event.venue_is_listed ? "yes" : "no",
       venueName: event.venue_is_listed ? "" : event.venue_name.String,
       venueLocation: event.venue_is_listed ? "" : event.venue_location.String,
-      location: event.venue_is_listed ? venues.find((v) => v.id === event.venue_id!)?.name : "",
+      location: event.venue_is_listed
+        ? venues.find((v) => v.id === event.venue_id!)?.name
+        : "",
       startDate: new Date(event.start_date.Time),
       endDate: new Date(event.end_date.Time),
       startTime: event.start_time.Time.split("T")[1].replace("Z", ""),
@@ -98,7 +103,10 @@ export default function EditEventForm({
     },
   });
 
-  useToast(state, undefined, () => router.back());
+  useToast(state, undefined, () => {
+    updateNotificationStatus(true);
+    router.back();
+  });
 
   // Here i use the watch function to get the current value of the location and maxParticipantsNo fields
   // This allows me to react to changes in these fields and perform validations or updates accordingly
@@ -376,12 +384,12 @@ export default function EditEventForm({
                                 // form.setValue("location", "");
                                 form.setValue("venueName", "");
                                 form.setValue("venueLocation", "");
-                              }else {
+                              } else {
                                 // form.setValue("venueName", "");
                                 // form.setValue("venueLocation", "");
                                 form.setValue("location", "");
                               }
-                              return field.onChange(e)
+                              return field.onChange(e);
                             }}
                             defaultValue={field.value}
                             className='flex gap-5'

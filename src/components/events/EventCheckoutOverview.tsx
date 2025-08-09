@@ -15,9 +15,11 @@ import {
 import { Button } from "../ui/button";
 import eventService from "@/server-actions/eventService";
 import { toast } from "sonner";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 function EventCheckoutOverview({ eventData, ticketsLeft }: { eventData: Event, ticketsLeft: number   }) {
   const router = useRouter();
+  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
   const price = eventData.price;
   const [quantity, setQuantity] = useState<string>("1");
   return (
@@ -173,6 +175,7 @@ function EventCheckoutOverview({ eventData, ticketsLeft }: { eventData: Event, t
                         });
                       }
                     } else {
+                      updateNotificationStatus(true);
                       router.push(`/events/${eventData.id}/payment-successful`);
                     }
                   }}

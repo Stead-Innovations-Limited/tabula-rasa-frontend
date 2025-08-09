@@ -34,9 +34,11 @@ import { listVenueSchema } from "@/lib/clientDefinitions";
 import handleFileUploads from "@/server-actions/handleFileUploads";
 import { Venue } from "@/lib/types";
 import editVenueAction from "@/server-actions/editVenueAction";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 export default function EditVenueForm({ venueData }: { venueData: Venue }) {
   const router = useRouter();
+  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
   const [state, action, isPending] = useActionState(editVenueAction, undefined);
 
   useEffect(() => {
@@ -58,10 +60,10 @@ export default function EditVenueForm({ venueData }: { venueData: Venue }) {
           description: "!text-green-700",
         },
       });
-
+      updateNotificationStatus(true);
       router.back();
     }
-  }, [state, router]);
+  }, [state, router, updateNotificationStatus]);
 
   const form = useForm<z.infer<typeof listVenueSchema>>({
     resolver: zodResolver(listVenueSchema),
