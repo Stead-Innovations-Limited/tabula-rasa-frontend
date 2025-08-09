@@ -219,7 +219,7 @@ export default function BusinessProfileForm({
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder='Bisi'
+                        placeholder='John'
                         type='text'
                         {...field}
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
@@ -239,7 +239,7 @@ export default function BusinessProfileForm({
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder='Adebayo'
+                        placeholder='Doe'
                         type='text'
                         {...field}
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
@@ -321,7 +321,7 @@ export default function BusinessProfileForm({
                       <FormControl>
                         <Input
                           type='text'
-                          placeholder='e.g, Surulere, Lagos, Nigeria'
+                          placeholder='e.g, New York'
                           {...field}
                           className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                         />
@@ -400,7 +400,7 @@ export default function BusinessProfileForm({
                     <FormControl>
                       <Input
                         type='text'
-                        placeholder='$ 400.00/hr'
+                        placeholder='$400.00/hr'
                         {...field}
                         className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                       />
