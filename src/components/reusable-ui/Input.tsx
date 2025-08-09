@@ -146,7 +146,7 @@ function SearchInput({
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <div className='relative'>
+    <div className='relative h-fit'>
       <input
         type={type}
         placeholder='Search...'

@@ -33,6 +33,14 @@ export interface WorkingSchedule {
   };
 }
 
+export interface ParticipantPurchases {
+  purchase_id: string;
+  participant_name: string;
+  quantity: number;
+  amount_paid: string;
+  purchase_date: string; // could be Date if you plan to parse it
+}
+
 // ========== EVENT INTERFACE ==========
 
 export interface Event {
@@ -56,6 +64,13 @@ export interface Event {
   status: "pending" | "confirmed" | "declined" | string;
   created_at: string;
   price: number;
+}
+
+export interface EventRegistration {
+  event: Event;
+  total_participants: number;
+  registered_participants: number;
+  participants: ParticipantPurchases[] | null;
 }
 
 // ========== VENUE INTERFACE ==========

@@ -2,39 +2,34 @@ import { columns, Registrations } from "@/components/registrations/columns";
 
 import RegistrationsBar from "@/components/registrations/RegistrationsBar";
 import RegistrationsTable from "@/components/registrations/RegistrationsTable";
+import getEventRegistrations from "@/server-actions/getEventRegistrations";
+import { EventRegistration} from "@/lib/types";
 
-const data: Registrations[] = [
-  {
-    sn: 1,
-    name: "John Doe",
-    quantity: 2,
-    amount: 50,
-    transactionId: "TX123456789",
-  },
-  {
-    sn: 2,
-    name: "Jane Smith",
-    quantity: 1,
-    amount: 30,
-    transactionId: "TX987654321",
-  },
-  {
-    sn: 3,
-    name: "Alice Johnson",
-    quantity: 3,
-    amount: 75,
-    transactionId: "TX1122334455",
-  },
-];
 
 export default async function page({ params }: { params: Promise<{ slug: string }> }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { slug: eventId } = await params;
-  
+  const registrationData = await getEventRegistrations(eventId) as EventRegistration[] | { error: boolean; errorData?: string; message?: string };
+  // If there is an error in fetching the registrations, we throw an error.
+  if ("error" in registrationData || !Array.isArray(registrationData)) {
+    throw new Error("An error occurred while fetching the registrations.");
+  }
+
+  // We get the event title and description
+  const eventTitle = registrationData[0].event.name;
+  const eventDescription = registrationData[0].event.description.String;
+  // We map the registration data to the format required by the table.
+  const data: Registrations[] = registrationData[0]?.participants ? registrationData[0].participants.map((registration, index) => ({
+    sn: index + 1,
+    name: registration.participant_name,
+    quantity: registration.quantity,
+    amount: parseFloat(registration.amount_paid) / 100,
+    transactionId: registration.purchase_id,
+  })) : [];
+
   return (
     <>
       <RegistrationsBar />
-      <RegistrationsTable columns={columns} data={data} />
+      <RegistrationsTable columns={columns} data={data} eventTitle={eventTitle} eventDescription={eventDescription} />
     </>
   );
 }

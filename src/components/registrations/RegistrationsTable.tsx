@@ -42,10 +42,14 @@ function multiColumnFilter<TData>(
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  eventTitle: string;
+  eventDescription: string;
 }
 export default function RegistrationsTable<TData, TValue>({
   columns,
   data,
+  eventTitle,
+  eventDescription,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState("");
   const table = useReactTable({
@@ -63,19 +67,19 @@ export default function RegistrationsTable<TData, TValue>({
     <section className='w-full'>
       <div className='w-full xl:max-w-[1140px] mx-auto p-5 lg:py-14 '>
         <div className='w-full flex flex-col gap-4 lg:gap-0 md:flex-row md:justify-between p-5 lg:py-14'>
-          <div className='flex gap-1 items-center font-roboto text-olive'>
-            <h2 className='text-3xl md:text-4xl font-semibold inline-block'>
-              Serene Saturday:
+          <div className='flex flex-col md:flex-row gap-2 md:gap-1 items-center font-roboto text-olive'>
+            <h2 className='text-2xl md:text-3xl font-semibold inline-block'>
+              {eventTitle}:
             </h2>
-            <p className='text-2xl md:text-3xl md:max-w-80 lg:max-w-160 inline-block'>
-              Yoga & Sound Bath Retreat
+            <p className='text-xl md:text-2xl md:max-w-80 lg:max-w-160 inline-block'>
+              {eventDescription}
             </p>
           </div>
           <SearchInput
             placeholder='Search'
             value={table.getState().globalFilter ?? ""}
             onChange={(e) => table.setGlobalFilter(String(e.target.value))}
-            className='max-w-sm'
+            className='max-w-sm !h-9'
           />
         </div>
         <div className='w-full shadow-lg p-5 md:p-10 rounded-2xl'>
