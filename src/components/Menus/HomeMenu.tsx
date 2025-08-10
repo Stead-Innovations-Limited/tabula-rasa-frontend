@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { signOut } from "next-auth/react";
 
@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 
 function HomeMenu({ userData }: { userData: boolean }) {
   const [open, setOpen] = useState<boolean>(false);
-  // const router = useRouter();
+  const router = useRouter();
 
   return (
     <>
@@ -47,25 +47,19 @@ function HomeMenu({ userData }: { userData: boolean }) {
             <Link href={"/#about"} className={cn("px-6 py-3")}>
               About
             </Link>
-            <Link
-              href={"/#offerings"}
+            <p
               onClick={(e) => {
                 e.preventDefault();
                 const targetId = "about";
-                const el = document.getElementById(targetId);
                 setOpen(false)
 
-                if (el) {
-                  el.scrollIntoView({ behavior: "smooth" });
-                } else {
-                  // fallback if you're on a different page
-                  window.location.href = `/#${targetId}`;
-                }
+                router.push(`/#${targetId}`);
+                
               }}
               className={cn("px-6 py-3")}
             >
               Offerings
-            </Link>
+            </p>
             <Link href={"/contact"} className={cn("px-6 py-3")}>
               Contact
             </Link>
