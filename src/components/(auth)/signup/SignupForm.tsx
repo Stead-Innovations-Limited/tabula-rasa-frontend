@@ -103,7 +103,7 @@ export default function SignupForm() {
                   <FormLabel className='text-olive'>First Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='Bisi'
+                      placeholder='John'
                       type='text'
                       {...field}
                       className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
@@ -121,7 +121,7 @@ export default function SignupForm() {
                   <FormLabel className='text-olive'>Last Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='Adebayo'
+                      placeholder='Doe'
                       type='text'
                       {...field}
                       className='py-2 border-1 border-lightolive focus:border-olive focus:border-1 focus:outline-none'
