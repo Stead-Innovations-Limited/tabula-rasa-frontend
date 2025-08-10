@@ -27,7 +27,6 @@ import {
 import {
   AiOutlineLoading3Quarters,
   FcGoogle,
-  FaApple,
 } from "@/components/icons";
 
 import signupAction from "@/server-actions/signupAction";
@@ -211,14 +210,16 @@ export default function SignupForm() {
 
           <hr className='w-full border-olive' />
 
-          <div className='flex items-center justify-center gap-2'>
-            <Button className='bg-white hover:bg-white/80 !px-8 py-6 shadow-sm shadow-olive/10'>
-              <FcGoogle className='size-6' />
-            </Button>
-            <Button className='bg-white hover:bg-white/80 !px-8 py-6 shadow-sm shadow-olive/10'>
-              <FaApple className='size-6 text-black' />
-            </Button>
-          </div>
+          <div className='w-full flex items-center justify-center gap-2'>
+              <Button
+                className='w-full bg-white hover:bg-olive transition-colors duration-150 !px-8 py-6 shadow-sm shadow-olive/10'
+                asChild
+              >
+                <Link href='https://tabula-rasa-backend.up.railway.app/auth/google/login'>
+                  <FcGoogle className='size-6' />
+                </Link>
+              </Button>
+            </div>
         </div>
       </div>
     </div>
