@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+// import { useRouter } from "next/navigation";
 
 import { signOut } from "next-auth/react";
 
@@ -18,9 +19,10 @@ import {
 
 import { cn } from "@/lib/utils";
 
-function HomeMenu({userData}: {userData: boolean}) {
+function HomeMenu({ userData }: { userData: boolean }) {
   const [open, setOpen] = useState<boolean>(false);
-  
+  // const router = useRouter();
+
   return (
     <>
       <Sheet open={open} onOpenChange={setOpen}>
@@ -34,7 +36,7 @@ function HomeMenu({userData}: {userData: boolean}) {
             <RxHamburgerMenu className='text-2xl !size-6' />
           </Button>
         </SheetTrigger>
-        <SheetContent className="flex flex-col justify-between">
+        <SheetContent className='flex flex-col justify-between'>
           <SheetHeader className='sr-only'>
             <SheetTitle>Mobile Sidebar</SheetTitle>
             <SheetDescription>
@@ -42,39 +44,41 @@ function HomeMenu({userData}: {userData: boolean}) {
             </SheetDescription>
           </SheetHeader>
           <nav className='mt-20 flex flex-col gap-y-2 text-[#333] font-worksans font-medium text-base'>
-            <Link
-              href={"/#about"}
-              className={cn(
-                "px-6 py-3"
-              )}
-            >
+            <Link href={"/#about"} className={cn("px-6 py-3")}>
               About
             </Link>
             <Link
               href={"/#offerings"}
-              className={cn(
-                "px-6 py-3"
-              )}
+              onClick={(e) => {
+                e.preventDefault();
+                const targetId = "about";
+                const el = document.getElementById(targetId);
+                setOpen(false)
+
+                if (el) {
+                  el.scrollIntoView({ behavior: "smooth" });
+                } else {
+                  // fallback if you're on a different page
+                  window.location.href = `/#${targetId}`;
+                }
+              }}
+              className={cn("px-6 py-3")}
             >
               Offerings
             </Link>
-            <Link
-              href={"/contact"}
-              className={cn(
-                "px-6 py-3"
-              )}
-            >
+            <Link href={"/contact"} className={cn("px-6 py-3")}>
               Contact
             </Link>
           </nav>
           <div className=''>
             <div className='p-6'>
               {userData ? (
-                <Button className='w-full bg-red-500/20 hover:bg-red-500/30'
-                onClick={async () => {
-                  // Handle logout logic here
-                  await signOut({ callbackUrl: "/" }); 
-                }}
+                <Button
+                  className='w-full bg-red-500/20 hover:bg-red-500/30'
+                  onClick={async () => {
+                    // Handle logout logic here
+                    await signOut({ callbackUrl: "/" });
+                  }}
                 >
                   <FiLogOut className='text-red-500' />
                   <span className='font-dm_sans font-normal text-base text-red-500'>
@@ -82,7 +86,13 @@ function HomeMenu({userData}: {userData: boolean}) {
                   </span>
                 </Button>
               ) : (
-                <Link href="/login" className={cn("w-full block !bg-olive !hover:bg-olive text-xl text-white py-4 px-10", buttonVariants())}>
+                <Link
+                  href='/login'
+                  className={cn(
+                    "w-full block !bg-olive !hover:bg-olive text-xl text-white py-4 px-10",
+                    buttonVariants()
+                  )}
+                >
                   Log In
                 </Link>
               )}
