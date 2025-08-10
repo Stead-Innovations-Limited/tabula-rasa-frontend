@@ -42,9 +42,24 @@ function HomeMenu({ userData }: { userData: boolean }) {
             </SheetDescription>
           </SheetHeader>
           <nav className='mt-20 flex flex-col gap-y-2'>
-            <p className='px-6 py-3' onClick={() => setTimeout(() => setOpen(false), 400)}>
+            <p className='px-6 py-3'>
               <Link
                 href={"/#about"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const targetId = "about";
+                  const el = document.getElementById(targetId);
+
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    // This is a fallback if we are on a different page
+                    window.location.href = `/#${targetId}`;
+                  }
+
+                  // Close after a short delay so scroll can happen first
+                  setTimeout(() => setOpen(false), 300);
+                }}
                 className={cn(
                   "text-[#333] font-worksans font-medium text-base"
                 )}
@@ -52,9 +67,24 @@ function HomeMenu({ userData }: { userData: boolean }) {
                 About
               </Link>
             </p>
-            <p className='px-6 py-3' onClick={() => setTimeout(() => setOpen(false), 400)}>
+            <p className='px-6 py-3'>
               <Link
                 href={"/#offerings"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const targetId = "offerings";
+                  const el = document.getElementById(targetId);
+
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    // I use this fallback if we are on a different page
+                    window.location.href = `/#${targetId}`;
+                  }
+
+                  // Close after a short delay so scroll can happen first
+                  setTimeout(() => setOpen(false), 300);
+                }}
                 className={cn(
                   "text-[#333] font-worksans font-medium text-base"
                 )}
@@ -62,7 +92,10 @@ function HomeMenu({ userData }: { userData: boolean }) {
                 Offerings
               </Link>
             </p>
-            <p className='px-6 py-3' onClick={() => setTimeout(() => setOpen(false), 400)}>
+            <p
+              className='px-6 py-3'
+              onClick={() => setTimeout(() => setOpen(false), 400)}
+            >
               <Link
                 href={"/contact"}
                 className={cn(
