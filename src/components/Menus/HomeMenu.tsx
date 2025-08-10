@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import Link from "next/link";
 
 import { signOut } from "next-auth/react";
@@ -42,7 +42,7 @@ function HomeMenu({ userData }: { userData: boolean }) {
             </SheetDescription>
           </SheetHeader>
           <nav className='mt-20 flex flex-col gap-y-2'>
-            <p className='px-6 py-3' onClick={() => setOpen(false)}>
+            <p className='px-6 py-3' onClick={() => startTransition(() => setOpen(false))}>
               <Link
                 href={"/#about"}
                 className={cn(
@@ -52,7 +52,7 @@ function HomeMenu({ userData }: { userData: boolean }) {
                 About
               </Link>
             </p>
-            <p className='px-6 py-3' onClick={() => setOpen(false)}>
+            <p className='px-6 py-3' onClick={() => startTransition(() => setOpen(false))}>
               <Link
                 href={"/#offerings"}
                 className={cn(
@@ -62,7 +62,7 @@ function HomeMenu({ userData }: { userData: boolean }) {
                 Offerings
               </Link>
             </p>
-            <p className='px-6 py-3' onClick={() => setOpen(false)}>
+            <p className='px-6 py-3' onClick={() => startTransition(() => setOpen(false))}>
               <Link
                 href={"/contact"}
                 className={cn(
