@@ -72,8 +72,10 @@ function titleCase(str: string) {
 
 export default function CreateEventForm({
   venues: venuesData,
+  bookAVenue
 }: {
   venues: Venue[];
+  bookAVenue: boolean
 }) {
   const router = useRouter();
   const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
@@ -101,10 +103,12 @@ export default function CreateEventForm({
       eventDescription: "",
       keyActivities: "",
       targetAudience: "",
-      useOurVenue: "no",
+      // If the user was trying to book a specific venue, we set useOurVenue to "yes"
+      useOurVenue: bookAVenue? "yes" :"no",
       venueName: "",
       venueLocation: "",
-      location: "",
+      // If the user was trying to book a specific venue, we set location to the name of the specific venue
+      location: bookAVenue ? venues[0].name : "",
       startDate: undefined,
       endDate: undefined,
       startTime: "00:00:00",

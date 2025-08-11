@@ -29,7 +29,8 @@ export default async function page({
   return (
     <>
       <CreateEventBar />
-      <CreateEventForm venues={venues} />
+      {/* We determine if the user was trying to book a specific venue */}
+      <CreateEventForm venues={venues} bookAVenue={venueId && venueId !== "undefined" ? true: false} />
     </>
   )
 }
