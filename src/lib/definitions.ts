@@ -62,7 +62,11 @@ export const signupSchema = z.object({
     .regex(/[@$!%*?&#]/, {
       message: "Confirm password must contain at least one special character",
     }),
-});
+})
+.refine((data) => data.password === data.confirmPassword, {
+  message: "Confirm Password field must match password field",
+  path: ["confirmPassword"]
+})
 
 export const personalProfileSchema = z.object({
   firstname: z

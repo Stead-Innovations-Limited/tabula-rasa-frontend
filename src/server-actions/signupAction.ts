@@ -5,6 +5,7 @@ import { tryCatch } from "@/utils/tryCatch";
 
 import z from "zod/v4";
 import { signupSchema } from "@/lib/definitions";
+import { titleCase } from "@/lib/utils";
 
 export interface SignupState {
   success?: boolean;
@@ -43,7 +44,7 @@ export default async function signupAction(
     return {
       error: true,
       errorData: response.errors,
-      message: "Signup failed.",
+      message: titleCase(typeof response.errors == "string" ? response.errors : response.errors.join(" ")),
     };
   } else {
     const data = response.data as { message?: string };
