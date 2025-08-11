@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
@@ -10,6 +10,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import useNotificationStatus from "@/hooks/useNotificationStatus";
+import { AiOutlineLoading3Quarters } from "@/components/icons";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -308,11 +309,14 @@ const CarouselNavigation = ({
   pracId: string;
   amount: number;
 }) => {
-  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
-  const router = useRouter()
+  const updateNotificationStatus = useNotificationStatus(
+    (state) => state.updateNotificationStatus
+  );
+  const router = useRouter();
   const { api } = useCarousel();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [updateState, setUpdateState] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const toggleUpdateState = React.useCallback(
     () => setUpdateState((prevState) => !prevState),
@@ -372,6 +376,8 @@ const CarouselNavigation = ({
               className='!col-span-1 rounded-full bg-olive hover:bg-olive/90'
               onClick={async () => {
                 if (currentSlide === 3) {
+                  // We set the loading state of thr payment button to true so we can disable it
+                  setIsLoading(true);
                   // Make payment booking
                   const response = await practitionersService(
                     parseTime(startTime),
@@ -380,8 +386,10 @@ const CarouselNavigation = ({
                     pracId,
                     amount
                   );
-                  
+
                   if (response.error) {
+                    // Set loading state back to false
+                    setIsLoading(false);
                     // If the error is insufficient funds, redirect to the insufficient funds page
                     if (
                       response.errorData instanceof Error &&
@@ -390,7 +398,7 @@ const CarouselNavigation = ({
                         .includes("insufficient funds")
                     ) {
                       router.push("/insufficient-funds");
-                    // Otherwise, show the error message
+                      // Otherwise, show the error message
                     } else {
                       toast.error(response.message, {
                         classNames: {
@@ -400,16 +408,27 @@ const CarouselNavigation = ({
                         },
                       });
                     }
-                  // If the payment was successful, redirect to the payment successful page
+                    // If the payment was successful, redirect to the payment successful page
                   } else {
+                    // Set loading state back to false
+                    setIsLoading(false);
                     updateNotificationStatus(true);
                     router.push(`/practicioners/${pracId}/payment-successful`);
                   }
                 } else api?.scrollTo(currentSlide + 1);
               }}
-              disabled={currentSlide === 2 && !validHours()}
+              disabled={(currentSlide === 2 && !validHours()) || isLoading}
             >
-              {currentSlide !== 3 ? "Next" : "Pay"}
+              {isLoading ? (
+                <>
+                  Loading{" "}
+                  <AiOutlineLoading3Quarters className='animate-spin size-4' />
+                </>
+              ) : currentSlide !== 3 ? (
+                "Next"
+              ) : (
+                "Pay"
+              )}
             </Button>
           </div>
         )}

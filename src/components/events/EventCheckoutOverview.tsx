@@ -16,12 +16,24 @@ import { Button } from "../ui/button";
 import eventService from "@/server-actions/eventService";
 import { toast } from "sonner";
 import useNotificationStatus from "@/hooks/useNotificationStatus";
+import { AiOutlineLoading3Quarters } from "@/components/icons";
 
-function EventCheckoutOverview({ eventData, ticketsLeft }: { eventData: Event, ticketsLeft: number   }) {
+function EventCheckoutOverview({
+  eventData,
+  ticketsLeft,
+}: {
+  eventData: Event;
+  ticketsLeft: number;
+}) {
   const router = useRouter();
-  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
+  const updateNotificationStatus = useNotificationStatus(
+    (state) => state.updateNotificationStatus
+  );
   const price = eventData.price;
   const [quantity, setQuantity] = useState<string>("1");
+  // This state is used to handle the loading state when we make payment
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   return (
     <section className='w-full'>
       <div className='w-full p-5 lg:px-10 xl:max-w-[1140px] mx-auto font-nunito'>
@@ -81,14 +93,11 @@ function EventCheckoutOverview({ eventData, ticketsLeft }: { eventData: Event, t
                         <SelectValue placeholder='Select No of Tickets' />
                       </SelectTrigger>
                       <SelectContent>
-                        {Array.from(
-                          { length: ticketsLeft },
-                          (_, i) => (
-                            <SelectItem key={i} value={`${i + 1}`}>
-                              {i + 1}
-                            </SelectItem>
-                          )
-                        )}
+                        {Array.from({ length: ticketsLeft }, (_, i) => (
+                          <SelectItem key={i} value={`${i + 1}`}>
+                            {i + 1}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -153,11 +162,16 @@ function EventCheckoutOverview({ eventData, ticketsLeft }: { eventData: Event, t
                   disabled={ticketsLeft <= 0}
                   className='w-full md:w-3/4 py-4 bg-olive text-white rounded-xl mx-auto hover:bg-olive/80'
                   onClick={async () => {
+                    // Set loading state to true
+                    setIsLoading(true);
+
                     const response = await eventService(
                       eventData.id,
                       (price * parseInt(quantity)).toString()
                     );
                     if (response.error) {
+                      // Set loading state back to false, payment has been processed
+                      setIsLoading(false);
                       if (
                         response.errorData instanceof Error &&
                         response.errorData.message
@@ -175,12 +189,21 @@ function EventCheckoutOverview({ eventData, ticketsLeft }: { eventData: Event, t
                         });
                       }
                     } else {
+                      // Set isLoading state to false
+                      setIsLoading(false);
                       updateNotificationStatus(true);
                       router.push(`/events/${eventData.id}/payment-successful`);
                     }
                   }}
                 >
-                  Pay
+                  {isLoading ? (
+                    <>
+                      Loading{" "}
+                      <AiOutlineLoading3Quarters className='animate-spin size-4' />
+                    </>
+                  ) : (
+                    "Pay"
+                  )}
                 </Button>
               </div>
             </div>

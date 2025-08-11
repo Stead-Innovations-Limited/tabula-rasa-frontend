@@ -34,7 +34,7 @@ export default async function practitionersService(
           start_time: startTime,
           end_time: endTime,
           date: date,
-          price: amount,
+          price: amount * 100, //Convert the payment amount to cents
         },
         {
           headers: {
