@@ -28,6 +28,15 @@ import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import GoogleSignInRedirect from "./GoogleSignInRedirect";
 
+function isJsonString(str: string): boolean {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default function LoginForm() {
   const router = useRouter();
   const [state, action, isPending] = useActionState(loginAction, undefined);
@@ -61,7 +70,8 @@ export default function LoginForm() {
 
         // Here we check if the result.error value is that EMAIL_NOT_VERIFIED, if so we redirect the user to the verify email page.
         // With token and email.
-        if (result?.error) {
+        // We also check if the result.error is a stringified object, if so we parse it and check for the EMAIL_NOT_VERIFIED error.
+        if (result?.error && isJsonString(result.error)) {
           // Parse obj body
           const err = JSON.parse(result.error);
 
@@ -86,7 +96,7 @@ export default function LoginForm() {
         }
 
         if (result?.error) {
-          toast.error("Login failed. Please check your credentials.", {
+          toast.error(result.error, {
             classNames: {
               toast: "!text-red-500",
               title: "!text-red-500",
@@ -121,7 +131,9 @@ export default function LoginForm() {
   return (
     <>
       <Suspense fallback={null}>
-      <GoogleSignInRedirect />
+        {/* This uses the searchparams, that is why it is in a suspense */}
+        {/* It is used to handle google oauth logins */}
+        <GoogleSignInRedirect />
       </Suspense>
       <div className='md:px-5 md:shadow-xs md:shadow-olive/20 md:rounded-md'>
         <div className='md:max-w-sm w-full p-5 py-14 font-roboto flex flex-col gap-5'>

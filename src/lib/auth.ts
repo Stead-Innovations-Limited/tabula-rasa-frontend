@@ -4,6 +4,7 @@ import { tryCatch } from "@/utils/tryCatch";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import refreshToken from "@/server-actions/refreshToken";
+import { titleCase } from "./utils";
 
 interface LoginResponse {
   user: {
@@ -69,8 +70,9 @@ export const authOptions: NextAuthOptions = {
             )
         );
 
+        // If the response is an error, we throw an error with the message(It could be incorrect password, email not found, etc.)
         if (response.isError) {
-          throw new Error("Invalid email or password");
+          throw new Error(titleCase(typeof response.errors == "string" ? response.errors : response.errors.join(" ")));
         }
 
         const data = response.data as LoginResponse;
