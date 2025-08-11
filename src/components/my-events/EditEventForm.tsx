@@ -119,7 +119,8 @@ export default function EditEventForm({
   // a warning toast to inform the user
   // It runs whenever the selectedLocationId or selectedParticipantsRange changes
   useEffect(() => {
-    if (!selectedLocationId || !selectedParticipantsRange) return;
+    // If we are not using any of our listed venues, then there is no need to perform checks
+    if ( useOurVenue === "no" || !selectedLocationId || !selectedParticipantsRange) return;
 
     const selectedVenue = venues.find((v) => v.name === selectedLocationId);
     const maxParticipants = Number(selectedParticipantsRange);
@@ -137,13 +138,13 @@ export default function EditEventForm({
         }
       );
     }
-  }, [selectedLocationId, selectedParticipantsRange, venues]);
+  }, [selectedLocationId, selectedParticipantsRange, venues, useOurVenue]);
 
   async function onSubmit(formData: z.infer<typeof createEventSchema>) {
     const selectedVenue = venues.find((v) => v.name === formData.location);
     const maxParticipants = Number(formData.maxParticipantsNo);
 
-    if (selectedVenue && maxParticipants > selectedVenue.capacity.Int32) {
+    if (useOurVenue === "yes" && selectedVenue && maxParticipants > selectedVenue.capacity.Int32) {
       toast.error(
         `Too many participants for selected venue (max: ${selectedVenue.capacity.Int32})`,
         {

@@ -123,16 +123,7 @@ export default function CreateEventForm({
   const selectedLocationId = form.watch("location");
   const selectedParticipantsRange = form.watch("maxParticipantsNo");
   const useOurVenue = form.watch("useOurVenue");
-
-  // This useEffect hook is used to reset the venue fields when the useOurVenue field changes
-  useEffect(() => {
-  if (useOurVenue === "yes") {
-    form.setValue("location", "");
-  } else {
-    form.setValue("venueName", "");
-    form.setValue("venueLocation", "");
-  }
-}, [useOurVenue, form]);
+ 
   // This useEffect hook is used to check if the selected venue's capacity is sufficient for the selected participants range
   // If the selected venue's capacity is less than the maximum number of participants, it shows
   // a warning toast to inform the user
@@ -407,7 +398,18 @@ export default function CreateEventForm({
                         </FormLabel>
                         <FormControl>
                           <RadioGroup
-                            onValueChange={field.onChange}
+                            onValueChange={(e) => {
+                              if (e === "yes") {
+                                // form.setValue("location", "");
+                                form.setValue("venueName", "");
+                                form.setValue("venueLocation", "");
+                              } else {
+                                // form.setValue("venueName", "");
+                                // form.setValue("venueLocation", "");
+                                form.setValue("location", "");
+                              }
+                              return field.onChange(e);
+                            }}
                             defaultValue={field.value}
                             className='flex gap-5'
                           >
