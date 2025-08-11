@@ -7,6 +7,7 @@ import { FaHeart, SlHeart } from "@/components/icons";
 import saveVenue from "@/server-actions/saveVenue";
 import removeSavedVenue from "@/server-actions/removeSavedVenue";
 import { toast } from "sonner";
+import useNotificationStatus from "@/hooks/useNotificationStatus";
 
 const errorClass = {
   classNames: {
@@ -37,6 +38,7 @@ export default function SavedVenueBtn({
   // Using useRef to prevent multiple clicks while loading
   const loadingRef = useRef(false);
   const [saved, setSaved] = useState(isSaved);
+  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
 
   const handleToggle = () => {
     if (loadingRef.current) return; // Prevent multiple clicks if already loading
@@ -54,6 +56,7 @@ export default function SavedVenueBtn({
           startTransition(() => {
             setSaved((prev) => !prev);
           });
+          updateNotificationStatus(true);
         }
         // Set loadingRef to false after the operation
         loadingRef.current = false;
@@ -72,6 +75,7 @@ export default function SavedVenueBtn({
           startTransition(() => {
             setSaved((prev) => !prev);
           });
+          updateNotificationStatus(true);
         }
         // Set loadingRef to false after the operation
         loadingRef.current = false;
