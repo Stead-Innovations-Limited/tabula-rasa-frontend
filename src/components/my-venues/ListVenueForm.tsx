@@ -34,6 +34,7 @@ import { listVenueSchema } from "@/lib/clientDefinitions";
 import listVenueAction from "@/server-actions/listVenueAction";
 import handleFileUploads from "@/server-actions/handleFileUploads";
 import useNotificationStatus from "@/hooks/useNotificationStatus";
+import { titleCase } from "@/lib/utils";
 
 export default function ListVenueForm() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function ListVenueForm() {
 
   useEffect(() => {
     if (state?.error) {
-      toast.error(state.message, {
+      toast.error(titleCase(state.message), {
         classNames: {
           toast: "!text-red-500",
           title: "!text-red-500",
@@ -52,7 +53,7 @@ export default function ListVenueForm() {
     }
 
     if (state?.success) {
-      toast.success(state.message, {
+      toast.success(titleCase(state.message), {
         classNames: {
           toast: "!text-green-700",
           title: "!text-green-700",
@@ -60,7 +61,7 @@ export default function ListVenueForm() {
         },
       });
 
-       updateNotificationStatus(true);
+      updateNotificationStatus(true);
       router.push("/dashboard");
     }
   }, [state, router, updateNotificationStatus]);
@@ -107,7 +108,7 @@ export default function ListVenueForm() {
         const res = await handleFileUploads(file.name, file.size, file.type);
         // If there's an error, we show a toast
         if (res.error) {
-          toast.error(res.message, {
+          toast.error(titleCase(res.message), {
             classNames: {
               toast: "!text-red-500",
               title: "!text-red-500",

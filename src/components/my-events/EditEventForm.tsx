@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useCallback, useEffect } from "react";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
@@ -103,10 +103,12 @@ export default function EditEventForm({
     },
   });
 
-  useToast(state, undefined, () => {
-    updateNotificationStatus(true);
-    router.back();
-  });
+  const handleCallback = useCallback(() => {
+      router.back();
+      updateNotificationStatus(true);
+    }, [router, updateNotificationStatus]);
+    
+  useToast(state, undefined, handleCallback);
 
   // Here i use the watch function to get the current value of the location and maxParticipantsNo fields
   // This allows me to react to changes in these fields and perform validations or updates accordingly

@@ -35,6 +35,7 @@ import handleFileUploads from "@/server-actions/handleFileUploads";
 import { Venue } from "@/lib/types";
 import editVenueAction from "@/server-actions/editVenueAction";
 import useNotificationStatus from "@/hooks/useNotificationStatus";
+import { titleCase } from "@/lib/utils";
 
 export default function EditVenueForm({ venueData }: { venueData: Venue }) {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function EditVenueForm({ venueData }: { venueData: Venue }) {
 
   useEffect(() => {
     if (state?.error) {
-      toast.error(state.message, {
+      toast.error(titleCase(state.message), {
         classNames: {
           toast: "!text-red-500",
           title: "!text-red-500",
@@ -53,7 +54,7 @@ export default function EditVenueForm({ venueData }: { venueData: Venue }) {
     }
 
     if (state?.success) {
-      toast.success(state.message, {
+      toast.success(titleCase(state.message), {
         classNames: {
           toast: "!text-green-700",
           title: "!text-green-700",

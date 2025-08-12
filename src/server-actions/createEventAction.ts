@@ -128,8 +128,7 @@ export default async function createEventAction(
     revalidatePath('/(dashboard)/dashboard', 'page')
 
     return { success: true, message: "Event created successfully!" };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    return { error: true, message: "Failed to create event." };
+    return { error: true, message: error instanceof Error ? error.message : "Failed to create event." };
   }
 }

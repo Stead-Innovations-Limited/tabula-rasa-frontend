@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { titleCase } from "@/lib/utils";
 
 interface ToastState {
   error?: boolean;
@@ -18,7 +19,7 @@ export default function useToast(
   const router = useRouter();
   useEffect(() => {
     if (state?.error) {
-      toast.error(state.message, {
+      toast.error(titleCase(state.message!), {
         classNames: {
           toast: "!text-red-500",
           title: "!text-red-500",
@@ -28,7 +29,7 @@ export default function useToast(
     }
 
     if (state?.success) {
-      toast.success(state.message, {
+      toast.success(titleCase(state.message!), {
         classNames: {
           toast: "!text-green-700",
           title: "!text-green-700",

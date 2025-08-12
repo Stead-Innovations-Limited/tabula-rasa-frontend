@@ -123,8 +123,7 @@ export default async function editVenueAction(
     revalidatePath('/(dashboard)/dashboard', 'page')
 
     return { success: true, message: "Venue edited successfully!" };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    return { error: true, message: "Failed to edit venue." };
+    return { error: true, message: error instanceof Error ? error.message : "Failed to edit venue." };
   }
 }

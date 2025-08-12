@@ -373,11 +373,11 @@ export const listVenueSchema = z
   })
 
   // Validation for always-required fields
-  .refine((data) => !isNaN(Number(data.maxCapacity)), {
+  .refine((data) => !isNaN(Number(data.maxCapacity)) && Number(data.maxCapacity) > 0, {
     message: "Please enter a valid capacity (number) for the venue",
     path: ["maxCapacity"],
   })
-  .refine((data) => !isNaN(Number(data.pricePerHour)), {
+  .refine((data) => !isNaN(Number(data.pricePerHour)) && Number(data.pricePerHour) > 0, {
     message: "Please enter a valid price per hour",
     path: ["pricePerHour"],
   })
@@ -517,12 +517,12 @@ export const createEventSchema = z
     }
   )
   // Here i do a check to ensure that the price per participant can be a valid number
-  .refine((data) => !isNaN(Number(data.pricePerParticipant)), {
+  .refine((data) => !isNaN(Number(data.pricePerParticipant)) && Number(data.pricePerParticipant) > 0, {
     message: "Please enter a valid price per participant",
     path: ["pricePerParticipant"],
   })
   // Here i do a check to ensure that the max participants can be a valid number
-  .refine((data) => !isNaN(Number(data.maxParticipantsNo)), {
+  .refine((data) => !isNaN(Number(data.maxParticipantsNo)) && Number(data.maxParticipantsNo) > 0, {
     message: "Please enter a valid number of participants",
     path: ["maxParticipantsNo"],
   })

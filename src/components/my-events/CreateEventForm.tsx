@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useCallback, useEffect } from "react";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
@@ -72,24 +72,27 @@ function titleCase(str: string) {
 
 export default function CreateEventForm({
   venues: venuesData,
-  bookAVenue
+  bookAVenue,
 }: {
   venues: Venue[];
-  bookAVenue: boolean
+  bookAVenue: boolean;
 }) {
   const router = useRouter();
-  const updateNotificationStatus = useNotificationStatus((state) => state.updateNotificationStatus);
+  const updateNotificationStatus = useNotificationStatus(
+    (state) => state.updateNotificationStatus
+  );
   const [state, action, isPending] = useActionState(
     createEventAction,
     undefined
   );
+  const handleCallback = useCallback(() => {
+    router.back();
+    updateNotificationStatus(true);
+  }, [router, updateNotificationStatus]);
 
   const venues = venuesData;
 
-  useToast(state, undefined, () => {
-    router.back()
-    updateNotificationStatus(true);
-  });
+  useToast(state, undefined, handleCallback);
 
   // Here i use the useForm hook to create a form with the createEventSchema
   // This schema defines the structure and validation rules for the form data
@@ -104,7 +107,7 @@ export default function CreateEventForm({
       keyActivities: "",
       targetAudience: "",
       // If the user was trying to book a specific venue, we set useOurVenue to "yes"
-      useOurVenue: bookAVenue? "yes" :"no",
+      useOurVenue: bookAVenue ? "yes" : "no",
       venueName: "",
       venueLocation: "",
       // If the user was trying to book a specific venue, we set location to the name of the specific venue
@@ -123,7 +126,7 @@ export default function CreateEventForm({
   const selectedLocationId = form.watch("location");
   const selectedParticipantsRange = form.watch("maxParticipantsNo");
   const useOurVenue = form.watch("useOurVenue");
- 
+
   // This useEffect hook is used to check if the selected venue's capacity is sufficient for the selected participants range
   // If the selected venue's capacity is less than the maximum number of participants, it shows
   // a warning toast to inform the user
@@ -201,7 +204,7 @@ export default function CreateEventForm({
         const res = await handleFileUploads(file.name, file.size, file.type);
         // If there's an error, we show a toast
         if (res.error) {
-          toast.error(res.error, {
+          toast.error(titleCase(res.message), {
             classNames: {
               toast: "!text-red-500",
               title: "!text-red-500",
@@ -211,7 +214,7 @@ export default function CreateEventForm({
           return false;
         }
 
-        // If there is an error, or if the presigned URL or file name is not returned, we return early
+        // If there is an error, or if the presigned URL or file name is not returned, we return false early
         // This is to ensure that we do not try to upload the file if the presigned URL is not valid
         if (res.error || !res.presignedUrl || !res.fileName) return false;
 
@@ -234,8 +237,8 @@ export default function CreateEventForm({
     );
 
     // We remove all instances of failed uploads
-    // const parsedUploads = uploadedUrls.filter((ele) => ele !== false);
-    // if (parsedUploads.length < 1) return;
+    const parsedUploads = uploadedUrls.filter((ele) => ele !== false);
+    if (parsedUploads.length < 1) return;
 
     // Replace the files in formData with URLs
     const payload = {
@@ -247,7 +250,7 @@ export default function CreateEventForm({
       action(payload);
     });
   }
-  
+
   return (
     <>
       <section className='w-full'>
@@ -697,14 +700,14 @@ export default function CreateEventForm({
                         <FormLabel className='text-olive !text-base !md:text-lg'>
                           Max Number of Participants
                         </FormLabel>
-                          <FormControl>
-                            <Input
+                        <FormControl>
+                          <Input
                             placeholder='Enter the maximum number of participants you want at your event'
                             type='text'
                             {...field}
                             className='py-2 border-1 h-10 md:h-12 !text-base !md:text-lg  border-lightolive focus:border-olive focus:border-1 focus:outline-none'
                           />
-                          </FormControl>  
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
