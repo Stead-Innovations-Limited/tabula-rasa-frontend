@@ -4,12 +4,13 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 
 
-export default function ErrorContainer() {
+export default function ErrorContainer({resetFn}: {resetFn: () => void}) {
   const router = useRouter();
 
   function handleRefresh() {
     startTransition(() => {
       router.refresh();
+      resetFn()
     });
   }
 
