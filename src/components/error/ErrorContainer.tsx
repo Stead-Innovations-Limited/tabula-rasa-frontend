@@ -3,8 +3,9 @@ import { startTransition } from "react";
 import { Button } from "../ui/button";
 
 
-export default function ErrorContainer({ resetFn }: { resetFn: () => void }) {
+export default function ErrorContainer({ error, resetFn }: { error: Error; resetFn: () => void }) {
 
+  console.error(error);
   function handleRefresh() {
     startTransition(() => {
       resetFn();
