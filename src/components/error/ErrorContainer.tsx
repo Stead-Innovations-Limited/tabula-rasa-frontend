@@ -1,14 +1,15 @@
 "use client";
 import { startTransition } from "react";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 
-export default function ErrorContainer({ error, resetFn }: { error: Error; resetFn: () => void }) {
+export default function ErrorContainer() {
+  const router = useRouter();
 
-  console.error(error);
   function handleRefresh() {
     startTransition(() => {
-      resetFn();
+      router.refresh();
     });
   }
 
