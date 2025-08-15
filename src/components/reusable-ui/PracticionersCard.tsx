@@ -14,8 +14,8 @@ import { SlLocationPin, GoStarFill, GoArrowUpRight } from "@/components/icons";
 
 interface EventProps {
   userId: string
-  imgUrl?: string;
-  imgAlt?: string;
+  imgUrl: string;
+  imgAlt: string;
   name: string;
   specialty: string;
   stars?: number;
@@ -35,12 +35,12 @@ export default function PracticionersCards({
   const fallbackImgUrl = "/avatar.jpg"
 
   const imgUrlString = imgUrl?.trim() && !imgUrl.includes("example.com") ? imgUrl :"/avatar.jpg";
-  const imgAltString = imgAlt || "A serene saturday event image";
+  const imgAltString = imgAlt || "Practitioner Image";
   const starsCount = stars > 5 ? 5 : stars < 0 ? 0 : stars; // Ensure stars are between 0 and 5
   const starsData = Math.round(starsCount); // Round to the nearest whole number
-  const nameString = name || "Micheal Stewart"; // Fallback for name if not provided
-  const specialtyString = specialty || "Vinyasa Yoga"; // Fallback for specialty if not provided
-  const addressString = address || "Wellness Center, Lagos"; // Fallback for address if not provided
+  const nameString = name || ""; // Fallback for name if not provided
+  const specialtyString = specialty || ""; // Fallback for specialty if not provided
+  const addressString = address || ""; // Fallback for address if not provided
 
   const [imgSrc, setImgSrc] = useState(imgUrlString)
 
