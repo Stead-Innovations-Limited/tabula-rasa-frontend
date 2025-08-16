@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type TransactionStatus = "Completed" | "Processed" | "Pending";
+export type TransactionStatus = "Deposit" | "Payment" | "Pending";
 
 export interface Transaction {
   description: string;
@@ -38,11 +38,11 @@ export const columns: ColumnDef<Transaction>[] = [
       >
         <span className={cn(
           "inline-block text-center size-1 rounded-full",
-          prop.row.original.status == "Completed"
-            ? "bg-red-500"
-            : prop.row.original.status == "Processed"
+          prop.row.original.status == "Payment"
+            ? "bg-yellow-500"
+            : prop.row.original.status == "Deposit"
             ? "bg-green-500"
-            : "bg-yellow-500"
+            : "bg-red-500"
         )}></span>
         <span className="inline-block ml-1">{(prop.getValue() as string) || "Unknown Status"}</span>
       </p>
