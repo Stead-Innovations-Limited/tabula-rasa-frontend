@@ -44,10 +44,9 @@ import { createEventSchema } from "@/lib/clientDefinitions";
 import editEventAction from "@/server-actions/editEventAction";
 
 import useToast from "@/hooks/useToast";
-import { cn } from "@/lib/utils";
+import { cn, uploadFiles } from "@/lib/utils";
 import { Event, Venue } from "@/lib/types";
 import { toast } from "sonner";
-import handleFileUploads from "@/server-actions/handleFileUploads";
 import { useRouter } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -74,6 +73,7 @@ export default function EditEventForm({
   event: Event;
 }) {
   const router = useRouter();
+  console.log(event, "These are the events");
   const updateNotificationStatus = useNotificationStatus(
     (state) => state.updateNotificationStatus
   );
@@ -82,7 +82,7 @@ export default function EditEventForm({
   const form = useForm<z.infer<typeof createEventSchema>>({
     resolver: zodResolver(createEventSchema),
     defaultValues: {
-      eventFiles: [],
+      eventFiles: event.image_links.length > 0 ? event.image_links : [],
       eventTitle: event.name,
       eventTheme: event.theme.String,
       eventDescription: event.description.String,
@@ -175,45 +175,8 @@ export default function EditEventForm({
       return;
     }
 
-    // Upload images to R2 and get URLs
-    // I use Promise.all to upload all files concurrently
-    // This will return an array of URLs for the uploaded files
-    const uploadedUrls = await Promise.all(
-      files.map(async (file: File) => {
-        const res = await handleFileUploads(file.name, file.size, file.type);
-        // If there's an error, we show a toast
-        if (res.error) {
-          toast.error(res.error, {
-            classNames: {
-              toast: "!text-red-500",
-              title: "!text-red-500",
-              description: "!text-red-500",
-            },
-          });
-          return false;
-        }
-
-        // If there is an error, or if the presigned URL or file name is not returned, we return early
-        // This is to ensure that we do not try to upload the file if the presigned URL is not valid
-        if (res.error || !res.presignedUrl || !res.fileName) return false;
-
-        // Destructure the presignedUrl and fileName from the response
-        const { presignedUrl, fileName } = res;
-
-        // Upload the file to the presigned URL
-        // This will return a response from the server, but we do not need to use it
-        await fetch(presignedUrl, {
-          method: "PUT",
-          body: file,
-          headers: {
-            "Content-Type": file.type,
-          },
-        });
-
-        // Return the file name, which is the URL of the uploaded file
-        return fileName; // Save only the final URL
-      })
-    );
+    // This function uploads images if they are images to R2 cloudflare and gives us their strings if it was successful or false if it wasn't
+    const uploadedUrls = await uploadFiles(files);
 
     // We remove all instances of failed uploads
     const parsedUploads = uploadedUrls.filter((ele) => ele !== false);

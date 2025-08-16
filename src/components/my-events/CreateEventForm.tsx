@@ -44,10 +44,9 @@ import { createEventSchema } from "@/lib/clientDefinitions";
 import createEventAction from "@/server-actions/createEventAction";
 
 import useToast from "@/hooks/useToast";
-import { cn, formatLocalDate, getHoursDifference } from "@/lib/utils";
+import { cn, formatLocalDate, getHoursDifference, uploadFiles } from "@/lib/utils";
 import { Venue } from "@/lib/types";
 import { toast } from "sonner";
-import handleFileUploads from "@/server-actions/handleFileUploads";
 import { useRouter } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -191,14 +190,14 @@ export default function CreateEventForm({
     // Here i want to check the account balance of the user and calculate the amount of time the event will take place in hours
     // And then use that amount to calculate the total amount that goes to the venue owner, if the event creator is the venue owner
     // then there is no need for such checks
-    if(userData?.id !== selectedVenue?.owned_by) {
-      // We get account balance 
-      const accountBalance = await getAccountBalance() as string;
+    if (selectedVenue && userData?.id !== selectedVenue?.owned_by) {
+      // We get account balance
+      const accountBalance = (await getAccountBalance()) as string;
 
       const amountPerHour = selectedVenue.booking_price.Int64; // Price of venue per hour
       const startDate = formatLocalDate(formData.startDate); // StartDate in formatted string
       const endDate = formatLocalDate(formData.endDate); // EndDate in formatted string
-      const noHours = getHoursDifference( 
+      const noHours = getHoursDifference(
         startDate,
         formData.startTime,
         endDate,
@@ -208,7 +207,7 @@ export default function CreateEventForm({
       const totalVenueRevenue = noHours * amountPerHour;
 
       // If the totalVenueRevenue is greater than account balance, we show a toast
-      if (totalVenueRevenue > accountBalance) {
+      if (totalVenueRevenue > Number(accountBalance)) {
         toast.error(
           `Insufficient account balance. You need $${totalVenueRevenue} but have $${accountBalance}`,
           {
@@ -217,14 +216,12 @@ export default function CreateEventForm({
               title: "!text-red-500",
               description: "!text-red-500",
             },
-            duration: 7000
+            duration: 7000,
           }
         );
         return;
       }
     }
-    
-    return;
 
     // Here what i want to do is send the file i got here to get the presignedUrl and generated Url
     const files = formData.eventFiles;
@@ -241,45 +238,8 @@ export default function CreateEventForm({
       return;
     }
 
-    // Upload images to R2 and get URLs
-    // I use Promise.all to upload all files concurrently
-    // This will return an array of URLs for the uploaded files
-    const uploadedUrls = await Promise.all(
-      files.map(async (file: File) => {
-        const res = await handleFileUploads(file.name, file.size, file.type);
-        // If there's an error, we show a toast
-        if (res.error) {
-          toast.error(titleCase(res.message), {
-            classNames: {
-              toast: "!text-red-500",
-              title: "!text-red-500",
-              description: "!text-red-500",
-            },
-          });
-          return false;
-        }
-
-        // If there is an error, or if the presigned URL or file name is not returned, we return false early
-        // This is to ensure that we do not try to upload the file if the presigned URL is not valid
-        if (res.error || !res.presignedUrl || !res.fileName) return false;
-
-        // Destructure the presignedUrl and fileName from the response
-        const { presignedUrl, fileName } = res;
-
-        // Upload the file to the presigned URL
-        // This will return a response from the server, but we do not need to use it
-        await fetch(presignedUrl, {
-          method: "PUT",
-          body: file,
-          headers: {
-            "Content-Type": file.type,
-          },
-        });
-
-        // Return the file name, which is the URL of the uploaded file
-        return fileName; // Save only the final URL
-      })
-    );
+    // This function uploads images if they are images to R2 cloudflare and gives us their strings if it was successful or false if it wasn't
+    const uploadedUrls = await uploadFiles(files);
 
     // We remove all instances of failed uploads
     const parsedUploads = uploadedUrls.filter((ele) => ele !== false);

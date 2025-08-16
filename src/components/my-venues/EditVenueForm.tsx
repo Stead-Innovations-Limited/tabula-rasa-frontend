@@ -31,11 +31,10 @@ import MyDropzone from "@/components/reusable-ui/MyDropzone";
 import { AiOutlineLoading3Quarters } from "@/components/icons";
 
 import { listVenueSchema } from "@/lib/clientDefinitions";
-import handleFileUploads from "@/server-actions/handleFileUploads";
 import { Venue } from "@/lib/types";
 import editVenueAction from "@/server-actions/editVenueAction";
 import useNotificationStatus from "@/hooks/useNotificationStatus";
-import { titleCase } from "@/lib/utils";
+import { titleCase, uploadFiles } from "@/lib/utils";
 
 export default function EditVenueForm({ venueData }: { venueData: Venue }) {
   const router = useRouter();
@@ -102,35 +101,8 @@ export default function EditVenueForm({ venueData }: { venueData: Venue }) {
       return;
     }
 
-    // Upload images to R2 and get URLs
-    const uploadedUrls = await Promise.all(
-      files.map(async (file: File) => {
-        const res = await handleFileUploads(file.name, file.size, file.type);
-        // If there's an error, we show a toast
-        if (res.error) {
-          toast.error(res.message, {
-            classNames: {
-              toast: "!text-red-500",
-              title: "!text-red-500",
-              description: "!text-red-500",
-            },
-          });
-          return false;
-        }
-        if (res.error || !res.presignedUrl || !res.fileName) return false;
-        const { presignedUrl, fileName } = res;
-
-        await fetch(presignedUrl, {
-          method: "PUT",
-          body: file,
-          headers: {
-            "Content-Type": file.type,
-          },
-        });
-
-        return fileName; // Save only the final URL
-      })
-    );
+    // This function uploads images if they are images to R2 cloudflare and gives us their strings if it was successful or false if it wasn't
+    const uploadedUrls = await uploadFiles(files);
 
     // We remove all instances of failed uploads
     const parsedUploads = uploadedUrls.filter((ele) => ele !== false);

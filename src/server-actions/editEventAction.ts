@@ -9,6 +9,7 @@ import { authOptions } from "@/lib/auth";
 
 import { z } from "zod/v4";
 import { createEventSchema } from "@/lib/definitions";
+import { formatLocalDate } from "@/lib/utils";
 type EditEventFormData = z.infer<typeof createEventSchema> & {
   eventId: string;
 };
