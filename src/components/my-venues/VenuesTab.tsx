@@ -24,9 +24,9 @@ import { Venue } from "@/lib/types";
 import Link from "next/link";
 
 export default async function VenuesTab() {
-  const venues = await getMyVenues() as Venue[];
-  const openVenues = venues.filter(ele => ele.is_available.Bool)
-  const closedVenues = venues.filter(ele => !ele.is_available.Bool);
+  const venues = (await getMyVenues()) as Venue[];
+  const openVenues = venues.filter((ele) => ele.is_available.Bool);
+  const closedVenues = venues.filter((ele) => !ele.is_available.Bool);
 
   return (
     <section className='w-full'>
@@ -43,35 +43,49 @@ export default async function VenuesTab() {
               Closed
             </TabsTrigger>
           </TabsList>
-          <TabsContent value='open' className='w-full flex flex-col gap-5 p-5 md:p-10 rounded-3xl shadow-lg'>
-            {
-              openVenues.length > 0 ? (
-                openVenues.map((venue, index) => (
-                  <VenueCards index={index} key={venue.id} venueData={venue} state="open"/>
-                ))
-              ) : (
-                <div className='flex justify-center items-center text-center text-xl text-gray-500'>No open venues available.</div>
-              )
-            }
-            <Button asChild className='w-full md:w-3/4 md:!h-fit py-3 bg-olive hover:bg-olive/90 text-white mx-auto mt-10 text-lg'>
-            <Link href={"/list-venue"}>
-              List New Venue
-            </Link>
+          <TabsContent
+            value='open'
+            className='w-full flex flex-col gap-5 p-5 md:p-10 rounded-3xl shadow-lg'
+          >
+            {openVenues.length > 0 ? (
+              openVenues.map((venue, index) => (
+                <VenueCards
+                  index={index}
+                  key={venue.id}
+                  venueData={venue}
+                  state='open'
+                />
+              ))
+            ) : (
+              <div className='flex justify-center items-center text-center text-xl text-gray-500'>
+                No open venues available.
+              </div>
+            )}
+            <Button
+              asChild
+              className='w-full md:w-3/4 md:!h-fit py-3 bg-olive hover:bg-olive/90 text-white mx-auto mt-10 text-lg'
+            >
+              <Link href={"/list-venue"}>List New Venue</Link>
             </Button>
           </TabsContent>
           <TabsContent
             value='closed'
             className='w-full flex flex-col gap-5 grayscale p-5 md:p-10 rounded-3xl shadow-lg'
           >
-            {
-              closedVenues.length > 0 ? (
-                closedVenues.map((venue, index) => (
-                  <VenueCards index={index} key={venue.id} venueData={venue} state="closed" />
-                ))
-              ) : (
-                <div className='flex justify-center items-center text-center text-xl text-gray-500'>No closed venues available.</div>
-              )
-            }
+            {closedVenues.length > 0 ? (
+              closedVenues.map((venue, index) => (
+                <VenueCards
+                  index={index}
+                  key={venue.id}
+                  venueData={venue}
+                  state='closed'
+                />
+              ))
+            ) : (
+              <div className='flex justify-center items-center text-center text-xl text-gray-500'>
+                No closed venues available.
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
@@ -79,7 +93,15 @@ export default async function VenuesTab() {
   );
 }
 
-function VenueCards({ index, venueData, state }: { index: number, venueData: Venue, state: string }) {
+function VenueCards({
+  index,
+  venueData,
+  state,
+}: {
+  index: number;
+  venueData: Venue;
+  state: string;
+}) {
   return (
     <Card
       className={cn(
@@ -87,20 +109,25 @@ function VenueCards({ index, venueData, state }: { index: number, venueData: Ven
         index !== 0 && ""
       )}
     >
-      <CardHeader className='w-full md:w-64 aspect-square md:aspect-[3/2] relative rounded-xl overflow-clip'>
-        <Image
-          src={ venueData.image_links[0] || '/room1.webp'}
-          alt={`Image of ${venueData.name}`}
-          fill={true}
-          className='absolute object-cover object-center'
-        />
+      <CardHeader className='w-full md:w-64 !px-0'>
+        <div className='w-full flex gap-2 md:gap-0 md:flex-col'>
+          <div className='w-full relative aspect-square md:aspect-[3/2] rounded-xl overflow-clip'>
+            <Image
+              src={venueData.image_links[0] || "/room1.webp"}
+              alt={`Image of ${venueData.name}`}
+              fill={true}
+              className='absolute object-cover object-center'
+            />
+          </div>
+          <span className='inline-block md:hidden'>
+            <VenueCardPopOverMenu venueId={venueData.id} state={state} />
+          </span>
+        </div>
         <CardTitle className='sr-only'>Venue Card</CardTitle>
         <CardDescription className='sr-only'>Venue card.</CardDescription>
       </CardHeader>
       <CardContent className='grow relative flex flex-col items-start justify-center gap-2 md:gap-6 z-2 py-4 md:py-0 px-0 md:px-5 text-olive font-roboto'>
-        <h5 className='flex gap-2 text-2xl font-medium'>
-          {venueData.name}
-        </h5>
+        <h5 className='flex gap-2 text-2xl font-medium'>{venueData.name}</h5>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 w-full'>
           <p className='flex items-start gap-1 text-xl'>
             <PiHouse className='size-6 text-olive' />
@@ -111,16 +138,17 @@ function VenueCards({ index, venueData, state }: { index: number, venueData: Ven
             {venueData.booking_price.Int64}/hr
           </p>
           <p className='flex items-start gap-1 text-xl'>
-            <SlLocationPin className='size-6 text-olive' /> 
+            <SlLocationPin className='size-6 text-olive' />
             {venueData.location.String}
           </p>
           <p className='flex items-start gap-1 text-xl'>
-            <GoPerson className='size-6 text-olive' /> {venueData.capacity.Int32}
+            <GoPerson className='size-6 text-olive' />{" "}
+            {venueData.capacity.Int32}
           </p>
         </div>
       </CardContent>
       <CardFooter className='hidden md:flex'>
-        <VenueCardPopOverMenu venueId={venueData.id} state={state}/>
+        <VenueCardPopOverMenu venueId={venueData.id} state={state} />
       </CardFooter>
     </Card>
   );

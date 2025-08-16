@@ -33,16 +33,13 @@ export default async function EventsTab() {
   const events = (await getMyEvents()) as
     | Event[]
     | { error: boolean; errorData?: string; message?: string };
+
   if (!Array.isArray(events)) {
-    return (
-      <div className='flex justify-center items-center text-center text-xl my-10 text-red-500'>
-        {"Failed to fetch events or venues."}
-      </div>
-    );
+    throw new Error("Failed to fetch events or venues.");
   }
 
-  const openEvents = events.filter((ele) => ele.status !== "declined");
-  const closedEvents = events.filter((ele) => ele.status === "declined");
+  const openEvents = events.filter((ele) => ele.status !== "declined" && ele.status !== "pending");
+  const closedEvents = events.filter((ele) => ele.status === "declined" || ele.status === "pending");
   return (
     <section className='w-full'>
       <div className='w-full xl:max-w-[1140px] mx-auto flex px-5 py-6 md:py-14'>
@@ -117,13 +114,20 @@ async function EventCards({ eventData }: { eventData: Event }) {
         "w-full flex flex-col md:flex-row md:items-start py-5 overflow-clip !gap-0 md:gap-4 !shadow-none !rounded-none"
       )}
     >
-      <CardHeader className='w-full md:w-64 aspect-[200/240] relative rounded-xl overflow-clip'>
-        <Image
-          src={eventData.image_links[0]}
-          alt={`Image of ${eventData.name}`}
-          fill={true}
-          className='absolute object-cover object-center'
-        />
+      <CardHeader className='w-full md:w-64 !px-0'>
+        <div className="w-full flex gap-2 md:gap-0 md:flex-col">
+          <div className="w-full relative aspect-[200/240] rounded-xl overflow-clip">
+            <Image
+              src={eventData.image_links[0]}
+              alt={`Image of ${eventData.name}`}
+              fill={true}
+              className='absolute object-cover object-center grow'
+            />
+          </div>
+          <span className="inline-block md:hidden">
+            <EventCardPopOverMenu eventId={eventData.id} />
+          </span>
+        </div>
         <CardTitle className='sr-only'>Event Card</CardTitle>
         <CardDescription className='sr-only'>Event card.</CardDescription>
       </CardHeader>
