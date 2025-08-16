@@ -8,7 +8,8 @@ import { authOptions } from "@/lib/auth";
 
 export default async function eventService(
   eventId: string,
-  amount: string
+  amount: string,
+  quantity: number
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -28,6 +29,7 @@ export default async function eventService(
         {
           event_id: eventId,
           amount: amount,
+          quantity: quantity,
         },
         {
           headers: {

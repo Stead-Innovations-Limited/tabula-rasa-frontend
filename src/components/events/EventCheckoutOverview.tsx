@@ -167,7 +167,8 @@ function EventCheckoutOverview({
 
                     const response = await eventService(
                       eventData.id,
-                      (price * parseInt(quantity)).toString()
+                      (price * parseInt(quantity)).toString(),
+                      parseInt(quantity)
                     );
                     if (response.error) {
                       // Set loading state back to false, payment has been processed
