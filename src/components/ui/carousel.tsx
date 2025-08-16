@@ -7,7 +7,7 @@ import useEmblaCarousel, {
 } from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn, formatLocalDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import useNotificationStatus from "@/hooks/useNotificationStatus";
 import { AiOutlineLoading3Quarters } from "@/components/icons";
@@ -382,7 +382,7 @@ const CarouselNavigation = ({
                   const response = await practitionersService(
                     parseTime(startTime),
                     parseTime(endTime),
-                    date!.toISOString().split("T")[0],
+                    formatLocalDate(date),
                     pracId,
                     amount
                   );

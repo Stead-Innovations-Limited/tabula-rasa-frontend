@@ -9,6 +9,7 @@ import { authOptions } from "@/lib/auth";
 
 import { z } from "zod/v4";
 import { createEventSchema } from "@/lib/definitions";
+import { formatLocalDate } from "@/lib/utils";
 type createEventFormData = z.infer<typeof createEventSchema>;
 
 export interface createEventState {
@@ -102,8 +103,9 @@ export default async function createEventAction(
           activities: [keyActivities],
           start_time: startTime,
           end_time: endTime,
-          start_date: startDate.toISOString().split("T")[0],
-          end_date: endDate.toISOString().split("T")[0],
+          // We format it this way by not using Iso String conversion as it could interfere with the date at 23:00 or 00:00 at times
+          start_date: formatLocalDate(startDate),
+          end_date: formatLocalDate(endDate),
           total_particpant: parseInt(maxParticipantsNo),
           price: Number(pricePerParticipant) * 100 || 0, // Convert to cents
         },

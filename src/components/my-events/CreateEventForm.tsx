@@ -44,7 +44,7 @@ import { createEventSchema } from "@/lib/clientDefinitions";
 import createEventAction from "@/server-actions/createEventAction";
 
 import useToast from "@/hooks/useToast";
-import { cn } from "@/lib/utils";
+import { cn, formatLocalDate, getHoursDifference } from "@/lib/utils";
 import { Venue } from "@/lib/types";
 import { toast } from "sonner";
 import handleFileUploads from "@/server-actions/handleFileUploads";
@@ -52,6 +52,8 @@ import { useRouter } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Check, ChevronsUpDown } from "lucide-react";
 import useNotificationStatus from "@/hooks/useNotificationStatus";
+import { useSession } from "next-auth/react";
+import getAccountBalance from "@/server-actions/getAccountBalance";
 
 // This function safely parses a time string, returning a default time if the input is invalid
 // This is useful to ensure that the time input is always valid, even if the user does
@@ -81,6 +83,10 @@ export default function CreateEventForm({
   const updateNotificationStatus = useNotificationStatus(
     (state) => state.updateNotificationStatus
   );
+  // We get access to the user's data
+  const { data: session } = useSession();
+  const userData = session?.user;
+
   const [state, action, isPending] = useActionState(
     createEventAction,
     undefined
@@ -181,6 +187,45 @@ export default function CreateEventForm({
       );
       return;
     }
+
+    // Here i want to check the account balance of the user and calculate the amount of time the event will take place in hours
+    // And then use that amount to calculate the total amount that goes to the venue owner, if the event creator is the venue owner
+    // then there is no need for such checks
+    if(userData?.id !== selectedVenue?.owned_by) {
+      // We get account balance 
+      const accountBalance = await getAccountBalance() as string;
+
+      const amountPerHour = selectedVenue.booking_price.Int64; // Price of venue per hour
+      const startDate = formatLocalDate(formData.startDate); // StartDate in formatted string
+      const endDate = formatLocalDate(formData.endDate); // EndDate in formatted string
+      const noHours = getHoursDifference( 
+        startDate,
+        formData.startTime,
+        endDate,
+        formData.endTime
+      );
+      // The total amount of money that should go to the venue owner
+      const totalVenueRevenue = noHours * amountPerHour;
+
+      // If the totalVenueRevenue is greater than account balance, we show a toast
+      if (totalVenueRevenue > accountBalance) {
+        toast.error(
+          `Insufficient account balance. You need $${totalVenueRevenue} but have $${accountBalance}`,
+          {
+            classNames: {
+              toast: "!text-red-500",
+              title: "!text-red-500",
+              description: "!text-red-500",
+            },
+            duration: 7000
+          }
+        );
+        return;
+      }
+    }
+    
+    return;
+
     // Here what i want to do is send the file i got here to get the presignedUrl and generated Url
     const files = formData.eventFiles;
     // If no files are uploaded, we show a toast and return early
