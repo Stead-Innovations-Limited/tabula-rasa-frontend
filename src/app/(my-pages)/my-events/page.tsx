@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import EventsBar from "@/components/events/EventsBar";
 import EventsTab from "@/components/events/EventsTab";
 

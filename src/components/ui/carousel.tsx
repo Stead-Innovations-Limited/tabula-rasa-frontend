@@ -382,7 +382,7 @@ const CarouselNavigation = ({
                   const response = await practitionersService(
                     parseTime(startTime),
                     parseTime(endTime),
-                    formatLocalDate(date),
+                    formatLocalDate(date!),
                     pracId,
                     amount
                   );

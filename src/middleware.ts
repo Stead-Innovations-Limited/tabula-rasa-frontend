@@ -1,42 +1,7 @@
-// import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { authRoutes, publicRoutes } from "./middleware-config";
-// export default withAuth(
-//   async function middleware(req: NextRequest) {
-//     const token =
-//       req.cookies.get("next-auth.session-token")?.value ||
-//       req.cookies.get("__Secure-next-auth.session-token")?.value;
-
-//     const path = req.nextUrl.pathname;
-
-//     // const isPublic = publicRoutes.some(
-//     //       (route) => path === route || path.startsWith(`${route}/`)
-//     //     );
-//     const isAuthRoute = authRoutes.some(
-//       (route) => path === route || path.startsWith(`${route}/`)
-//     );
-//     console.log("We are in middleware!")
-
-//     // If already logged in and visiting /login or /signup → redirect to /dashboard
-//     if (token && isAuthRoute) {
-//       const url = req.nextUrl.clone();
-//       url.pathname = "/dashboard";
-//       return NextResponse.redirect(url);
-//     }
-//     // If visiting a public route, allow access
-//     return NextResponse.next();
-//   },
-//   {
-//     callbacks: {
-//       authorized: ({ req }) => {
-//         console.log("Authorized callback triggered for:", req.nextUrl.pathname);
-//         return true; // Allow all requests to pass through
-//       },
-//     }
-//   }
-// );
-
+ 
 // Custom redirect logic as a separate export
 export async function middleware(req: NextRequest) {
   const token =
