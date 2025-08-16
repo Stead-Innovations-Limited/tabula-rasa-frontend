@@ -2,11 +2,11 @@ export const dynamic = "force-dynamic";
 import { EventRegistration } from "@/lib/types";
 import EventCheckoutBar from "@/components/events/EventCheckoutBar";
 import EventCheckoutOverview from "@/components/events/EventCheckoutOverview";
-import getEventRegistrations from "@/server-actions/getEventRegistrations";
+import getParticularEventRegistration from "@/server-actions/getParticularEventRegistration";
 
 export default async function page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: eventId } = await params;
-  const registrationData = (await getEventRegistrations(eventId)) as
+  const registrationData = (await getParticularEventRegistration(eventId)) as
       | EventRegistration[]
       | { error: boolean; errorData?: string; message?: string };
     // If there is an error in fetching the registrations, we throw an error.
