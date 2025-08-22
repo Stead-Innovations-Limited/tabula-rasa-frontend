@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,7 @@ import { RxPerson, GrBookmark } from "@/components/icons";
 import logoutAction from "@/server-actions/logoutAction";
 import { UserData } from "@/app/page";
 import { signOut } from "next-auth/react";
+import { Skeleton } from "../ui/skeleton";
 
 export default function UserDashboardMenu({
   userData,
@@ -17,13 +19,14 @@ export default function UserDashboardMenu({
   userData?: UserData | undefined;
   close: () => void;
 }) {
+  const [imgErr, setImgErr] = useState(false);
   const router = useRouter();
   //  We handle cases of the user not been authenticated and provide a way for the user to view the pages
   return (
     <div className='w-full flex flex-col gap-4 p-5 z-50 bg-white rounded-2xl shadow-lg'>
       <div className='border border-olive rounded-xl flex flex-col items-center justify-center gap-2 p-5'>
         <div className='size-35 rounded-full overflow-clip relative'>
-          <Image
+          {!imgErr ? <Image
             src={
               userData?.profileImage ||
               "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp"
@@ -31,7 +34,8 @@ export default function UserDashboardMenu({
             alt='User Profile Image'
             fill
             className='object-cover object-center scale-125'
-          />
+            onError={() => setImgErr(true)}
+          /> : <Skeleton className="absolute object-cover object-center w-full h-full scale-125"/>}
         </div>
         {userData && (
           <h5 className='text-xl font-medium text-black text-center'>

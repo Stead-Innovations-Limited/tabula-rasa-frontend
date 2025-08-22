@@ -58,7 +58,7 @@ export default function FullUserNavBarSearch() {
           {userData && (
             <div className='contents'>
               {userData.roles !== "Personal Account" && <Popover>
-                <PopoverTrigger asChild>
+                <PopoverTrigger>
                   <HiPlus className='size-5 md:size-6' />
                 </PopoverTrigger>
                 <PopoverContent>
