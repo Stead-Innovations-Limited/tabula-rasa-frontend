@@ -22,7 +22,7 @@ export default async function page({ params }: { params: Promise<{ slug: string 
     sn: index + 1,
     name: registration.participant_name,
     quantity: registration.quantity,
-    amount: parseFloat(registration.amount_paid) / 100,
+    amount: parseFloat(registration.amount_paid),
     transactionId: registration.purchase_id,
   })) : [];
 
