@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import {
   Card,
@@ -10,17 +13,20 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Event } from "@/lib/types";
+import { Skeleton } from "../ui/skeleton";
 
 function RetreatCards({ data }: {data: Event}) {
+  const [imgErr, setImgErr] = useState(false);
   return (
     <Card className="pt-0 overflow-clip border-none h-full">
       <CardContent className='relative aspect-[296/327.61] md:aspect-[412/456]'>
-        <Image
+        { !imgErr ? <Image
           src={data.image_links[0]}
           alt={data.theme.String}
           fill={true}
           className="object-cover object-center"
-        />
+          onError={() => setImgErr(true)}
+        />: <Skeleton className='absolute object-cover object-center w-full h-full' />}
       </CardContent>
       <CardHeader className="font-nunito">
         <CardTitle className="text-2xl">{data.name}</CardTitle>
