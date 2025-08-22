@@ -33,6 +33,8 @@ function EventCheckoutOverview({
   const [quantity, setQuantity] = useState<string>("1");
   // This state is used to handle the loading state when we make payment
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // This state below is used to handle the error resolves if image fails
+  const [imgErr, setImgErr] = useState(false);
 
   return (
     <section className='w-full'>
@@ -56,15 +58,16 @@ function EventCheckoutOverview({
             <div className='flex flex-row  md:flex-col text-olive'>
               {/* The event Image alone */}
               <div className='w-2/5 aspect-square md:aspect-video md:w-full relative overflow-clip'>
-                {eventData.image_links[0] ? (
+                {eventData.image_links[0] && !imgErr ? (
                   <Image
                     src={eventData.image_links[0]}
                     alt={eventData.name}
                     fill={true}
+                    onError={() => setImgErr(true)}
                     className='object-cover rounded-2xl md:rounded-none'
                   />
                 ) : (
-                  <Skeleton className='' />
+                  <Skeleton className='absolute object-cover object-center w-full h-full' />
                 )}
               </div>
 

@@ -1,6 +1,5 @@
 import { format, parseISO } from "date-fns";
 
-import Image from "next/image";
 import Link from "next/link";
 import {
   Card,
@@ -15,7 +14,7 @@ import getEvent from "@/server-actions/getEvent";
 import getVenue from "@/server-actions/getVenue";
 import { Event, Venue } from "@/lib/types";
 import SavedEventBtn from "./SavedEventBtn";
-import { Skeleton } from "../ui/skeleton";
+import EventImageSkeleton from "./EventImageSkeleton";
 
 async function EventsOverview({ eventId, isSaved }: { eventId: string; isSaved: boolean }) {
   const eventData = await getEvent(eventId) as Event;
@@ -25,12 +24,7 @@ async function EventsOverview({ eventId, isSaved }: { eventId: string; isSaved: 
       <div className='w-full p-5 lg:px-10 xl:max-w-[1140px] mx-auto font-nunito'>
         <Card className='py-0 overflow-clip !gap-0'>
           <CardHeader className='w-full aspect-video md:aspect-[16/7] relative'>
-            {eventData.image_links[0] ? <Image
-              src={eventData.image_links[0]}
-              alt={eventData.name}
-              fill={true}
-              className='absolute object-cover object-center'
-            /> : <Skeleton className="absolute object-cover object-center w-full h-full"/>}
+            <EventImageSkeleton eventData={eventData} />
             <CardTitle className='sr-only'>{eventData.name}</CardTitle>
             <CardDescription className='sr-only'>
               Event card about the {eventData.name} event.

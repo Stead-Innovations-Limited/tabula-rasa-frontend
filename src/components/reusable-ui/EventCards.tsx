@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import { format } from "date-fns";
 
 import {
@@ -31,7 +33,7 @@ export default function EventCards({
   eventPrice,
   eventDate
 }: EventProps) {
-  // Fetch the venue data using the eventId
+  const [imgErr, setImgErr] = useState(false);
 
   return (
     <Card className='py-0 overflow-clip !gap-0'>
@@ -39,7 +41,7 @@ export default function EventCards({
         <Link href={`/events/${eventId}/`} className="relative z-5 my-5 ml-auto bg-olive size-10 rounded-xl flex items-center justify-center">
           <GoArrowUpRight className="size-5 text-white" />
         </Link>
-        {imgUrl ? <Image src={imgUrl} alt={imgAlt} fill={true} className='absolute object-cover object-center' /> : <Skeleton className="absolute object-cover object-center w-full h-full"/>}
+        {imgUrl && !imgErr ? <Image src={imgUrl} alt={imgAlt} fill={true} className='absolute object-cover object-center' onError={() => setImgErr(true)} /> : <Skeleton className="absolute object-cover object-center w-full h-full"/>}
         <CardTitle className='sr-only'>{eventName}</CardTitle>
         <CardDescription className='sr-only'>
           Event card about the {eventName} event.
