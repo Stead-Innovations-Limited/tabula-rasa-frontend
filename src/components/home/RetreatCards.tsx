@@ -19,7 +19,7 @@ function RetreatCards({ data }: {data: Event}) {
   const [imgErr, setImgErr] = useState(false);
   return (
     <Card className="pt-0 overflow-clip border-none h-full">
-      <CardContent className='relative aspect-[296/327.61] md:aspect-[412/456]'>
+      <CardContent className='relative aspect-[296/327.61] md:aspect-[412/456] p-0'>
         { !imgErr ? <Image
           src={data.image_links[0]}
           alt={data.theme.String}

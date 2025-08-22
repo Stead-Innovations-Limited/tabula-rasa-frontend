@@ -83,7 +83,7 @@ function RoomSlide({ venue }: { venue: Venue }) {
   const [imgErr, setImgErr] = useState(false);
   return (
     <div className='w-full h-full relative'>
-      <div className='absolute inset-0 z-1'>
+      <div className='absolute inset-0 z-1 p-0'>
         {!imgErr ? (
           <Image
             src={venue.image_links[0]}
