@@ -23,7 +23,7 @@ export default async function fundAccount(amount: number) {
       const response = await tryCatch(async () => {
         return await axios.post(
           `https://tabula-rasa-backend.up.railway.app/wallet/fund`,{
-            amount: amount
+            amount: amount * 100
           },
           {
             headers: {

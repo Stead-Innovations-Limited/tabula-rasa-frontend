@@ -85,12 +85,25 @@ export default function WithdrawDialog() {
       return;
     }
 
+    const routingNo = formData.get("routingNo");
+    if(typeof routingNo !== "string" || routingNo.trim().length !== 9){
+      toast.error("Routing number is required", {
+        classNames: {
+          toast: "!text-red-500",
+          title: "!text-red-500",
+          description: "!text-red-500",
+        },
+      });
+      return;
+    }
+
     // Call the withdrawFunds function with the parsed amount
     const response = (await withdrawFunds(
       parsedAmount,
       accountNo,
       accountName,
-      bankName
+      bankName,
+      routingNo
     )) as { message: string } | { error: string; message: string };
 
     
@@ -103,7 +116,7 @@ export default function WithdrawDialog() {
         },
       });
     } else {
-      toast.success("Email verified successfully!", {
+      toast.success("Account credited successfully!", {
         classNames: {
           toast: "!text-green-700",
           title: "!text-green-700",
@@ -176,6 +189,18 @@ export default function WithdrawDialog() {
               id='bankName'
               name='bankName'
               placeholder='Enter your bank name'
+              className='py-2 px-3 border border-olive'
+            />
+          </div>
+
+          <div className='grid grid-col gap-2 mt-5'>
+            <Label htmlFor='routingNo' className='text-olive '>
+              Enter bank routing number
+            </Label>
+            <Input
+              id='routingNo'
+              name='routingNo'
+              placeholder='Enter routing number'
               className='py-2 px-3 border border-olive'
             />
           </div>

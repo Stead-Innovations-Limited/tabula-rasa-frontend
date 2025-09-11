@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
 
-export default async function withdrawFunds(amount: number, accNo: string, accName: string, bankName: string) {
+export default async function withdrawFunds(amount: number, accNo: string, accName: string, bankName: string, routingNo: string) {
   try {
       const session = await getServerSession(authOptions);
   
@@ -23,9 +23,9 @@ export default async function withdrawFunds(amount: number, accNo: string, accNa
       const response = await tryCatch(async () => {
         return await axios.post(
           `https://tabula-rasa-backend.up.railway.app/wallet/withdraw`,{
-            amount: amount,
+            amount: amount * 100,
             account_number: accNo,
-            routing_number: "110000000",
+            routing_number: routingNo,
             account_holder_name: accName,
             bank_name: bankName
           },
