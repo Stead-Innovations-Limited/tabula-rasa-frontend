@@ -76,10 +76,9 @@ export default function UserDashboardMenu({
             router.push("/login");
           } else {
             // Handle Logout functionality
-            const logOutResponse = await logoutAction();
-            if (logOutResponse.success) {
-              await signOut({ callbackUrl: "/" });
-            }
+            //(Log out from the client side before logging out server side)
+            await signOut({ callbackUrl: "/" });
+            await logoutAction();
           }
         }}
       >

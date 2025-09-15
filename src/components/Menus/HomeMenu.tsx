@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { cn } from "@/lib/utils";
+import logoutAction from "@/server-actions/logoutAction";
 
 function HomeMenu({userData}: {userData: boolean}) {
   const [open, setOpen] = useState<boolean>(false);
@@ -73,7 +74,9 @@ function HomeMenu({userData}: {userData: boolean}) {
                 <Button className='w-full bg-red-500/20 hover:bg-red-500/30'
                 onClick={async () => {
                   // Handle logout logic here
+                  // (Logout client side before logging out serverside)
                   await signOut({ callbackUrl: "/" }); 
+                  await logoutAction();
                 }}
                 >
                   <FiLogOut className='text-red-500' />

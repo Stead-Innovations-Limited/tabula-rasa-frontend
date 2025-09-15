@@ -36,7 +36,7 @@ export default function SheetMenu({
 }: {
   userData: User | undefined;
 }) {
-  const router = useRouter()
+  const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,7 +47,10 @@ export default function SheetMenu({
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger>
         <AvatarComponent
-          imgUrl={userData?.profileImage || "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp"}
+          imgUrl={
+            userData?.profileImage ||
+            "https://res.cloudinary.com/drlrawk5w/image/upload/v1724100934/profilePic_gxon9j.webp"
+          }
           firstname={userData?.firstName || ""}
           lastname={userData?.lastName || ""}
         />
@@ -218,17 +221,16 @@ export default function SheetMenu({
             className='w-full bg-olive hover:bg-olive/90 text-white rounded-md'
             onClick={async () => {
               close(); // Close the menu before logging out
-              
+
               // If We are not authenticated, we log in
-              // Or else we simply logout 
+              // Or else we simply logout
               if (!userData) {
                 router.push("/login");
               } else {
                 // Handle Logout functionality
-                const logOutResponse = await logoutAction();
-                if (logOutResponse.success) {
-                  await signOut({ callbackUrl: "/" });
-                }
+                // (Logout from the client before logging out server side)
+                await signOut({ callbackUrl: "/" });
+                await logoutAction();
               }
             }}
           >

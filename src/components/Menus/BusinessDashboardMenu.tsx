@@ -102,10 +102,9 @@ export default function BusinessDashboardMenu({
         onClick={async () => {
           close(); // Close the menu before logging out
           // Handle Logout functionality
-          const logOutResponse = await logoutAction();
-          if (logOutResponse.success) {
-            await signOut({ callbackUrl: "/" });
-          }
+          // (Log out on the client side then logout on the server side)
+          await signOut({ callbackUrl: "/" });
+          await logoutAction();
         }}
       >
         Log Out
