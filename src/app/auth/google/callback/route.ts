@@ -9,4 +9,11 @@ export async function GET(request: NextRequest) {
     : `${redirectBase}/login`;
 
   return NextResponse.redirect(targetUrl);
+  
+  // NEW LOGIC
+  // const url = request.nextUrl.clone()
+  // url.pathname = "/login";
+  // url.search = searchParams;
+  // console.log(url, "Inspecting url")
+  // return NextResponse.redirect(url);
 }

@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { authRoutes, publicRoutes } from "./middleware-config";
- 
+import { authRoutes, businessRoutes, publicRoutes } from "./middleware-config";
+import { getToken } from "next-auth/jwt";
+
+// !!! Lean typing, has more data nested in it!!!
+type UserData = {
+  user: {
+    roles: string
+  }
+}
 // Custom redirect logic as a separate export
 export async function middleware(req: NextRequest) {
   const token =
     req.cookies.get("next-auth.session-token")?.value ||
     req.cookies.get("__Secure-next-auth.session-token")?.value;
+  
+  // Fetch session data to ensure only business account can access certain routes
+  const userData  = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   const path = req.nextUrl.pathname;
   const isAuthRoute = authRoutes.some(
@@ -47,12 +57,27 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  const isBusinessRoute = businessRoutes.some(
+    // We need to ensure that the certain pages can only be accessed by Users with Business account
+    (route) =>
+      path === route ||
+      (path.startsWith(`${route}/`))
+  );
+  
+  if(userData && (userData as UserData).user.roles !== "Business Account" && isBusinessRoute) {
+    // If the user is not of a business account and tries to visit these routes
+    // we redirect back to the business-profile page
+    const url = req.nextUrl.clone()
+    url.pathname = "/business-profile"
+    return NextResponse.redirect(url)
+  }
+
   return NextResponse.next();
 }
 
 // With the current middleware setup, it runs on all routes even when those routes are not defined in our file routing based system.
-// (So if normally you go to /me, it runs and go to /login and we do not want that to be the case, so we go to the config below to specify which routes we want the middleware to run on)
-// I am writing down the routes manually  to prevent runtime errors and to ensure that the middleware only runs on the specified routes.
+// (So if normally you go to /me, it runs and go to /login and we do not want that to be the case as it should return a 404 page since /me does not exist, so we go to the config below to specify which routes we want the middleware to run on)
+// I am writing down the routes manually to prevent runtime errors and to ensure that the middleware only runs on the specified routes.
 export const config = {
   matcher: [
     "/",

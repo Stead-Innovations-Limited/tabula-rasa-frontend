@@ -2,6 +2,9 @@ export const publicRoutes = ["/", "/about", "/contact", "/dashboard", "/events",
 export const authRoutes = ["/login", "/signup", "/verify-email", "/pick-account", "/auth/google/callback"];
 export const protectedRoutes = ["/account", "/availability", "/bookings", "/business-profile", "/create-event", "/insufficient-funds", "/list-venue", "/my-events", "/my-venues", "/notifications", "/personal-profile", "pick-account", "/saved"];
 
+// This routes must be secured in the middleware to ensure that only account with business profile can enter these routes
+export const businessRoutes = ["/account", "/create-event", "/list-venue"]
+
 export const routeMatches = [
   "/",
    "/account",
